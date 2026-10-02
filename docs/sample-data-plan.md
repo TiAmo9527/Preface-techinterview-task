@@ -1,84 +1,65 @@
 # Sample-data and import-template plan
 
-Version: 0.2
+Version: 0.3
 
-Revised: 2026-10-02
+Revised: 2026-10-03
 
 Owner: Alex
 
-Status: Approved fixture scope; proposed layouts/cases; no workbooks, PDFs, or datasets generated
+Status: Approved fixture scope and generation workflow; no workbooks or datasets generated
 
-## 1. Approved scope
+## 1. Dataset scope
 
-Four fictional properties: one in Hong Kong, Singapore, London, and Tokyo (Japan). Three rooms per property: twelve rooms total. At least one lighting, water-supply, and air-conditioning asset per room: minimum thirty-six individually tracked assets.
+Four fictional properties: one in Hong Kong, Singapore, London and Tokyo (Japan). Three rooms per property: twelve rooms. Exactly one lighting, one water-supply and one air-conditioning asset record per room: thirty-six records total. These three categories are universal product constraints; the four-property/twelve-room fixture size is demonstration scope, not a product capacity limit.
 
-Include fictional invoices with structured invoice lines and one asset per linked line. Managers can later create manual assets without invoice links; do not represent those as imported invoice-backed assets.
+Assets establishes complete initial values without invoice links. Invoices supplies purchase/replacement snapshots for existing room/category targets. There is no manual asset creation, fourth category, empty-room import or quantity allocation. Users can view/edit the three records and apply financial overrides; identity, room and category stay fixed.
 
-Property/supplier/person names, identifiers, dates, costs, owner names, and exact fixed FX rates remain fixture authoring work. Use no real hotel/customer records. Four-location coverage is AR-001; the exact size is owner-approved demonstration scope, not a product record limit.
+All names, suppliers, recorders, identifiers and amounts are fictional. Use no real customer/hotel data. Asset IDs identify stable room/category records through invoice replacements; maintenance links and assessments remain unchanged.
 
-## 2. Proposed Excel templates
+## 2. Templates and one combined generation run
 
-Future blank templates use the layouts in [data contracts](data-contracts.md); this phase documents them only.
+Use the exact headers/types in [data contracts](data-contracts.md). The [AI generation instructions](sample-excel-generation-instructions.md) are a self-contained prompt: one invocation produces both valid and invalid samples.
 
-For later generation of random sample workbooks or isolated invalid batches, use [AI sample-generation instructions](sample-excel-generation-instructions.md), which define the generation steps and completion checks.
-
-| Future template | Sole sheet | Column groups | Authoring guidance |
-|---|---|---|---|
-| Properties.xlsx | Properties | property_id, property_name, location, city | One fictional hotel per required location; Japan city Tokyo |
-| Rooms.xlsx | Rooms | room_id, property_id, room_number; three system status/date/recorder/note groups | Text IDs/numbers; include assessed and unassessed conditions |
-| Assets.xlsx | Assets | asset_id, room_id, asset_name, facility_type, purchase_date, installation_date, useful_life_months, invoice_id, line_id | Cost/currency derive from linked invoice line; omit derived/override fields |
-| InvoiceLines.xlsx | InvoiceLines | invoice_id, line_id, description, acquisition_cost, currency, invoice_date, supplier_name, invoice_file | Unique line identity; no bundle/quantity allocation |
-
-All four files are uploaded together. Preserve all template headers, including optional-value columns. Use prescribed canonical English enum values regardless of UI language. Dates use valid Excel dates or ISO YYYY-MM-DD; IDs use Text to retain zeros.
-
-Future template instructions should explain required/optional values, enum choices, invoice linking, zero-cost/install-date warnings, assessed Unknown versus unassessed Unknown, and whole-batch rejection. Templates do not promise arbitrary spreadsheet compatibility.
-
-No online spreadsheet references were used. Browse later only to resolve a concrete contract/design question, and record any reference plus its limited role; a reference never broadens supported inputs automatically.
-
-## 3. Fictional invoice evidence
-
-Plan readable fictional invoices corresponding to structured lines, clearly labelled as fictional. Every imported asset resolves its line cost/currency and traceable invoice identity. Provide no OCR claim. Do not generate invoice PDFs in this documentation phase.
-
-Keep source fixtures in sample_data/spreadsheets and sample_data/invoices, with deliberate invalid fixtures in sample_data/invalid. Local imported/runtime state belongs in runtime and must not be committed. Respect the repository's supplied-development-fixture boundary.
-
-## 4. Valid-case coverage
-
-| Planned case | Purpose and expected behaviour | Trace |
+| File in each example | Sole sheet | Row meaning |
 |---|---|---|
-| Complete four-location batch | All links valid; all new records commit together after confirmation | US-01, SC-001/002, AR-001 |
-| All supported currencies | Complete fixed fictional FX table including USD rate 1 | FR-011/018, SC-003 |
-| Assessed Healthy/Attention needed/Critical and assessed Unknown | Metadata retained and condition counts meaningful | FR-009/016 |
-| Missing observations and optional installation | Unknown default and visible purchase-date fallback warning | FR-009/011 |
-| Zero cost / missing optional supplier | Non-blocking warnings; no fabricated values | US-01/03 |
-| Renamed/reordered identical files | Records skip based on meaningful normalised values | FR-005 |
-| Re-import after manager asset/observation edits | Preserved source baseline skips; operational edits survive | US-01/03 |
-| Manual asset plus paired override/reset | Generated ID, origin label, effective values and history | FR-010/019 |
-| Same asset with several tickets | Distinct ticket counts without duplicated financial sums | FR-007/008 |
-| Critical room-only versus asset-linked fault | Room issue visible; asset flag only through linkage | US-02/05 |
-| Healthy observation with an unresolved fault | Assessment and ticket remain independent | FR-009/016 |
+| Assets.xlsx | Assets | One baseline asset with repeated property, room and assessment columns |
+| Invoices.xlsx | Invoices | One invoice item with target room/category and full replacement fields |
 
-Maintenance examples are created through the application later or isolated test fixtures, not an unapproved fifth import file.
+There are two workbook types and four sample files across valid/invalid folders, plus one external manifest. Product uploads remain independent; a folder containing both is not a paired upload requirement. Later blank templates contain the same headers without rows. Source workbooks have no formulas, derived values, totals, merged cells, extra sheets or explanation columns. Canonical English headers/enums are independent of UI language.
 
-## 5. Deliberately invalid batches and test fixtures
+Default future output: sample_data/spreadsheets/generated/seed-20261002/{valid,invalid}, with generation-summary.md at the run root. Use a fresh run suffix instead of overwriting files. These are fictional supplied-development fixtures; local imported state belongs in ignored runtime. No PDFs, attachment fields or FX/configuration files are generated by this prompt.
 
-Plan separate altered copies, changing one rule at a time where practical:
+## 3. Fully populated valid pair
 
-- Missing required file/sheet/header; unsupported format/layout.
-- Duplicate upload ID or composite invoice-line identity.
-- Unknown property/room/invoice link and two assets linked to one line, including an existing link collision.
-- Changed meaningful source content for an existing ID.
-- Invalid date, installation before purchase, negative cost, unsupported currency, zero/fractional life.
-- Invalid observation state, incomplete date/recorder, or orphan metadata.
-- A mixed-validity batch: confirmation blocked and every new record remains absent.
-- Persistence-failure injection: valid confirmed batch rolls back entirely.
-- Incomplete/invalid FX configuration: financial reporting blocked, no partial totals.
+The valid Assets baseline has 36 rows, deriving 4 properties and 12 rooms. All 26 fields are populated correctly, including installation dates and all assessment notes/dates/recorders. Repeat each room's three assessments consistently across its asset rows. Include all four condition states; UNKNOWN is a recorded assessment with metadata here. Use positive costs and valid supported currencies/lives/dates; produce no missing-value or zero-cost warnings.
 
-Verification should distinguish file/row/conflict blockers from warnings. Invalid sources remain inspectable with coordinates; they never enter operational records.
+The valid Invoices sheet has 36 rows, one per baseline target, with every one of its 12 fields populated. Use unique invoice-item identities and visibly changed valid names, purchase/installation dates, useful lives and costs; include at least one changed supported currency. Invoices do not change identifiers, categories or assessments. The manifest records before/after fields and expected recalculated outcomes. The expected result is 36 stored invoice items and 36 distinct asset updates after the valid baseline is confirmed.
 
-## 6. Date and presentation fixture coverage
+Preserve all four locations and five supported currencies across each valid workbook. Invoice dates are required and serve ordering, while purchase/installation dates serve finance; do not confuse them. Random costs/rates are not researched prices. Complete fixed FX configuration remains separate future application work.
 
-Include dates that allow demonstrations of before-service, ordinary month anniversaries, 31 January month-end, leap-year February, useful-life cap, and replacement overdue/today/90-day/12-month boundaries. Financial-date changes never create maintenance events or alter actual overdue indicators.
+## 4. Invalid pair and prerequisites
 
-Do not freeze the operational clock to match the walkthrough. Before rehearsal, choose financial reporting presets that expose the prepared asset cases. Derive operational ticket target dates from the actual date for a later fictional test fixture.
+Alter copies of the valid pair; keep surrounding records correct. Deliberate errors must be documented with file/sheet/Excel row/field, original and invalid values, prerequisite state, expected blocker and any dependency diagnostics.
 
-Use [the existing demo plan](demo.md) for sequence and evidence; do not create a duplicate demo-plan file. English is mandatory; stretch translations require completeness/fallback checks, with linguistic review still deferred. This plan is coverage intent, not test evidence.
+- invalid/Assets.xlsx: inconsistent repeated room assessments and a duplicate facility category leaving a required category missing. Validate on an empty database; the whole baseline is rejected with no property/room/asset writes.
+- invalid/Invoices.xlsx: unknown room, unsupported category/currency, duplicate invoice-item identity, impossible dates or installation before purchase, non-positive life and conflicting snapshots at one target's newest invoice date. Validate after importing valid/Assets.xlsx; the whole invoice upload is rejected with no evidence, asset or history writes.
+
+Invoice installation-before-purchase is the date-order defect; do not mistake an ordinary purchase-before-installation sequence for an error. Use separate target rows for unrelated defects. For duplicate-identity and same-date-conflict examples add deliberate rows as needed; manifest counts must reflect actual output. Ensure the equal-date conflict is at that target's controlling maximum date. Do not use changed-existing-source conflicts as standalone errors on an empty database.
+
+## 5. Separate acceptance and boundary coverage
+
+Document these future tests rather than placing blanks/warnings in the fully populated valid pair:
+
+- Independent baseline initialisation, invoice-only subset updates and finance before invoices.
+- Missing/duplicate categories, inconsistent repeated property/room values, malformed region/room IDs, duplicate asset IDs, unknown invoice targets and changed source identities.
+- Newest invoice selection across file order; older items retained without updates; same-date different snapshots blocked and equal snapshots retained without replaying edits.
+- Identical baseline/invoice repeats after manager changes; newer invoice replacement of edits and clearing of overrides; reset to latest invoice or baseline.
+- Missing installation fallback/clearing, zero-cost and supplier warnings, unassessed UNKNOWN, invalid observations, cancellation, stale previews and persistence-failure rollback.
+- Before-service, month-end, leap-year, life-cap and overdue/today/90-day/12-month replacement boundaries; calculate against both baseline and updated snapshots.
+- Ticket links and observation state unchanged by invoices; no financial duplication through historical invoice or maintenance joins.
+
+Operational workflow fixtures are created through later application actions or isolated tests, never extra import workbook types. Follow [the existing demo](demo.md). AR-002's manual add-asset obligation remains unmet by owner scope and must be disclosed.
+
+## 6. Evidence status
+
+Generation, saved-file verification, product validation and application tests are pending. Generation checks establish fixture consistency, not proof that product validation is implemented. Record actual results under SC/AR IDs only after execution. Translation review remains deferred, and the financial reference date never changes the actual operational clock.
