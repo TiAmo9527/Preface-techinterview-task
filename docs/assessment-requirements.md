@@ -14,7 +14,7 @@ Status: Obligations recorded; application and presentation evidence pending
 
 Source: the supplied confidential interview brief, "2026 Sep_Skills Test for Alex (Part-time).pdf" (one page), inspected read-only. Do not commit the brief, reproduce it publicly, or publish confidential assessment materials. This document paraphrases the obligations for internal planning.
 
-The brief sets external assessment constraints. The [product specification](spec.md) governs approved implementation behaviour within them. If a contradiction appears, record both sides and obtain an explicit owner resolution rather than silently applying precedence.
+The brief sets external assessment constraints. The [product specification](product-spec.md) governs approved implementation behaviour within them. If a contradiction appears, record both sides and obtain an explicit owner resolution rather than silently applying precedence.
 
 The brief permits suitable technology and AI coding assistance. That permission does not require AI functionality inside the application. Manual monitoring and structured invoice-item input are compatible with the brief; live integrations and arbitrary PDF OCR are excluded by owner scope. The v0.3 owner-approved model initialises Assets first and uploads Invoices independently to update existing room/category records. Workbook records and provenance provide invoice evidence without a PDF requirement.
 

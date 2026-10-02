@@ -6,11 +6,14 @@ Fictional hotel facilities and accountable maintenance prototype. Owner: Alex. T
 
 Documentation is revised to v0.3: Assets.xlsx establishes a complete baseline, and independent Invoices.xlsx uploads update existing room/category records. Every room has exactly one lighting, one water-supply and one air-conditioning asset. Viewing/editing is retained; manual asset creation is excluded, leaving the assessment's add-asset obligation unmet. Translation verification and exact technical-contract review remain pending.
 
+The product specification is now named product-spec.md. A complementary UI/UX specification v0.2 records confirmed layout/styling choices and proposed interactions; it is not implemented or verified.
+
 The application is not implemented: app.py prints a title, and application, test, and sample-data directories contain placeholders. No working web UI, imported dataset, passing application tests, or rehearsed demonstration is claimed.
 
 ## Documents
 
-- [Product specification](docs/spec.md): behaviour, business rules, acceptance criteria and owner decisions.
+- [Product specification](docs/product-spec.md): behaviour, business rules, acceptance criteria and owner decisions.
+- [UI/UX specification](docs/ui-ux-spec.md): Map/List overview, room-card Log fault handoff to Maintenance, upper-right language/currency dropdowns, Debugging - Assumptions page, styling and future acceptance checks.
 - [Data contracts](docs/data-contracts.md): two independent workbook contracts, baseline values, invoice-update precedence, provenance and operational interfaces.
 - [Assessment requirements](docs/assessment-requirements.md): external obligations, confidentiality and evidence.
 - [Sample-data plan](docs/sample-data-plan.md): fictional four-location fixtures and proposed blank template layouts.
