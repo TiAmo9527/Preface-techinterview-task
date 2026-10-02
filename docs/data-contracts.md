@@ -1,169 +1,170 @@
 # Data contracts: Hotel asset-management prototype
 
-Version: 0.2
+Version: 0.3
 
-Revised: 2026-10-02
+Revised: 2026-10-03
 
-Status: Explicit technical contract proposals for the approved product policies; not a database schema or claim of implementation
+Status: Documented contracts for the owner-approved baseline/invoice-update model; application and workbook generation pending
 
-The [product specification](spec.md) governs behaviour. These layouts make its supported-input boundary explicit. Exact column spellings, parsing/normalisation details, technical history fields, and manual reset-baseline representation below are proposals for implementation review, not independently owner-approved policies.
+The [product specification](spec.md) governs behaviour. The two-workbook workflow and update policies are owner-approved; exact parsing, identifier grammar and technical history representations below are implementation proposals. This document defines logical interfaces, not a database schema or evidence of working validation.
 
-## 1. Batch and workbook boundary
+## 1. Upload and workbook boundary
 
-Upload all four separate .xlsx files in one batch. Recommended template filenames and required sheet names:
+Two workbook types are supported, uploaded and confirmed independently:
 
-| Template filename | Sole table sheet | Identity |
-|---|---|---|
-| Properties.xlsx | Properties | property_id |
-| Rooms.xlsx | Rooms | room_id |
-| Assets.xlsx | Assets | asset_id |
-| InvoiceLines.xlsx | InvoiceLines | invoice_id + line_id |
+| Recommended filename | Sole sheet | Purpose | Row identity |
+|---|---|---|---|
+| Assets.xlsx | Assets | Initialise properties, rooms and their three asset records | asset_id |
+| Invoices.xlsx | Invoices | Update assets already recorded in rooms | invoice_id + line_id |
 
-Each workbook contains exactly its one prescribed sheet. Row 1 contains the specified headers; data starts at Excel row 2. All defined headers must be present, including optional-value columns; order may vary. A headers-only table is allowed. Filenames can vary and do not determine identity. No .xls/.csv, multi-sheet-workbook path, arbitrary layouts, or PDF import. Fictional PDFs are evidence supplied alongside the structured data.
+Load a valid Assets baseline before an invoice upload. Never require both workbooks in one upload. Invoice uploads may target a subset of existing rooms/assets; they cannot create rooms or assets. Baseline values are usable for finance without invoices. Headers-only sheets are allowed as no-op uploads.
 
-Proposed structural rules: reject missing/duplicate/unexpected headers, extra sheets, formulas, merged table cells, and unusable identifier columns with diagnostics. Ignore fully empty rows; validate partially populated rows normally. Translate none of the source headers/enums.
+Each workbook has exactly one prescribed sheet. Row 1 contains all defined headers, including optional-value columns; data starts at row 2. Header order may vary. Filenames do not determine identity. Reject missing/duplicate/unexpected headers, extra sheets, formulas, merged table cells, unsupported .xls/.csv formats and unreadable files. Ignore fully empty rows; validate partially populated rows normally. No PDF import or attachment requirement; workbook content and provenance are the source evidence.
 
-## 2. Common types and canonical values
+## 2. Common types and identifiers
 
 | Type | Proposed representation and validation |
 |---|---|
-| ID | Non-empty text; trim outer whitespace; preserve case and leading zeros. Format ID cells as Text; reject numeric IDs rather than guess a lost zero. |
-| Text | Unicode text with outer whitespace trimmed; preserve case and internal whitespace. Required text cannot be blank. |
-| Optional text | Blank/whitespace-only → absent. |
-| Calendar date | Valid Excel date cell with no time component, or ISO YYYY-MM-DD text; reject ambiguous locale strings and impossible dates. Interpret as calendar dates, not UTC instants. |
-| Decimal amount | Finite non-negative decimal; numeric Excel cell or canonical decimal text without currency symbols/grouping separators. Reject booleans, NaN/infinity, and negative values; preserve calculation precision. |
-| Whole months | Positive integer; reject zero, negatives, and fractional values. |
+| ID | Non-empty text; trim outer whitespace; preserve case and leading zeros. Reject numeric ID cells rather than guessing lost zeros. |
+| Text | Unicode text; trim outer whitespace and preserve internal whitespace/case. Required text cannot be blank. |
+| Optional text | Blank/whitespace-only means absent. |
+| Calendar date | Valid Excel date cell without a time, or ISO YYYY-MM-DD text; reject impossible dates and ambiguous locale strings. Calendar dates are not UTC instants. |
+| Decimal amount | Finite non-negative decimal, as numeric Excel cell or canonical decimal text without currency/grouping symbols; reject booleans, NaN/infinity and negatives. |
+| Whole months | Positive integer; reject booleans, zero, negative and fractional values. |
 | Currency | HKD, SGD, GBP, JPY, USD; trim and uppercase. |
 | Location | HONG_KONG, SINGAPORE, LONDON, JAPAN; trim and uppercase. |
-| Facility type | LIGHTING, WATER_SUPPLY, AIR_CONDITIONING, OTHER; trim and uppercase. |
+| Facility type | LIGHTING, WATER_SUPPLY, AIR_CONDITIONING only; trim and uppercase. |
 | Condition | HEALTHY, ATTENTION_NEEDED, CRITICAL, UNKNOWN; trim and uppercase. |
 
-Enum values are stored independently of translated labels. Source text is never automatically translated. Equivalent dates/decimal values compare equal after parsing; display formatting must not change equality.
+Region codes map HK → HONG_KONG, SG → SINGAPORE, LDN → LONDON, JP → JAPAN. Proposed ID grammar: optional S<digits>- namespace, region code, -P<at least two digits> for a property; append -R<at least three digits> for a room; append -A<at least three digits> for an asset. Examples: HK-P01, HK-P01-R001, HK-P01-R001-A001; seeded examples prefix every linked ID with S20261002-. Use uppercase codes. Invoice/line IDs are non-empty text and do not need this location grammar.
 
-All monetary calculations and aggregation use decimal precision before display rounding. Proposed native display: JPY zero decimals, other supported currencies two; USD display is two decimals as required by the spec. Retain unrounded stored values.
+Validate that property_id's region agrees with location, room_id has the exact property_id prefix, and asset_id has the exact room_id prefix, including namespace. Asset suffixes do not encode editable names or dates. room_number is a text display label, unique within its property; it need not equal the internal room-code suffix. Relationships use exact identifiers, never guessed names.
 
-## 3. Properties table
+Equivalent parsed dates/decimals compare equal. Source text and enums are independent of translated UI labels. Calculations/aggregation use unrounded decimal values; proposed display is JPY zero decimals, other supported currencies two, and USD two decimals.
+
+## 3. Assets baseline sheet
+
+Exact recommended header order:
+
+```text
+property_id, property_name, location, city, room_id, room_number,
+lighting_status, lighting_observed_on, lighting_recorder, lighting_note,
+water_supply_status, water_supply_observed_on, water_supply_recorder, water_supply_note,
+air_conditioning_status, air_conditioning_observed_on, air_conditioning_recorder, air_conditioning_note,
+asset_id, asset_name, facility_type, purchase_date, installation_date,
+useful_life_months, acquisition_cost, currency
+```
+
+| Columns | Type | Required value | Meaning |
+|---|---|---|---|
+| property_id, room_id, asset_id | ID | Yes | Stable property, room and asset-record identities |
+| property_name, city, room_number | Text | Yes | Fictional property/city and room label |
+| location | Location | Yes | Portfolio location |
+| lighting_status, water_supply_status, air_conditioning_status | Condition | Conditional | Latest independent room-system assessments |
+| lighting_observed_on, water_supply_observed_on, air_conditioning_observed_on | Calendar date | Conditional | Assessment dates |
+| lighting_recorder, water_supply_recorder, air_conditioning_recorder | Text | Conditional | Assessment recorders |
+| lighting_note, water_supply_note, air_conditioning_note | Optional text | No | Assessment notes |
+| asset_name | Text | Yes | Initial asset name |
+| facility_type | Facility type | Yes | One of the room's three fixed categories |
+| purchase_date | Calendar date | Yes | Initial acquisition/service fallback date |
+| installation_date | Calendar date | No | On/after purchase; omission warns and uses purchase fallback |
+| useful_life_months | Whole months | Yes | Initial useful life |
+| acquisition_cost | Decimal amount | Yes | Initial acquisition cost; zero warns |
+| currency | Currency | Yes | Initial transaction currency |
+
+Each room has exactly three records: one LIGHTING, one WATER_SUPPLY and one AIR_CONDITIONING. No empty-room rows, extra categories or multiple records in a category. Validate completeness against the union of existing records and incoming valid baseline rows. Existing rooms are already complete; a different incoming asset identity occupying an existing room/category blocks the upload.
+
+Derive property and room records from baseline rows. Repeated property IDs and room IDs are expected. All normalised property values for a property must agree; all normalised room labels, property associations and three assessment groups for a room must agree. Retain contributing coordinates and report disagreements without choosing the first row silently. Count each property/room once. Asset IDs are unique within the upload even if duplicate rows are identical.
+
+Property and room master data are import-only. New rooms may be added to an existing property when property baseline values agree, and the new room has all three asset rows. Changed source fields of an existing entity conflict. Identical baseline re-imports compare with preserved original baselines and never restore values changed by invoices, asset edits or assessment edits.
+
+## 4. Latest room assessments
+
+Apply independently to each four-field assessment group, then compare repeated groups after normalisation:
+
+- All values absent, or UNKNOWN with absent date/recorder/note: initialise unassessed UNKNOWN.
+- A recorded assessment, including recorded UNKNOWN, requires status, valid date and recorder; note is optional.
+- Metadata without status, missing required assessment metadata, invalid status/date or note-only unassessed data blocks the upload.
+
+Missing status and unassessed UNKNOWN normalise to the same logical state. Assessment edits affect current observations, not the original baseline. Observations are latest-state records without observation history. Invoice uploads never supply or change them; an invoice is not evidence of a healthy condition.
+
+## 5. Invoices update sheet
+
+Exact recommended header order:
+
+```text
+invoice_id, line_id, room_id, facility_type, asset_name, purchase_date,
+installation_date, useful_life_months, acquisition_cost, currency,
+invoice_date, supplier_name
+```
 
 | Column | Type | Required value | Meaning |
 |---|---|---|---|
-| property_id | ID | Yes | Unique property identity |
-| property_name | Text | Yes | Fictional hotel name |
-| location | Location | Yes | Portfolio filter location |
-| city | Text | Yes | Named city; Japanese fixture is Tokyo |
+| invoice_id | ID | Yes | Invoice identity; may repeat for different items |
+| line_id | ID | Yes | Item identity within invoice |
+| room_id | ID | Yes | Existing room; includes property and region |
+| facility_type | Facility type | Yes | Identifies exactly one existing asset in that room |
+| asset_name | Text | Yes | Purchased-item description and replacement asset name |
+| purchase_date | Calendar date | Yes | Replacement purchase date |
+| installation_date | Calendar date | No | Replacement installation date; on/after purchase |
+| useful_life_months | Whole months | Yes | Replacement useful life |
+| acquisition_cost | Decimal amount | Yes | Replacement acquisition cost; zero warns |
+| currency | Currency | Yes | Replacement source currency |
+| invoice_date | Calendar date | Yes | Determines invoice update precedence |
+| supplier_name | Optional text | No | Fictional supplier; omission warns |
 
-Property master data are created through valid imports only. Changed existing source content conflicts; no property-editing forms or import-based updates.
+Resolve (room_id, facility_type) to one stable existing asset_id and retain that resolved target with the invoice item. Unknown rooms or missing/ambiguous targets block the upload. Every invoice item has a target; no unlinked rows or bundle/quantity allocation. A line cannot target multiple assets, but many distinct invoice items may target the same asset over time. asset_name serves as description; there are no separate description or invoice_file headers.
 
-## 4. Rooms table
+An invoice is a full replacement snapshot of six fields: asset_name, purchase_date, installation_date, useful_life_months, acquisition_cost and currency. A blank optional installation date explicitly clears the previous date and enables purchase-date fallback; it is not a partial patch. Asset ID, room, category, observations and tickets stay fixed. Updates represent purchases/replacements, not accumulated repair expenses.
 
-| Column | Type | Required value | Meaning |
-|---|---|---|---|
-| room_id | ID | Yes | Portfolio-unique room identity |
-| property_id | ID | Yes | Existing or valid same-batch property |
-| room_number | Text | Yes | Unique within that property; preserve text formatting |
-| lighting_status | Condition | Conditional | Latest lighting assessment |
-| lighting_observed_on | Calendar date | Conditional | Lighting assessment date |
-| lighting_recorder | Text | Conditional | Lighting assessor |
-| lighting_note | Optional text | No | Lighting assessment note |
-| water_supply_status | Condition | Conditional | Latest water assessment |
-| water_supply_observed_on | Calendar date | Conditional | Water assessment date |
-| water_supply_recorder | Text | Conditional | Water assessor |
-| water_supply_note | Optional text | No | Water assessment note |
-| air_conditioning_status | Condition | Conditional | Latest air-conditioning assessment |
-| air_conditioning_observed_on | Calendar date | Conditional | Air-conditioning assessment date |
-| air_conditioning_recorder | Text | Conditional | Air-conditioning assessor |
-| air_conditioning_note | Optional text | No | Air-conditioning assessment note |
+## 6. Invoice precedence and repeat uploads
 
-Apply the following independently to each observation group:
+1. Validate every uploaded row, including older evidence. Detect duplicate (invoice_id, line_id) identities inside the upload, including identical duplicates. Existing identical invoice items skip; changed content under an existing identity is a blocker.
+2. Group accepted existing and valid incoming invoice items by resolved asset. Determine the maximum invoice_date per target; upload time, file order and purchase date do not determine precedence.
+3. Compare the six-field normalised replacement snapshots at that maximum date. Different snapshots block the entire upload. Equal snapshots with distinct item identities may coexist as equivalent evidence. Retain all equivalent evidence references in deterministic invoice_id/line_id order; do not arbitrarily discard one.
+4. With no prior applied invoice, apply the maximum-date snapshot. Otherwise apply only when the incoming controlling date is strictly newer. The first accepted invoice is eligible regardless of the initial baseline purchase date.
+5. Older new items and new equal-date/equal-snapshot evidence are stored as historical-only records; they do not replay updates, clear overrides or disturb manual edits. A strictly newer snapshot applies even when its values equal the previous invoice values.
 
-- All four values absent: initialise unassessed UNKNOWN.
-- UNKNOWN with absent date, recorder, and note: unassessed UNKNOWN.
-- A recorded assessment, including recorded UNKNOWN, requires status, date, and recorder; note is optional.
-- Non-UNKNOWN without date/recorder, metadata without status, one missing required metadata field, invalid status/date, or note-only unassessed data is a blocking row error.
-- Imported observations never come from invoices. Manager edits affect the current observation, not the preserved imported Rooms baseline.
-- An identical Rooms re-import skips that record without restoring an observation later edited/cleared by a manager. Changed imported observation content conflicts like other meaningful room source fields.
+An identical re-upload of an older invoice still skips by identity. Conflicting snapshots at dates below the controlling maximum remain historical evidence; the same-date ambiguity blocker concerns the controlling maximum date. Required-field/type/target errors always block, regardless of precedence.
 
-Recorded observations are latest-state records, not observation histories. Room master fields remain fixed in the UI; observation edits are permitted.
+When applying a snapshot, replace all six current asset fields and clear an active paired financial override. Preserve the prior values and override state in invoice-update history; append a linked CLEAR_ON_INVOICE override-history entry when an override is cleared. Recalculate depreciation, book value and replacement outputs from the newly effective fields. Clearing an override here has a system-generated reason referencing the invoice update, not a fabricated manager attribution.
 
-## 5. InvoiceLines table
+## 7. Provenance, comparison and atomic outcome
 
-| Column | Type | Required value | Meaning |
-|---|---|---|---|
-| invoice_id | ID | Yes | Invoice identity |
-| line_id | ID | Yes | Line identity within invoice |
-| description | Text | Yes | Individually tracked purchased item |
-| acquisition_cost | Decimal amount | Yes | Original source line cost |
-| currency | Currency | Yes | Original source currency |
-| invoice_date | Calendar date | No | Optional invoice evidence date |
-| supplier_name | Optional text | No | Optional fictional supplier |
-| invoice_file | Optional text | No | Optional reference to accompanying fictional invoice |
+Keep original property/room/asset baselines immutable and separate from current operational values. Preserve every accepted invoice item, resolved asset target, import/upload reference, filename, sheet, Excel row and actual import timestamp. Property/room baselines retain all contributing row coordinates. Skipped uploads must not rewrite original source evidence.
 
-Composite identity is (invoice_id, line_id). Every imported asset references one line; at most one asset may reference that line across existing and incoming records. Unlinked invoice lines may remain source records. There is no quantity/bundle/allocation field or allocation logic.
-
-Invoice cost/currency are immutable source evidence. Zero cost is allowed with a warning. Missing optional supplier details warn. invoice_file is an evidence reference, not permission to read arbitrary files or run OCR; changing only a filename does not create a source-content conflict.
-
-## 6. Assets table
-
-| Column | Type | Required value | Meaning |
-|---|---|---|---|
-| asset_id | ID | Yes | Unique imported asset identity |
-| room_id | ID | Yes | Existing or valid same-batch room |
-| asset_name | Text | Yes | Item name |
-| facility_type | Facility type | Yes | Facility category |
-| purchase_date | Calendar date | Yes | Acquisition/service fallback date |
-| installation_date | Calendar date | No | Must be on/after purchase; omission warns |
-| useful_life_months | Whole months | Yes | Positive service life |
-| invoice_id | ID | Yes | Linked invoice identity |
-| line_id | ID | Yes | Linked invoice line identity |
-
-Cost/currency are intentionally obtained from InvoiceLines, not duplicated in the Assets template. Extra cost/currency columns are outside this proposed layout; the importer must not silently choose between conflicting sources.
-
-No derived financial columns, overrides, or ticket fields are imported. Every imported asset must have complete room/property/invoice dependencies. Reject a line already linked to a different existing asset.
-
-## 7. Provenance, comparison, and atomic outcome
-
-Preserve a source baseline for each imported entity, separate from editable operational state. Retain import/batch reference, source filename, sheet, Excel row number, and actual import timestamp. An asset also retains invoice/line identities and source invoice cost/currency.
-
-Meaningful comparison fields:
-
-| Entity | Fields compared after normalisation |
+| Record | Meaningful comparison fields |
 |---|---|
-| Property | All declared table values |
-| Room | Master fields and supplied/defaulted observation values |
-| Invoice line | All declared table values except invoice_file |
-| Asset | All declared table values; linked invoice content compares as its own entity |
+| Property baseline | property_id, property_name, location, city |
+| Room baseline | room_id, property_id, room_number and normalised assessment groups |
+| Asset baseline | asset_id, room_id, asset_name, facility_type, purchase_date, installation_date, useful_life_months, acquisition_cost, currency |
+| Invoice item | All twelve declared input values |
 
-Ignore upload filename, workbook bytes/style, sheet row position, ingestion timestamps, derived results, operational edits, and override history in identity comparison. Missing observation status and unassessed UNKNOWN normalise to the same logical state; absent optional values normalise consistently.
+Ignore filename, bytes/styles, row position, timestamps, derived results, operational edits and override history for source equality. No import updates existing baseline or invoice-item identities; new invoice-item identities can update current assets under section 6.
 
-- Detect upload duplicates after ID normalisation, even if duplicate rows are otherwise identical.
-- Existing same ID + same source content: planned skip, not duplicate insertion.
-- Existing same ID + changed meaningful source content: blocking conflict, even if incoming values match current operational edits.
-- Incoming identity matching a manually created asset: no imported baseline exists, so treat as a conflict rather than adopting or overwriting it.
-- Resolve links through valid batch records or existing preserved records. Report dependencies on invalid/missing records.
-- Check uniqueness/links across the complete batch and existing records before confirmation. Recheck commit-time integrity so a stale preview cannot bypass the rules.
-- Any blocker prevents all operational writes. After a valid explicit confirmation, insert new records together and skip identical existing records; roll back on failure.
+Proposed invoice-update history: event ID, asset ID, controlling invoice date, equivalent invoice-item references, previous applied source references, before/after six-field current values, before/after source cost/currency, before/after override/effective values, upload reference and actual timestamp. Historical-only items remain in the evidence ledger without a false asset-update event. History and source references must survive restart.
 
-Diagnostics contain severity, entity/table, file, sheet, row, field, offending identity/value where useful, and an actionable reason. Coordinates are absent only when unavailable, such as an unreadable file. Preview counts are proposed; committed counts are actual. Never show proposed insertion counts as successful writes for a blocked batch.
+Preview performs no operational writes. Recheck all integrity/precedence rules at confirmation, rejecting a stale preview that would change the confirmed result. Commit source evidence, new baseline entities, asset updates and linked histories together or roll everything back. Any blocker prevents all changes, including historical-only evidence inserts.
+
+Diagnostics include severity, entity, file, sheet, row, field, offending identity/value and actionable reason; omit coordinates only when unavailable. Preview separately reports proposed baseline property/room/asset inserts, asset updates, new invoice items, historical-only items, source skips, warnings and blockers. Asset-update counts are distinct assets, not invoice-row counts. Equivalent top-date evidence is counted as source items but never duplicated in asset or financial totals. Post-commit counts are actual; blocked/failed uploads never show successful writes.
 
 ## 8. Operational asset values and override history
 
-Logical operational interface:
-
 | Field/group | Behaviour |
 |---|---|
-| asset_id, room_id, invoice_id/line_id | Fixed after creation; imported IDs supplied, manual asset IDs generated |
-| asset_name, facility_type, purchase_date, installation_date, useful_life_months | Editable with source-type/date validation |
-| origin | IMPORTED or MANUAL; display manual origin as Manually entered |
-| source_cost, source_currency | Preserved invoice values for imports |
+| asset_id, room_id, facility_type | Fixed; no manual creation, category changes or relocation |
+| asset_name, purchase_date, installation_date, useful_life_months | Editable with source-type/date validation; a newly applied invoice replaces them |
+| baseline_cost, baseline_currency | Preserved Assets values |
+| source_cost, source_currency | Latest applied invoice values, else baseline pair |
+| applied_invoice_date/references | Read-only; absent before an invoice is applied |
 | override_cost, override_currency | Both active together or both absent |
-| override_reason, recorder, changed_at | Required on override and reset |
-| effective_cost/currency | Active override pair, else preserved baseline pair; derived/read-only |
-| depreciation, remaining_value, replacement_date | Derived/read-only under the spec |
+| override_reason, recorder, changed_at | Required for manager override/reset |
+| effective_cost/currency | Active override pair, else source pair; read-only |
+| depreciation, remaining_value, replacement_date | Derived/read-only |
 
-For manual creation require cost and currency; no invoice link is necessary. Proposed representation: preserve the initially entered cost/currency as the manual reset baseline, applying later corrections through the same paired override/history mechanism. This proposal prevents a reset from fabricating invoice evidence; it is not independently owner-approved.
+Proposed override-history entry: history ID, asset ID, SET_OVERRIDE / RESET_TO_SOURCE / CLEAR_ON_INVOICE action, before/after effective/source values and override state, reason, manager recorder or linked invoice-update attribution, actual timestamp. Preserve entries after reset or invoice clearing. Self-declared manager names are attribution, not authenticated identity.
 
-Proposed persistent override entry: history ID, asset ID, action (SET_OVERRIDE or RESET_TO_SOURCE), before/after effective cost/currency and override state, reason, self-declared recorder name, actual timestamp. Preserve previous entries after resets. A self-declared recorder is attribution, not authenticated identity.
-
-Reset restores source invoice values for imported assets. Calculations and replacement proxies always use effective values. Changing display language/currency cannot create an override.
+Reset restores the latest applied invoice cost/currency, falling back to baseline values when no invoice is applied; it does not replay source dates/names or clear assessment edits. It requires a reason and appends history. Historical-only and skipped invoices leave active overrides intact. Display language/currency changes never create overrides.
 
 ## 9. Maintenance and latest observation interfaces
 
@@ -175,7 +176,7 @@ Use a short fictional owner list with stable owner IDs and display names. Its na
 
 Clearing owner is allowed only in OPEN. Owner is required in IN_PROGRESS. No status skipping/reopening/deletion; RESOLVED is read-only. A same-room asset link is validated on creation and fixed thereafter. Resolution timestamps use the actual clock, not the financial reporting date.
 
-Latest observations use the same condition/date/recorder/note contract as Rooms imports. Clear sets unassessed UNKNOWN and removes metadata. Mark Healthy requires assessment metadata. No observation history or automatic maintenance-to-condition mapping.
+Latest observations use the same condition/date/recorder/note contract as Assets baseline imports. Clear sets unassessed UNKNOWN and removes metadata. Mark Healthy requires assessment metadata. No observation history or automatic maintenance-to-condition mapping.
 
 ## 10. Fixed configuration and display
 
@@ -191,8 +192,8 @@ Operational dates/timestamps use Asia/Hong_Kong with explicit offsets for instan
 
 ## 11. Verification obligations
 
-Verify parsing/normalisation with equivalent decimal/date representations, leading-zero text IDs, duplicate/conflicting IDs, and filename/row-independent repeats. Verify complete-batch no-write/rollback, existing invoice-link collisions, and repeat import after asset or observation editing.
+Verify parsing/normalisation with equivalent decimal/date representations, leading-zero text IDs, duplicate/conflicting IDs, and filename/row-independent repeats. Verify complete-upload no-write/rollback, baseline-only initialisation, category completeness, repeated room/property consistency, invoice-only subset updates, unknown targets, maximum-date selection, equal-date conflicts/equivalent evidence, older historical-only items, source identity skips/conflicts, and repeats after invoice/asset/observation edits.
 
-Verify source/override isolation, reset history, same-room tickets, owner/status integrity, latest observation metadata, fixed FX completeness, translation boundaries, grouped currency totals, and date separation. Map results to SC-001–005, SC-007–008 and [assessment evidence](assessment-requirements.md).
+Verify invoice replacement and override clearing/history, recalculation, baseline/latest-invoice reset fallback, source/override isolation, reset history, same-room tickets, owner/status integrity, latest observation metadata, fixed FX completeness, translation boundaries, grouped currency totals, and date separation. Map results to SC-001–005, SC-007–008 and [assessment evidence](assessment-requirements.md).
 
 No application tests or contract execution have occurred; these are required future checks.

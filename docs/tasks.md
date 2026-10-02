@@ -1,8 +1,8 @@
 # Task checklist
 
-Version: 0.2
+Version: 0.3
 
-Revised: 2026-10-02
+Revised: 2026-10-03
 
 Target delivery: 2026-10-05
 
@@ -10,21 +10,21 @@ This checklist follows [the plan](plan.md). Completed documentation is not appli
 
 ## Documentation revision
 
-- [x] Revise product specification with owner decisions, retained IDs, and new FR-016–019/SC-008.
-- [x] Separate assessment obligations and legacy SC mappings.
-- [x] Document explicit proposed four-file contracts and source/operational boundaries.
-- [x] Document fictional sample/template coverage without generating files.
+- [x] Revise specification to v0.3 with retained IDs, exactly three room/category records, baseline/invoice updates and revised owner decisions.
+- [x] Preserve assessment obligations/legacy SC mappings and explicitly disclose AR-002's manual asset-creation gap.
+- [x] Document two independent workbook contracts, source baselines, invoice precedence and operational/history boundaries.
+- [x] Document fully populated valid and deliberate invalid pairs generated together, with coordinates/prerequisites, without generating files.
 - [x] Expand existing demo and align plan/README.
 - [ ] Obtain review of exact technical contract proposals before implementation reliance.
 
 ## Future implementation and fixtures
 
 - [ ] Select implementation details separately, respecting views/services/db boundaries.
-- [ ] Create blank prescribed Excel templates and fictional four-location fixtures/invoices.
+- [ ] Create blank Assets/Invoices templates and one combined four-location valid/invalid sample run with manifest; verify saved files and expected updates.
 - [ ] Create deliberate invalid batches and boundary test fixtures.
-- [ ] Implement atomic preview/validation/confirmation/import and detailed diagnostics.
-- [ ] Preserve source baselines/provenance; verify repeat skips, conflicts, and unique invoice links.
-- [ ] Implement generated-ID assets, allowed edits, paired overrides/resets and history.
+- [ ] Implement independent baseline/invoice preview/confirmation with before/after effects, category completeness/repeated-value checks, atomic writes and detailed diagnostics.
+- [ ] Preserve baselines/invoice items/provenance; verify source repeat/conflict rules, target integrity, subset updates, newest-date selection, tied conflicts/equivalent evidence and historical-only records.
+- [ ] Implement viewing/editing of existing assets, invoice replacement/override clearing/history, paired overrides and latest-invoice/baseline reset fallback; exclude manual creation.
 - [ ] Implement room observations with required metadata and Clear → Unknown.
 - [ ] Implement maintenance ownership, permitted edits, ordering, transitions/history and resolved immutability.
 - [ ] Implement dashboard filters, labelled counts, room links, empty states and no financial duplication.
@@ -34,9 +34,9 @@ This checklist follows [the plan](plan.md). Completed documentation is not appli
 
 ## Verification and assessment
 
-- [ ] Record E-IMPORT: blocked batches, atomic success/failure, warnings, repeated/changed sources.
+- [ ] Record E-IMPORT: independent initialisation/update uploads, blocked/atomic success/failure, stale previews, warnings, repeated/changed sources and invoice precedence.
 - [ ] Record E-ROOM: filters/counts, observations and independent room/asset faults.
-- [ ] Record E-ASSET/E-MAINT: edit validation/history, association integrity, transitions and persistence.
+- [ ] Record E-ASSET/E-MAINT: editing, invoice before/after/override history, fixed identities/categories/associations, transitions, persistence and explicit AR-002 add-asset gap.
 - [ ] Record E-FINANCE: numerical/date boundaries, overrides, FX and spending scopes.
 - [ ] Record E-UI: display boundaries, fallback/preferences and financial/operational clock separation.
 - [ ] Resolve deferred translation verification with Alex; disclose sets lacking fluent review.

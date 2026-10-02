@@ -1,149 +1,148 @@
-# AI instructions: Generate fictional hotel Excel samples
+# AI instructions: Generate baseline and invoice-update Excel samples
 
-Use this document when asking an AI to generate random, import-ready hotel sample workbooks. It is a generation prompt, not application code or an import-format change. This document alone does not execute generation.
+Version: 0.3
 
-If working in this repository, first read [data contracts](data-contracts.md) and [sample-data plan](sample-data-plan.md). Their current layouts are technical proposals; this prompt targets that documented layout without declaring it newly approved. If these instructions disagree with newer contracts, report the discrepancy before generating incompatible files. When using this prompt outside the repository, the schema reference below makes it self-contained.
+Revised: 2026-10-03
 
-## 1. Request and parameters
+Use this as one self-contained AI prompt. Generate both valid and invalid samples in the same invocation. This document is instructions only; no workbooks or application validation have been executed. In this repository, [data contracts](data-contracts.md) and [sample-data plan](sample-data-plan.md) govern the same model; report any discrepancy before generating incompatible files.
 
-Generate four separate Excel workbooks containing fictional property, room, asset, and invoice-line source tables. Randomise names, values, and ordinary dates while preserving relationships and required scenario coverage.
+## 1. Request, outputs and defaults
 
-Use these defaults unless the requester supplies alternatives:
+Generate exactly four .xlsx files and one external generation-summary.md:
+
+```text
+<run>/valid/Assets.xlsx
+<run>/valid/Invoices.xlsx
+<run>/invalid/Assets.xlsx
+<run>/invalid/Invoices.xlsx
+<run>/generation-summary.md
+```
+
+Each example contains the same two workbook types. The product first imports an Assets baseline, then independently uploads Invoices to update existing room/category records. Do not describe these as a required paired upload or four-file product import. Invalid generation is mandatory, not opt-in. Generate no extra workbook variants, PDFs, attachment links, FX configurations, maintenance imports, code edits, dependency installations, commits or publication.
 
 | Parameter | Default |
 |---|---|
-| Random seed | 20261002 |
+| Seed | 20261002 |
 | Financial reference date | 2026-10-02 |
 | Properties | 4: Hong Kong, Singapore, London, Tokyo (Japan) |
 | Rooms per property | 3 |
-| Assets per room | 3: one lighting, one water-supply, one air-conditioning |
-| Invoice lines | One distinct line for each asset: 36 lines by default |
-| Mode | Valid samples only; invalid batches are opt-in |
-| Output directory | sample_data/spreadsheets/generated/seed-20261002/valid, adjusting the seed segment as needed |
+| Assets per room | Exactly 3: one LIGHTING, one WATER_SUPPLY, one AIR_CONDITIONING; not configurable |
+| Valid invoice items | One update per asset: 36 with default room count |
+| Mode | Both fully populated valid and deliberately invalid examples |
+| Run root | sample_data/spreadsheets/generated/seed-20261002 |
 
-The reference date is a fixture-generation anchor, not permission to change the application's operational clock. Produce logically identical records for the same seed and parameters. Use a seeded random generator for all random choices. A different seed uses a different ID namespace so independent sample sets do not accidentally collide on import.
+State selected parameters/output directory before generation and record them in the manifest. Use one seeded random generator, deterministic iteration and fixed reserved cases so the same parameters produce logically identical records. Different seeds use different ID namespaces. Use a new seed for independent datasets with changed parameters; changed content under existing IDs intentionally conflicts. Keep existing artifacts intact by selecting a fresh run suffix if necessary. The reference date anchors financial examples, not the operational clock.
 
-Use a new seed when changing parameters for an independent sample set. Reusing existing IDs with changed source values intentionally creates import conflicts.
+## 2. Exact schemas and common rules
 
-Create the four .xlsx files and a generation-summary.md manifest outside the workbooks. Keep existing files intact: if the output directory contains earlier artifacts, choose a new run directory and report it. Generate spreadsheets only; invoice PDFs, FX configuration, maintenance imports, application edits, dependency installation, commits, and publication require a separate request. Set invoice_file blank when no accompanying invoice exists.
+Each workbook has exactly one sheet. Row 1 contains the following exact headers in order; data starts at row 2. All headers remain present, including optional-value columns. No titles, totals, formulas, merged cells, hidden helper columns, charts, extra sheets or calculated financial columns. Freeze the header row, enable filters and size columns legibly. Put disclaimers and explanations in the manifest.
 
-Completion: state the selected seed, reference date, output directory, and mode before generation; retain them in the manifest.
-
-## 2. Construct the linked records
-
-1. Create four fictional hotel names, one per required location. Use Tokyo as the Japanese city. Explicitly identify names as fictional in the manifest and property names.
-2. Generate portfolio-unique text IDs, for example S20261002-P-HK, S20261002-R-HK-001, and S20261002-A-HK-001-LIGHT. Preserve leading zeros. Room numbers are text and unique within each property.
-3. Create the configured number of rooms/assets (default: three rooms per property and three assets per room). Preserve at least one lighting, water-supply, and air-conditioning asset in every room. Every room references a property in Properties; every asset references a room in Rooms.
-4. Generate a distinct invoice line per asset. Multiple lines may share an invoice_id, but each invoice_id + line_id pair is unique. Each asset references exactly one line, and no line is shared by assets.
-5. Put acquisition_cost and currency in InvoiceLines only. Use fictional item/supplier names and the same item description consistently across invoice and asset evidence. Generate non-negative finite costs and positive whole-month useful lives. Label random costs as fictional nominal amounts, not researched market prices.
-6. Use HKD for most Hong Kong items, SGD for Singapore, GBP for London, and JPY for Tokyo; include at least one USD transaction so all five supported currencies are represented. This is fixture variety, not a rule requiring hotel currency to match location.
-7. Use calendar dates, with installation on/after purchase when present. Reserve required date-boundary examples first, then randomise remaining past purchase dates and reasonable installation delays. Missing installation triggers a purchase-date fallback warning.
-8. Generate latest room-system observations independently of invoices. Recorded assessments require status, observed_on, and a fictional recorder. Optional notes may be blank. Unassessed UNKNOWN has blank date, recorder, and note.
-
-Completion: every asset resolves asset → room → property and asset → invoice line; all identities and invoice links are unique before writing files.
-
-## 3. Required valid-sample coverage
-
-Reserve records for these cases; randomisation must not remove them:
-
-- All four condition states somewhere in the room observations: HEALTHY, ATTENTION_NEEDED, CRITICAL, UNKNOWN.
-- At least one unassessed UNKNOWN, one recorded UNKNOWN with metadata, and one group whose four observation values are blank and therefore default to UNKNOWN.
-- At least one missing installation date, one zero-cost line, and one omitted optional supplier. These are valid cases/warnings, not blocking errors.
-- Replacement overdue, due today, within 90 days, and beyond the 12-month horizon relative to the reference date. Choose an in-service date and whole-month life that produce each required date exactly; ensure purchase is no later than service.
-- An asset costing USD 1,200 with in-service date 2026-01-15 and useful life 12 months. The manifest records the policy examples: on 2026-07-14, depreciation USD 500 and remaining USD 700; on 2026-07-15, USD 600 each.
-- An in-service date of 2026-01-31: anniversaries 2026-02-28 and 2026-03-31.
-- An in-service date of 2024-01-31: anniversaries 2024-02-29 and 2024-03-31.
-
-Record the case-to-asset/room mapping in the manifest. Derived financial values belong in that explanatory manifest, not imported columns. The examples express required policy outcomes; they are not evidence that the application calculates correctly.
-
-## 4. Exact workbook schema reference
-
-Write exactly one sheet per workbook. Row 1 is the header; data begins at row 2. Retain optional columns even when their values are blank. Use these headers in this order.
-
-### Properties.xlsx / Properties
+### Assets.xlsx / Assets — 26 columns
 
 ```text
-property_id, property_name, location, city
-```
-
-All values required. location uses HONG_KONG, SINGAPORE, LONDON, JAPAN. city uses Hong Kong, Singapore, London, Tokyo for the default fixture.
-
-### Rooms.xlsx / Rooms
-
-```text
-room_id, property_id, room_number,
+property_id, property_name, location, city, room_id, room_number,
 lighting_status, lighting_observed_on, lighting_recorder, lighting_note,
 water_supply_status, water_supply_observed_on, water_supply_recorder, water_supply_note,
-air_conditioning_status, air_conditioning_observed_on, air_conditioning_recorder, air_conditioning_note
+air_conditioning_status, air_conditioning_observed_on, air_conditioning_recorder, air_conditioning_note,
+asset_id, asset_name, facility_type, purchase_date, installation_date,
+useful_life_months, acquisition_cost, currency
 ```
 
-room_id, property_id, room_number required. Observation values follow section 2. Allowed states: HEALTHY, ATTENTION_NEEDED, CRITICAL, UNKNOWN. A supplied assessment date without a status/recorder, or a non-UNKNOWN state without metadata, is invalid. Blank means an empty cell, not the strings null, None, N/A, or Unknown.
+All property/room/asset master values are required except installation_date. Each room assessment group is conditionally required: a recorded status, including UNKNOWN, needs observed_on and recorder; note is optional. All four values blank or UNKNOWN alone means unassessed UNKNOWN. Metadata without status or partial required metadata is invalid. In the fully populated valid example, populate every assessment field and installation_date, including all optional notes.
 
-### Assets.xlsx / Assets
+Repeat the same property/room/assessment values for each of the room's three asset rows. Exactly one row per category per room is required. Reject empty rooms, fourth categories, duplicate categories and inconsistent repeated values. Baseline cost/currency are supplied here; invoice links are absent.
+
+### Invoices.xlsx / Invoices — 12 columns
 
 ```text
-asset_id, room_id, asset_name, facility_type, purchase_date,
-installation_date, useful_life_months, invoice_id, line_id
+invoice_id, line_id, room_id, facility_type, asset_name, purchase_date,
+installation_date, useful_life_months, acquisition_cost, currency,
+invoice_date, supplier_name
 ```
 
-All values except installation_date required. Allowed facility types: LIGHTING, WATER_SUPPLY, AIR_CONDITIONING, OTHER. The default fixture uses the first three. useful_life_months is a positive integer. Cost, currency, depreciation, book value, override, ticket, and provenance columns are absent from this source table.
+All values except installation_date and supplier_name are required. Populate those optional fields in the valid example too. asset_name is also the invoice-item description; do not add description or invoice_file columns. Each row targets an existing baseline (room_id, facility_type) pair. invoice_id may repeat for different items, but (invoice_id, line_id) must be unique. There is no asset creation, room creation, quantity, bundle allocation or cumulative repair cost.
 
-### InvoiceLines.xlsx / InvoiceLines
+### Types, enums and IDs
 
-```text
-invoice_id, line_id, description, acquisition_cost, currency,
-invoice_date, supplier_name, invoice_file
-```
+- IDs/room numbers are text cells preserving leading zeros. Required text must be non-empty. Trim outer whitespace; preserve source-text case/internal whitespace.
+- Dates are ISO YYYY-MM-DD text or actual Excel date cells without times. No ambiguous locale strings or impossible dates. Installation must be on/after purchase.
+- Costs are finite non-negative numeric decimals without currency/grouping symbols; lives are positive whole numbers. Reject boolean numeric inputs.
+- Locations: HONG_KONG, SINGAPORE, LONDON, JAPAN. Region codes: HK, SG, LDN, JP respectively. Cities for this fixture: Hong Kong, Singapore, London, Tokyo.
+- Categories: LIGHTING, WATER_SUPPLY, AIR_CONDITIONING only. Conditions: HEALTHY, ATTENTION_NEEDED, CRITICAL, UNKNOWN. Currencies: HKD, SGD, GBP, JPY, USD. Use canonical English enums.
+- Generated IDs use S<seed>-<region>-P01 for a property; append -R001 for room and -A001 for asset. Property codes have at least two digits; room/asset codes at least three. For example S20261002-HK-P01-R001-A001. Allocate A001/A002/A003 to the three categories in the order above; the product's ID grammar does not derive category from suffix.
+- A room_id starts with its exact property_id; asset_id starts with its exact room_id. Namespace/region must agree throughout. room_number is a unique text label per property. Use deterministic invoice IDs such as S20261002-INV-HK-001 and text line IDs such as 001.
 
-The first five values are required; the final three are optional. Allowed currency values: HKD, SGD, GBP, JPY, USD. Costs are numeric decimals with no currency symbols or thousands separators. invoice_file is blank unless the named fictional invoice is actually supplied; no invented attachment links.
+## 3. Construct the fully populated valid pair
 
-### Workbook presentation and cell types
+1. Generate four clearly fictional hotel names, three rooms per property and the three required asset records per room. Repeat room assessments consistently. Include all four condition states, representing UNKNOWN with complete recorded metadata. All 26 fields of every baseline row must be populated correctly.
+2. Use positive costs, positive integer lives, valid purchase/installation dates and fictional recorder/note text. Use location's usual currency for most rows and include at least one USD transaction; all five supported currencies appear in the valid baseline.
+3. Build a distinct invoice item for every target. Reuse invoice IDs where appropriate, preserving unique item IDs. Supply all 12 fields, including fictional suppliers. Change each target's name, dates, useful life and cost visibly; change currency on at least one target while keeping all five supported currencies represented. Reserve financial cases before randomising other values.
+4. Use invoice_date at/before the reference date and no earlier than its purchase_date for these coherent samples. Product validation does not impose a new invoice/purchase ordering rule. The valid pair contains one item per target, so every invoice applies without date ties. Invoices may cover only a subset in the product, but this full demonstration covers all 36.
+5. Verify initial finance is usable from baseline alone, then compute expected source/effective fields after invoices. All room/property IDs, asset IDs/categories and observations stay unchanged. Invoice-date precedence is independent of service-date depreciation.
 
-- Use actual .xlsx files, with text IDs/room numbers, numeric costs/lives, and ISO YYYY-MM-DD date text or valid Excel date cells without times.
-- Use exactly the source headers and canonical English enum values regardless of interface language.
-- Freeze the header row, enable filters, and size columns for legibility without changing the schema.
-- Keep data plain: no formula cells, merged cells, title/disclaimer rows, totals, charts, extra columns, or additional report/summary sheets. Put the fictional-data disclaimer in the manifest instead.
+The valid pair must have no blank cells, unsupported values, unresolved links or missing-value/zero-cost warnings. Do not put unassessed UNKNOWN, missing installation, omitted suppliers or zero costs in this example; those belong to separate future warning tests. No real names/data or researched-market-price claims.
 
-Completion: reopen all four saved workbooks and verify sheet names, exact headers, cell types, and row counts against the in-memory records.
+## 4. Financial cases and expected results
 
-## 5. Optional deliberately invalid batches
+Reserve cases in the updated invoice snapshots, and record the matching baseline values and target IDs in the manifest:
 
-Run this branch only when the requester asks for invalid import examples. Preserve the valid set. Create a complete four-file copy per case under sample_data/invalid/generated/seed-<seed>/<case>; retain all four files except in a case deliberately testing a missing file.
+- USD 1,200, installed 2026-01-15, life 12 months: reporting 2026-07-14 gives depreciation USD 500 and remaining USD 700; 2026-07-15 gives USD 600 each. Use different baseline values so the update is visible.
+- Service 2026-01-31: month anniversaries 2026-02-28 and 2026-03-31.
+- Service 2024-01-31: month anniversaries 2024-02-29 and 2024-03-31.
+- Replacement overdue, due on the reference date, within 90 days and beyond the 12-calendar-month window. Choose positive lives/dates giving those outcomes and keep purchase no later than installation.
+- At least one baseline before-service case, useful-life cap and zero remaining-value case at the reference date; retain corresponding before/after calculations.
 
-Change one rule per case where possible:
+Policy: installation date is the service anchor, otherwise purchase date. Straight-line depreciation uses whole completed months and zero residual. Derive each anniversary from the original service day, clamping to the destination month's last day; cap completed months at life. Depreciation = cost × completed months / life; remaining = cost − depreciation. Replacement = original service date + life months with the same clamping. Use unrounded decimals until display. For USD examples no FX assumptions are needed; do not invent FX configuration outputs.
 
-| Case | Deliberate change | Expected result |
+Expected updated fields and calculated results belong in the manifest, never imported columns. Calculating expected results is fixture verification, not evidence that the product passes tests.
+
+## 5. Construct the invalid pair in the same invocation
+
+Copy the in-memory valid datasets, then deliberately alter selected fields/rows. Preserve the valid outputs unchanged. Record every deliberate error and expected dependent diagnostic; use distinct targets for unrelated defects.
+
+| File | Deliberate defect | Expected validation |
 |---|---|---|
-| unknown-room | One asset references an absent room_id | Whole batch blocked |
-| duplicate-id | Duplicate one asset_id inside Assets | Whole batch blocked |
-| shared-invoice-line | Two distinct assets reference one line | Whole batch blocked |
-| unsupported-currency | One invoice line has EUR | Whole batch blocked |
-| invalid-installation | One installation date precedes purchase | Whole batch blocked |
-| invalid-life | One useful_life_months becomes zero | Whole batch blocked |
-| incomplete-observation | HEALTHY is supplied without recorder/date | Whole batch blocked |
-| missing-header | Remove one required column | Whole batch blocked |
-| changed-existing-source | Change one source value after the valid baseline is imported | Whole batch blocked on that existing ID |
+| invalid/Assets.xlsx | Change a repeated assessment note on just one row of a room | Inconsistent room baseline blocks entire upload |
+| invalid/Assets.xlsx | Change one AIR_CONDITIONING category to LIGHTING while retaining distinct asset IDs | Duplicate lighting and missing air-conditioning block entire upload |
+| invalid/Invoices.xlsx | Replace one room_id with a well-formed absent room | Unknown target blocks entire upload |
+| invalid/Invoices.xlsx | Set one facility_type to OTHER | Unsupported category blocks entire upload |
+| invalid/Invoices.xlsx | Set one currency to EUR | Unsupported currency blocks entire upload |
+| invalid/Invoices.xlsx | Set one purchase_date to 2026-02-30 | Impossible date blocks entire upload |
+| invalid/Invoices.xlsx | Set another installation_date before purchase_date | Date-order error blocks entire upload |
+| invalid/Invoices.xlsx | Set one useful_life_months to 0 | Invalid life blocks entire upload |
+| invalid/Invoices.xlsx | Append an exact duplicate of a previously unaltered item row | Duplicate invoice_id/line_id within upload blocks even when identical |
+| invalid/Invoices.xlsx | Append another item for a different unaltered target, using a fresh invoice_id/line_id, equal invoice_date and a different positive cost | Conflicting snapshots at that target's maximum invoice date block entire upload |
 
-For each case record file, sheet, Excel row, field, deliberate error, prerequisite state, and expected result in a manifest. Valid rows in an invalid batch must not be described as importable separately. Conflicting-existing-source tests require the valid baseline first; they are not standalone invalid data on an empty database.
+Default counts: invalid Assets stays at 36 rows; invalid Invoices has 38 rows after the two deliberate additions. Report actual counts if room-count parameters differ. Added duplicate/tie rows are deliberate defects, not unexpected generator mistakes. Ensure the tie's date equals that target's maximum. Do not introduce extra defects through shared mutable objects.
 
-For repeat-import examples, copy/rename the valid workbooks without changing meaningful field values; expected result after baseline import is skipped identical records. Do not regenerate random values under the same IDs to simulate an identical repeat.
+Prerequisites: validate invalid Assets against an empty database. Validate invalid Invoices after committing valid Assets and before valid Invoices. The former must create no records; the latter must change no assets and insert no invoice evidence/history. Valid surrounding rows are not independently importable from a blocked upload. Product execution is pending unless an actual implemented importer is available and exercised.
 
-## 6. Verify and deliver
+## 6. Product update semantics to explain in the manifest
 
-After saving, reload files and check:
+- A confirmed invoice applies the full six-field snapshot: name, purchase date, installation date, life, cost and currency. Blank installation clears it; it never means retain the old date.
+- Maximum invoice_date controls each existing asset across stored and incoming items. Older new items are historical-only. Different snapshots at the controlling maximum date block; equal snapshots with distinct identities coexist as evidence without replaying an already applied update.
+- With no applied invoice the first accepted snapshot applies, irrespective of baseline purchase date. A strictly newer invoice replaces manual edits to these fields and clears active paired financial overrides, preserving before/after and override history. Older/equal-date evidence leaves edits/overrides intact.
+- Baseline re-imports and identical invoice-item re-imports skip by preserved source equality; modified content under an existing source identity conflicts. They never restore prior operational values. Filename, order and formatting do not determine equality.
+- Reset restores the latest applied invoice cost/currency, or baseline values if there is no applied invoice. Identity, room, category, observations and tickets remain fixed. Finance recalculates after applied updates.
+- Uploads are independently previewed/confirmed and atomic: any blocker prevents all source/evidence/asset/history writes. Preview counts are proposed; actual counts require successful commit.
 
-1. Exactly four supported workbooks with the sole required sheet and complete headers.
-2. Default counts: 4 properties, 12 rooms, 36 assets, 36 unique invoice lines.
-3. Required values, text identity/room-number cells, enum sets, valid dates, non-negative costs, and positive integer lives.
-4. Unique IDs/composite line IDs, room-number uniqueness, complete property/room links, and one-to-one asset/line linkage.
-5. Installation not before purchase and valid conditional observation metadata.
-6. Presence of every coverage case and expected date/value examples in the manifest.
-7. Optional invalid copies contain their declared defect, without unintended additional defects wherever possible.
+Do not generate extra workbooks to demonstrate history ordering, manual edits, missing optional values or rollback. Describe those as future product acceptance scenarios, with prerequisite state and expected outcome.
 
-Deliver links to all workbooks plus the manifest. Report actual checks, counts, seed, reference date, scenario mappings, warnings, and remaining limitations. Correct generation defects before delivering the valid set. If spreadsheet creation or verification cannot run, disclose that limitation and preserve the instructions rather than present invented file links or passing checks.
+## 7. Saved-file verification and delivery
 
-## 7. Copyable invocation
+Reopen all four saved files and verify:
 
-> Follow docs/sample-excel-generation-instructions.md to generate the valid four-file fictional hotel sample set. Use seed 20261002 and financial reference date 2026-10-02. Verify the saved workbooks and provide file links and the generation manifest. Generate no invalid batches unless requested.
+1. Exact file/sheet layout, exact 26/12 headers, text ID cells, numeric costs/lives and valid-source date cell types; no forbidden formulas/merges/extra sheets.
+2. Valid baseline counts: 4 properties, 12 rooms, 36 unique assets and exactly one of each category per room; every field populated and all repeated room/property values consistent.
+3. Valid invoice count 36, unique composite IDs, existing targets, positive costs/lives, supported currencies and complete valid dates/suppliers. Apply snapshots in an independent in-memory model to confirm the 36 expected updates and unchanged room/identity/assessment values.
+4. Baseline and invoice examples both cover all four locations/five currencies; financial case results and before/after mappings match the manifest.
+5. Invalid files retain every declared defect, intended additions and correct surrounding data. Cross-check the mutation list against a valid/invalid comparison, allowing documented dependency diagnostics.
+6. Manifest includes seed, parameters, reference date, actual row counts, fictional disclaimer, schemas, case mappings, before/after update values, invalid coordinates/prerequisites/expected blockers and actual verification methods/results.
 
-For a larger random sample, specify rooms per property and assets per room explicitly; retain four locations and at least one of each required facility per room. For isolated failure examples, append: "Also generate the optional invalid-batch cases, each separate from the valid set."
+Deliver links to the four workbooks and manifest. Separate saved-file/static verification from application validation. Report any failed/unavailable check honestly; do not claim the product rejected files unless it was executed. Correct unintended generation defects before delivery. If generation cannot run, preserve the instructions and disclose the limitation without invented links or passing results.
+
+## 8. Copyable invocation
+
+> Follow docs/sample-excel-generation-instructions.md to generate one combined fictional sample set with both valid and invalid Assets.xlsx and Invoices.xlsx. Use seed 20261002 and financial reference date 2026-10-02, four properties and three rooms per property. Include exactly the three fixed assets in every room, fully populate the valid files, demonstrate invoice-driven updates, verify all four saved workbooks and provide the generation manifest. Generate no extra workbook variants or PDFs.
+
+For larger sets, change rooms per property while retaining the four locations and exactly three asset records per room. Both valid and invalid generation always remain required.
