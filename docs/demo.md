@@ -8,7 +8,7 @@ Target: 2026-10-05
 
 Status: Planned; application not implemented and walkthrough not rehearsed
 
-This is the existing demo document, expanded rather than duplicated. [Assessment requirements](assessment-requirements.md) define AR-006; [product specification](spec.md) and [sample-data plan](sample-data-plan.md) define the behaviours and fictional fixtures.
+This is the existing demo document, expanded rather than duplicated. [Assessment requirements](assessment-requirements.md) define AR-006; [product specification](product-spec.md) and [sample-data plan](sample-data-plan.md) define the behaviours and fictional fixtures. The [UI/UX specification](ui-ux-spec.md) records confirmed layout/styling choices and proposed interactions; the interface remains unimplemented and unverified.
 
 ## 1. Proposed 12-minute sequence
 
@@ -16,10 +16,10 @@ This is the existing demo document, expanded rather than duplicated. [Assessment
 |---|---|---|
 | 0:00–1:00 | State room-understanding/maintenance outcome; start the verified web application and introduce fictional data | AR-002/007; E-STARTUP |
 | 1:00–3:00 | Preview invalid Assets on an empty database and show no writes; confirm valid Assets alone and inspect three assets per room and baseline finance. Preview invalid Invoices against that baseline and show unchanged records; confirm valid Invoices alone and inspect 36 updates/provenance | US-01; SC-001/002; E-IMPORT |
-| 3:00–5:00 | Filter dashboard, drill into a room, inspect three observations/assets/tickets; edit an assessment to Healthy with metadata, then demonstrate Clear → Unknown | US-02; FR-009/016; E-ROOM |
+| 3:00–5:00 | Filter Overview, switch schematic Map/List, click a room to open the right-side card and inspect three observations/assets/tickets; edit an assessment to Healthy with metadata, then demonstrate Clear → Unknown; close the card and retain the filtered view | US-02; FR-009/016; UX-002–005/009; E-ROOM |
 | 5:00–7:00 | View/edit an existing asset; inspect baseline and invoice before/after history; apply paired override and reset to latest invoice. Show recorded evidence that a newer invoice clears an override while older/repeated evidence preserves edits | US-03; FR-010/019; E-ASSET |
-| 7:00–9:00 | Log fault Open, select owner, progress to In progress, resolve with note; inspect persistent history, read-only result, and unchanged observation | US-04; FR-012/013; E-MAINT |
-| 9:00–10:30 | Review secondary financial/replacement results; change financial date; inspect effective-cost proxy and separate horizons; switch USD/local without changing stored values | US-05; FR-011/014/018; E-FINANCE |
+| 7:00–9:00 | Click Log fault in the Overview room card to open Maintenance with that room preselected; save the new Open item, assign owner, progress to In progress, resolve with note; inspect persistent history, read-only result, and unchanged observation | US-04; FR-012/013; UX-005/006/012; E-MAINT |
+| 9:00–10:30 | Review secondary financial/replacement results; change financial date; inspect effective-cost proxy and separate horizons; use the upper-right Currency dropdown to switch USD/local; open Debugging - Assumptions to explain depreciation math and actual fictional FX rates/date | US-05; FR-011/014/018; UX-014/019; E-FINANCE |
 | 10:30–12:00 | Explain actual technology choices, validation, limitations, verification results, and how AI assisted development; disclose deferred/undelivered scope | AR-006; E-DEMO |
 
 This timing is a proposal, not a successful rehearsal. Show invoice ordering/ties, override clearing, warning-only uploads, repeat-import-after-edit and restart evidence from recorded verification if live repetition would exceed time. Never replace evidence with a claim that a demonstration action happened earlier.
@@ -43,6 +43,7 @@ Use the evidence groups in [assessment requirements](assessment-requirements.md)
 - Asset/finance: viewing/editing of fixed records, validation/cancel/failure, baseline/invoice evidence and before/after updates, newer-invoice replacement/override clearing, latest-invoice/baseline reset history, fixed FX integrity, numerical/month-end/leap results and replacement endpoints.
 - Maintenance: owner requirement/removal restriction, same-room linkage, stage skipping prohibited, unresolved edits/order/history, resolved immutability, no inferred asset flags.
 - UI: mandatory English, persistent independent preferences, grouped local totals, fallback and unchanged source/user text for any delivered stretch translations.
+- Layout/interactions: Map/List consistency, room-card Log fault/return context, maintenance owner/progress changes, all four navigation destinations, upper-right dropdowns, assumptions/actual FX display, accessible keyboard/focus behavior, narrow-screen overlay, failed/cancelled forms and confirmed styling under UX-001–019. Record evidence before describing these as working features.
 - Startup/persistence: actual documented web-app startup in a clean local environment; successful records/history survive restart.
 - Presentation: a timed run at or below 12 minutes, with all required explanations.
 

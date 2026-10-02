@@ -6,7 +6,7 @@ Revised: 2026-10-03
 
 Status: Documented contracts for the owner-approved baseline/invoice-update model; application and workbook generation pending
 
-The [product specification](spec.md) governs behaviour. The two-workbook workflow and update policies are owner-approved; exact parsing, identifier grammar and technical history representations below are implementation proposals. This document defines logical interfaces, not a database schema or evidence of working validation.
+The [product specification](product-spec.md) governs behaviour. The two-workbook workflow and update policies are owner-approved; exact parsing, identifier grammar and technical history representations below are implementation proposals. This document defines logical interfaces, not a database schema or evidence of working validation.
 
 ## 1. Upload and workbook boundary
 

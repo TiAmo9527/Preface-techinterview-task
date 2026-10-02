@@ -14,6 +14,8 @@ Version: 0.3
 
 This document defines product behaviour. Approval of the policies in section 15 does not claim client approval, implemented features, or verified application behaviour. Technical contract proposals are identified in [data contracts](data-contracts.md). Architecture and implementation tasks belong in [the delivery plan](plan.md) and [task checklist](tasks.md).
 
+The complementary [UI/UX specification](ui-ux-spec.md) records existing interface requirements, Alex's confirmed layout/styling choices, and proposed interaction details. It does not change the v0.3 product requirements or approval record below; implementation and UI verification remain pending.
+
 [Assessment requirements](assessment-requirements.md) record external obligations separately. Any contradiction between those obligations and product decisions requires explicit resolution by Alex; neither document silently overrides the other.
 
 ## 1. Problem and intended outcome
