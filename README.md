@@ -9,7 +9,9 @@ Assessor acceptance of the maintenance interpretation of asset-add/edit remains 
 ## Current status
 
 Product v0.5, UI v0.4, input contracts, and the local technical design are approved documentation.
-The [readiness matrix](docs/spec-review.md#readiness-matrix) records evidence for seven artifacts. The task plan remains Draft.
+The [readiness matrix](docs/spec-review.md#readiness-matrix) records prior evidence for seven artifacts.
+The [approved implementation plan](docs/tasks.md) links 21 jobs across seven feature series.
+The [planning review](docs/implementation-planning-review.md) records approved adaptations and pending pseudocode gates. No jobs have executed.
 Application scenarios remain NOT RUN. The current application prints a title and has no working web UI.
 Supplied workbooks exist in sample/2026-10-03. Their hashes, structure, and deliberate defects are inventoried.
 Original generation provenance is unverified. Application import validation and rehearsal are NOT RUN.
@@ -29,7 +31,7 @@ English is required. Other languages remain stretch. Linguistic review remains p
 - [Assessment requirements](docs/assessment-requirements.md): external obligations and pending results.
 - [Sample plan](docs/sample-data-plan.md) and [fixture inventory](sample/2026-10-03/fixture-inventory.md): supplied basis and read-only evidence.
 - [Optional future generation](docs/sample-excel-generation-instructions.md): preserve existing files during regeneration.
-- [Delivery approach](docs/plan.md), [draft tasks](docs/tasks.md), and [pseudocode approvals](docs/pseudocode-review.md): implementation boundaries.
+- [Delivery approach](docs/plan.md), [work-plan index](docs/tasks.md), and [pseudocode approvals](docs/pseudocode-review.md): implementation boundaries.
 - [Runtime/demo procedures](docs/demo.md): future install, start, import, reset, test, and rehearsal procedures.
 - [Glossary](docs/glossary.md), [agent instructions](AGENTS.md), and [readiness review](docs/spec-review.md): terminology, authority, and document evidence.
 

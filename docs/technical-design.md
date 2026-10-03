@@ -9,6 +9,9 @@ Status: Implementation guidance ready. Application implementation and verificati
 [Product behavior](product-spec.md), [input contracts](data-contracts.md), and [UI requirements](ui-ux-spec.md) govern this design.
 [Verification](verification-plan.md) defines completion evidence. [Runtime procedures](demo.md#6-local-runtime-procedures) define future commands.
 
+The [implementation planning review](implementation-planning-review.md) proposes essential implementation seams and skill adaptations.
+Those proposals require review. They do not amend this approved design by their presence.
+
 ## 1. Stack, ownership, and trade-offs
 
 Use one local FastAPI application, one Uvicorn worker, and one SQLite file.
