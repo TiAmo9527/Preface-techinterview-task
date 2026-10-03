@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hotel asset management</title>
+  <link rel="stylesheet" href="/static/shell.css?v=f001c-1">
+</head>
+<body>
+  <a class="skip" href="#workspace">Skip to content</a>
+  <header>
+    <div><strong id="app-title">Hotel asset management</strong><div id="app-subtitle" class="muted">Fictional portfolio · Local prototype</div></div>
+    <div class="preferences">
+      <label>Language<select id="language" aria-label="Language"><option value="en">English</option></select></label>
+      <label>Currency<select id="currency" aria-label="Currency"><option value="USD">USD</option><option value="LOCAL">Local transaction currency</option></select></label>
+    </div>
+  </header>
+  <div class="layout">
+    <nav aria-label="Main navigation">
+      <a href="#overview" data-route="overview">Overview</a>
+      <a href="#maintenance" data-route="maintenance">Maintenance</a>
+      <a href="#import" data-route="import">Import</a>
+      <a href="#assumptions" data-route="assumptions">Debugging - Assumptions</a>
+    </nav>
+    <main id="workspace" tabindex="-1"><p>Loading configuration…</p></main>
+  </div>
+  <div id="feedback" role="status" aria-live="polite" aria-atomic="true"></div>
+  <section id="obsolete-draft" class="panel" hidden aria-label="Invalid draft"></section>
+  <dialog id="confirmation" aria-labelledby="dialog-heading"></dialog>
+  <script type="application/json" id="bootstrap">__BOOTSTRAP__</script>
+  <script type="module" src="/static/shell.js?v=f001c-1"></script>
+</body>
+</html>
