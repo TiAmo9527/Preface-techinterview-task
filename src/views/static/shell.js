@@ -2,6 +2,7 @@ import {state, routes, initialize, subscribe, setPreference, setContext, hasStor
   validDate, isDirty, discardDrafts, allDrafts, invalidateReads, completedReset} from './state.js';
 import {configuration, write} from './request.js';
 import {translate, assumptionSections} from './i18n.js';
+import {mountImport} from './imports.js';
 
 const workspace = document.querySelector('#workspace');
 const dialog = document.querySelector('#confirmation');
@@ -27,6 +28,7 @@ function showDialog(title, text, buttons, trigger) {
   dialog.showModal(); dialog.querySelector('h2').focus();
 }
 export function guardTransition(action, trigger = document.activeElement) {
+  if (state.importReview.pending && state.importReview.submission) { announce('importSaving'); return; }
   if (transitionPending) return;
   if (!isDirty()) { action(); return; }
   transitionPending = true;
@@ -94,11 +96,13 @@ function render() {
     }
     html += `<p>${escape(t('reportingPending'))}</p>${dateFields()}`;
   } else if (state.context.route === 'assumptions') html += assumptions();
+  else if (state.context.route === 'import') html += '<div id="import-workspace"></div>';
   else html += `<section class="panel"><p>${escape(t('unavailable'))}</p></section>`;
   const renderKey = JSON.stringify([state.context, state.config, state.counts, state.language, state.currency]);
   if (renderedKey !== renderKey) {
   renderedKey = renderKey;
   workspace.innerHTML = html;
+  if (state.context.route === 'import') mountImport(workspace.querySelector('#import-workspace'));
   workspace.querySelector('#financial-date')?.addEventListener('change', event => {
     const value = event.target.value;
     if (!validDate(value)) { document.querySelector('#date-error').textContent = t('invalidDate'); event.target.setAttribute('aria-invalid', 'true'); event.target.focus(); return; }

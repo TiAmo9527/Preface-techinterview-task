@@ -174,3 +174,86 @@ def test_ac_ux_017_dirty_card_escape(page, runtime_server):
     page.keyboard.press('Escape')
     page.get_by_role('button', name='Discard changes', exact=True).click()
     expect(page.get_by_label('Fictional card', exact=True)).to_have_count(0)
+
+
+def test_ac_ux_007_import_invalidation(page, runtime_server):
+    from tests.browser.test_journeys import open_import, preview, select_file
+    from tests.integration.test_import import saved
+    before = saved(runtime_server['store'])
+    open_import(page, runtime_server)
+    preview(page)
+    page.get_by_label('Import workflow', exact=True).select_option('INVOICES')
+    expect(page.get_by_text('Invoices require existing complete room/category targets. Import an Assets baseline first.', exact=True)).to_be_visible()
+    assert page.get_by_role('button', name='Confirm reviewed import', exact=True).count() == 0
+    expect(page.get_by_text('Selected file: Assets.xlsx', exact=True)).to_be_visible()
+    page.get_by_label('Import workflow', exact=True).select_option('ASSETS')
+    preview(page)
+    select_file(page, invalid=True)
+    assert page.get_by_role('heading', name='Proposed effects — not saved', exact=True).count() == 0
+    assert saved(runtime_server['store']) == before
+
+
+def test_ac_ux_008_import_pending(page, runtime_server):
+    from tests.browser.test_journeys import open_import, preview
+    open_import(page, runtime_server); preview(page)
+    held = []
+    page.route('**/api/imports/confirm', lambda route: held.append(route))
+    page.get_by_role('button', name='Confirm reviewed import', exact=True).click()
+    for name in ('Confirm reviewed import', 'Cancel preview', 'Preview workbook'):
+        expect(page.get_by_role('button', name=name, exact=True)).to_be_disabled()
+    expect(page.get_by_label('Workbook', exact=True)).to_be_disabled()
+    expect(page.get_by_label('Import workflow', exact=True)).to_be_disabled()
+    expect(page.get_by_text('Confirming import…', exact=True)).to_be_visible()
+    assert len(held) == 1
+    assert page.get_by_role('heading', name='Actual committed effects', exact=True).count() == 0
+    page.get_by_role('link', name='Overview', exact=True).click()
+    expect(page.get_by_role('heading', name='Import', exact=True)).to_be_visible()
+    held[0].fulfill(response=held[0].fetch())
+    expect(page.get_by_text('Import saved. Actual committed counts are shown below.', exact=True)).to_be_visible()
+
+
+def test_ac_ux_013_import_loading_and_obsolete(page, runtime_server):
+    from tests.browser.test_journeys import open_import, select_file
+    open_import(page, runtime_server); select_file(page)
+    held = []
+    page.route('**/api/imports/preview', lambda route: held.append(route))
+    page.get_by_role('button', name='Preview workbook', exact=True).click()
+    expect(page.get_by_text('Preparing preview…', exact=True)).to_be_visible()
+    assert page.get_by_role('button', name='Confirm reviewed import', exact=True).count() == 0
+    page.get_by_role('link', name='Overview', exact=True).click()
+    held[0].fulfill(response=held[0].fetch())
+    expect(page.get_by_role('heading', name='Overview', exact=True)).to_be_visible()
+    page.get_by_role('link', name='Import', exact=True).click()
+    expect(page.get_by_role('button', name='Preview workbook', exact=True)).to_be_enabled()
+    assert page.get_by_role('heading', name='Proposed effects — not saved', exact=True).count() == 0
+
+
+@pytest.mark.parametrize('width', [1440, 1200, 1199, 1024, 768, 601, 600, 360])
+def test_ac_ux_013_import_keyboard_layout(page, runtime_server, width):
+    from tests.browser.test_journeys import open_import, preview
+    page.set_viewport_size({'width': width, 'height': 900})
+    open_import(page, runtime_server); preview(page, invalid=True)
+    expect(page.get_by_role('button', name='Confirm reviewed import', exact=True)).to_be_disabled()
+    assert page.evaluate('document.documentElement.scrollWidth <= innerWidth')
+    cancel = page.get_by_role('button', name='Cancel preview', exact=True)
+    cancel.focus(); page.keyboard.press('Enter')
+    expect(page.get_by_role('alert')).to_contain_text('Nothing was saved')
+    select = page.get_by_label('Import workflow', exact=True)
+    select.focus(); expect(select).to_be_focused()
+
+
+def test_ac_ux_008_success_refresh_retry(page, runtime_server):
+    from tests.browser.test_journeys import open_import, preview
+    from tests.integration.test_import import saved
+    open_import(page, runtime_server); preview(page)
+    page.route(runtime_server['url'] + '/', lambda route: route.abort())
+    page.get_by_role('button', name='Confirm reviewed import', exact=True).click()
+    expect(page.get_by_role('alert')).to_contain_text('Import committed. Portfolio refresh failed')
+    before = saved(runtime_server['store'])
+    expect(page.get_by_role('heading', name='Actual committed effects', exact=True)).to_be_visible()
+    page.unroute(runtime_server['url'] + '/')
+    page.get_by_role('button', name='Retry portfolio refresh', exact=True).click()
+    expect(page.get_by_role('alert')).to_have_count(0)
+    page.get_by_role('link', name='Overview', exact=True).click()
+    expect(page.locator('.counts')).to_contain_text('Asset records36')
+    assert saved(runtime_server['store']) == before

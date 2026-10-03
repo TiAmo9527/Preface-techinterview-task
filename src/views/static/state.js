@@ -11,6 +11,7 @@ export const routes = ['overview', 'maintenance', 'import', 'assumptions'];
 export const state = {
   config: null, generation: null, context: null,
   language: 'en', currency: 'USD', preview: null, counts: null,
+  importReview: {workflow: 'ASSETS', file: null, pending: false, submission: null, result: null, error: null},
 };
 function storageRead(storage, key) {
   try { return window[storage].getItem(key); } catch { storageFailed = true; return null; }
@@ -21,6 +22,9 @@ function storageWrite(storage, key, value) {
 function persist() { storageWrite('sessionStorage', sessionKey, JSON.stringify(state.context)); }
 function emit() { listeners.forEach(listener => listener()); }
 export function subscribe(listener) { listeners.add(listener); return () => listeners.delete(listener); }
+export function updateImport(patch) { Object.assign(state.importReview, patch); emit(); }
+export function setPreview(preview) { state.preview = preview; emit(); }
+export function setCounts(counts) { state.counts = counts; emit(); }
 export function hasStorageFailure() { return storageFailed; }
 export function validDate(value) {
   if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(value) || value.startsWith('0000')) return false;
@@ -95,6 +99,8 @@ export function adoptConfiguration(config) {
   state.config = config;
   if (changed) {
     invalidateReads(); state.preview = null; state.counts = null;
+    state.importReview.submission = null; state.importReview.result = null;
+    state.importReview.error = 'errors.stale_store';
     drafts.forEach(draft => { draft.invalid = true; });
     state.context.selection = null;
   }
@@ -123,6 +129,7 @@ export function prepareSubmission(key) {
 }
 export function completedReset(result, config) {
   invalidateReads(); drafts.clear(); state.preview = null;
+  state.importReview = {workflow: 'ASSETS', file: null, pending: false, submission: null, result: null, error: null};
   state.generation = result.generation_id; state.config = config; state.counts = result.counts;
   state.context = {...fresh(config.operational_date), tab: state.context.tab};
   persist(); history.replaceState(null, '', '#overview'); emit();
