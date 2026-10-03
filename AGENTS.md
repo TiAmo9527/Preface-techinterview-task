@@ -1,5 +1,9 @@
 # Repository Guide
 
+Read applicable scoped AGENTS.md files before editing their folders.
+Scopes exist in docs/, docs/jobs/, src/db/, src/services/, src/views/, and tests/.
+Nested instructions refine ownership. Root product policies and approval gates still apply.
+
 ## Governing documents
 
 Before implementation, read docs/product-spec.md and docs/technical-design.md.
@@ -8,7 +12,10 @@ For views, read docs/ui-ux-spec.md. For verification, read docs/verification-pla
 For startup or reset, read docs/demo.md. Use docs/glossary.md for domain meanings.
 External obligations are in docs/assessment-requirements.md. Preserve the unconfirmed AR-002 reinterpretation explicitly.
 Product behavior, approved input contracts, technical design, UI requirements, and acceptance scenarios govern their respective concerns.
-Resolve contradictions with Alex before dependent implementation. Draft docs/tasks.md is an inventory, not implementation authority.
+Resolve contradictions with Alex before dependent implementation.
+docs/tasks.md owns planned order, dependencies, and requirement coverage. Alex approved the current plan on 2026-10-03.
+Job specifications bound implementation scope. They do not override governing documents or pseudocode approval gates.
+Read docs/implementation-planning-review.md for pending architecture and skill adaptations before executing jobs.
 
 ## Pseudocode-first process
 

@@ -7,7 +7,8 @@ Revised: 2026-10-03
 Owner: Alex. Target delivery: 2026-10-05.
 
 Status: Documentation readiness completed subject to the recorded review. Application implementation and verification: NOT RUN.
-The dependency-ordered implementation task plan remains [Draft](tasks.md).
+The dependency-ordered [implementation work-plan index](tasks.md) and its listed adaptations were approved by Alex on 2026-10-03.
+The [planning review](implementation-planning-review.md) records the decisions. No jobs have executed.
 
 ## 1. Governing decisions
 
