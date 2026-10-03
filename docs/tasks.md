@@ -1,55 +1,65 @@
 # Task checklist
 
-Version: 0.3
+Version: 0.4
 
 Revised: 2026-10-03
 
 Target delivery: 2026-10-05
 
-This checklist follows [the plan](plan.md). Completed documentation is not application evidence.
+This checklist follows [the delivery plan](plan.md). Completed documentation is not application evidence.
 
-## Documentation revision
+## Completed documentation
 
-- [x] Revise specification to v0.3 with retained IDs, exactly three room/category records, baseline/invoice updates and revised owner decisions.
-- [x] Preserve assessment obligations/legacy SC mappings and explicitly disclose AR-002's manual asset-creation gap.
-- [x] Document two independent workbook contracts, source baselines, invoice precedence and operational/history boundaries.
-- [x] Document fully populated valid and deliberate invalid pairs generated together, with coordinates/prerequisites, without generating files.
-- [x] Expand existing demo and align plan/README.
-- [x] Rename the product specification and add a linked [UI/UX specification](ui-ux-spec.md), distinguishing inherited requirements, confirmed design choices and proposed details.
-- [x] Revise UI/UX specification to v0.2 with room-card Log fault handoff, maintenance owner/progress behavior, upper-right dropdowns and the Debugging - Assumptions page inventory.
-- [ ] Obtain review of exact technical contract proposals before implementation reliance.
+- [x] Preserve stable product and assessment identifiers and the explicit AR-002 gap.
+- [x] Document independent Assets/Invoices workflows and preserved source/history boundaries.
+- [x] Preserve the combined valid/invalid sample instructions without generating files.
+- [x] Preserve confirmed UI choices and separate Proposed details.
+- [x] Name the room manager and the primary maintenance decision.
+- [x] Document starts, entry points, priorities, actions, outcomes, and independent journey setups.
+- [x] Define 109 linked Given/When/Then scenarios with requirement and evidence references.
+- [x] Define shared domain terms and required/optional entity information.
+- [x] Record current owner confirmation dated 2026-10-03 without proving older dates.
+- [x] Define Windows-laptop Chrome context and actual-version evidence.
+- [x] Define isolated rehearsal stores, retained preferences, and normal restart behavior.
+- [x] Add the 28-item product checklist with defining sections and acceptance references.
+- [x] Apply the supplied controlled-English writing guidance and record documentation checks.
+- [ ] Review exact technical proposals before implementation reliance.
 
 ## Future implementation and fixtures
 
-- [ ] Select implementation details separately, respecting views/services/db boundaries.
-- [ ] Create blank Assets/Invoices templates and one combined four-location valid/invalid sample run with manifest; verify saved files and expected updates.
-- [ ] Create deliberate invalid batches and boundary test fixtures.
-- [ ] Implement independent baseline/invoice preview/confirmation with before/after effects, category completeness/repeated-value checks, atomic writes and detailed diagnostics.
-- [ ] Preserve baselines/invoice items/provenance; verify source repeat/conflict rules, target integrity, subset updates, newest-date selection, tied conflicts/equivalent evidence and historical-only records.
-- [ ] Implement viewing/editing of existing assets, invoice replacement/override clearing/history, paired overrides and latest-invoice/baseline reset fallback; exclude manual creation.
-- [ ] Implement room observations with required metadata and Clear → Unknown.
-- [ ] Implement maintenance ownership, permitted edits, ordering, transitions/history and resolved immutability.
-- [ ] Implement dashboard filters, labelled counts, room links, empty states and no financial duplication.
-- [ ] Implement Overview/Maintenance/Import/Debugging - Assumptions navigation, schematic Map/List room views, right-side room card and inline editors using the UI/UX specification.
-- [ ] Implement room-card Log fault navigation to a room-preselected Maintenance draft, explicit Save/Cancel, manager owner assignment/progress updates and preserved Overview return context.
-- [ ] Add upper-right Language/Currency dropdowns and the read-only UX-019 assumptions inventory with actual configured FX rates/date and honest missing/invalid states.
-- [ ] Implement confirmed styling, keyboard access, focus/feedback and responsive layouts down to 360px, including the narrow-screen room overlay.
-- [ ] Implement approved financial dates, depreciation, complete FX and replacement windows/proxies.
-- [ ] Implement mandatory English, independent local/USD switch and persistent preferences.
-- [ ] Deliver stretch translation sets if feasible, with English fallback.
+- [ ] Select technical details within the presentation/business/persistence boundaries.
+- [ ] Document actual clean startup and normal/demo store selection.
+- [ ] Create two blank templates and one valid/invalid sample run with a manifest.
+- [ ] Verify saved samples and separate boundary fixtures.
+- [ ] Implement independent import preview, diagnostics, explicit confirmation, and atomic writes.
+- [ ] Implement identities, category completeness, baseline equality, provenance, and invoice targets.
+- [ ] Implement invoice precedence, controlling-date conflicts, equivalent ties, historical-only items, and skips.
+- [ ] Implement asset editing, invoice updates, override clearing, paired overrides, source reset, and history.
+- [ ] Implement observations with metadata and Clear to Unknown.
+- [ ] Implement maintenance owners, transitions, history, fixed links, and resolved immutability.
+- [ ] Implement filters, counts, room links, empty results, and unique-asset totals.
+- [ ] Implement Overview, Maintenance, Import, and Debugging - Assumptions.
+- [ ] Implement Map/List, right-side cards, inline editors, and Log fault navigation.
+- [ ] Implement confirmed styling, keyboard access, accessible feedback, and responsive widths.
+- [ ] Implement financial rules, complete fixed FX, dates, and replacement proxies.
+- [ ] Implement mandatory English and independent persistent language/currency choices.
+- [ ] Implement isolated rehearsal stores without clearing normal data or preferences.
+- [ ] Deliver stretch translation sets if feasible with English fallback.
 
-## Verification and assessment
+## Future verification and assessment
 
-- [ ] Record E-IMPORT: independent initialisation/update uploads, blocked/atomic success/failure, stale previews, warnings, repeated/changed sources and invoice precedence.
-- [ ] Record E-ROOM: filters/counts, observations and independent room/asset faults.
-- [ ] Record E-ASSET/E-MAINT: editing, invoice before/after/override history, fixed identities/categories/associations, transitions, persistence and explicit AR-002 add-asset gap.
-- [ ] Record E-FINANCE: numerical/date boundaries, overrides, FX and spending scopes.
-- [ ] Record E-UI: display boundaries, fallback/preferences and financial/operational clock separation.
-- [ ] Verify UX-001–019: navigation/Map/List consistency, room-card context/Log fault handoff, maintenance owner/progress changes, dropdowns, assumptions/FX configuration, editor cancellation/failure, import states, keyboard operation and responsive styling; record actual results with the mapped evidence groups.
-- [ ] Resolve deferred translation verification with Alex; disclose sets lacking fluent review.
-- [ ] Record E-STARTUP using an actual clean-start web application and restart.
-- [ ] Record E-DEMO with a timed 12-minute rehearsal and required explanations.
-- [ ] Review confidentiality and fictional-data scope; disclose unmet requirements.
-- [ ] If later authorised, prepare controlled repository/preview sharing and storage disclosures.
+- [ ] Record E-IMPORT for required import scenarios.
+- [ ] Record E-ROOM for filters, observations, room context, and independent faults.
+- [ ] Record E-ASSET for permitted edits, overrides, source evidence, histories, and the AR-002 gap.
+- [ ] Record E-MAINT for valid progression, ownership, rejected actions, and history.
+- [ ] Record E-FINANCE for numerical examples, boundaries, complete FX, and spending proxies.
+- [ ] Record E-UI for confirmed interface checks, preferences, languages, keyboard access, and responsive behavior.
+- [ ] Record actual Windows and Chrome versions with each applicable build/date.
+- [ ] Resolve translation review with Alex and disclose unreviewed sets.
+- [ ] Record E-STARTUP for clean web startup, normal restart, and isolated-store behavior.
+- [ ] Record E-DEMO for a timed rehearsal and required disclosures.
+- [ ] Review fictional data, confidentiality, and unmet requirements.
+- [ ] Prepare controlled sharing only after a separate owner decision.
 
-All application tests, fixture generation, rehearsal and publishing remain pending. No task above authorises code, dependency installation, commit, or deployment during this documentation-only change.
+All application evidence remains NOT RUN. Fixture generation, rehearsal, and publication remain pending.
+This revision authorizes documentation changes only.

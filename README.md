@@ -1,37 +1,59 @@
 # Hotel asset-management interview prototype
 
-Fictional hotel facilities and accountable maintenance prototype. Owner: Alex. Target delivery: 2026-10-05.
+Owner: Alex. Target delivery: 2026-10-05.
+
+The room manager is the primary user. The primary decision concerns required maintenance action and its ticket owner.
 
 ## Current status
 
-Documentation is revised to v0.3: Assets.xlsx establishes a complete baseline, and independent Invoices.xlsx uploads update existing room/category records. Every room has exactly one lighting, one water-supply and one air-conditioning asset. Viewing/editing is retained; manual asset creation is excluded, leaving the assessment's add-asset obligation unmet. Translation verification and exact technical-contract review remain pending.
+Product specification v0.4 covers the 28-item readiness checklist. UI/UX specification v0.3 retains Confirmed choices and separate Proposed details.
+The documentation defines 109 independent Given/When/Then scenarios. Every application scenario remains NOT RUN.
+The supplied ASD-STE100 guidance controls the writing. This revision does not claim official dictionary compliance.
 
-The product specification is now named product-spec.md. A complementary UI/UX specification v0.2 records confirmed layout/styling choices and proposed interactions; it is not implemented or verified.
+Assets establishes complete initial records. Independent Invoices uploads update existing room/category records.
+Each room has exactly one Lighting, Water supply, and Air conditioning asset record.
+Manual asset creation remains excluded and leaves part of AR-002 unmet.
+Exact technical-contract review and translation review remain pending.
 
-The application is not implemented: app.py prints a title, and application, test, and sample-data directories contain placeholders. No working web UI, imported dataset, passing application tests, or rehearsed demonstration is claimed.
+The required demonstration uses a Windows laptop with Chrome. Each rehearsal uses a new isolated store without clearing normal data or preferences.
+Normal restart must preserve successful saves in the selected store. These behaviors are specified, not implemented.
+
+The application remains a title-printing scaffold. Application, test, and fixture directories contain placeholders.
+No working UI, dataset, passing application tests, or successful rehearsal is claimed.
 
 ## Documents
 
-- [Product specification](docs/product-spec.md): behaviour, business rules, acceptance criteria and owner decisions.
-- [UI/UX specification](docs/ui-ux-spec.md): Map/List overview, room-card Log fault handoff to Maintenance, upper-right language/currency dropdowns, Debugging - Assumptions page, styling and future acceptance checks.
-- [Data contracts](docs/data-contracts.md): two independent workbook contracts, baseline values, invoice-update precedence, provenance and operational interfaces.
-- [Assessment requirements](docs/assessment-requirements.md): external obligations, confidentiality and evidence.
-- [Sample-data plan](docs/sample-data-plan.md): fictional four-location fixtures and proposed blank template layouts.
-- [AI sample-generation instructions](docs/sample-excel-generation-instructions.md): self-contained prompt generating both fully populated valid and deliberately invalid baseline/update pairs in one run, with saved-file verification.
-- [Delivery plan](docs/plan.md) and [tasks](docs/tasks.md): later implementation and verification backlog.
-- [Demo](docs/demo.md): existing walkthrough plan and disclosures.
-- [Repository guide](AGENTS.md): code/data boundaries.
+- [Product specification](docs/product-spec.md): purpose, scope, journeys, policies, decisions, and 28-item checklist.
+- [Acceptance scenarios](docs/acceptance-scenarios.md): prerequisites, Given/When/Then results, and evidence references.
+- [Shared glossary](docs/glossary.md): domain meanings and consistent terms.
+- [UI/UX specification](docs/ui-ux-spec.md): confirmed views, separate proposals, browser context, and required checks.
+- [Data contracts](docs/data-contracts.md): preserved workbook interfaces and proposed technical details.
+- [Assessment requirements](docs/assessment-requirements.md): external obligations, confidentiality, and pending evidence.
+- [Sample-data plan](docs/sample-data-plan.md): fictional fixtures and proposed templates.
+- [Sample-generation instructions](docs/sample-excel-generation-instructions.md): one valid/invalid run with saved-file checks.
+- [Delivery plan](docs/plan.md): later implementation sequence.
+- [Task checklist](docs/tasks.md): completed documentation and pending application work.
+- [Demo](docs/demo.md): isolated rehearsal setup and proposed twelve-minute walkthrough.
+- [Documentation review](docs/spec-review.md): actual documentation checks and writing limits.
+- [Repository guide](AGENTS.md): code and data boundaries.
 
 ## Startup status
 
-The scaffold requires Python 3.11 or newer. From the repository root:
+The scaffold requires Python 3.11 or newer.
+
+From the repository root, run:
 
 ```powershell
 python app.py
 ```
 
-This command prints the scaffold title; it does not start a web application. A reproducible clean-environment startup procedure for the implemented application must be documented and verified during later work.
+This command prints the title. It does not start a web application.
+Later implementation must document and check clean startup and store selection. No working demo-store command exists yet.
 
 ## Data and confidentiality
 
-Use fictional data only. Keep domain/persistence behaviour outside views. sample_data is for fictional supplied development fixtures; generated local state belongs in ignored runtime. Do not commit real data or publish confidential assessment materials. Optional repository/application sharing is a separate later authorisation.
+Use fictional data only. Keep business and persistence logic outside views.
+Use sample_data for supplied fictional fixtures. Use ignored runtime for generated local state.
+Do not commit real customer data or runtime state. Do not publish confidential assessment materials.
+
+Optional sharing remains a separate owner decision.
