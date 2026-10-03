@@ -1,10 +1,12 @@
 # Approved local technical design
 
-Version: 1.0
+Version: 1.1
 
 Approved: 2026-10-03 by Alex through the planning answers and instruction to proceed.
+Runtime amendment: Alex approved using the current Python version after feasibility checks on 2026-10-03.
+The tested delivery runtime is Python 3.12.5. This supersedes the Python 3.11 target only.
 
-Status: Implementation guidance ready. Application implementation and verification: NOT RUN.
+Status: f001a persistence and f001b PR-03 foundations have execution evidence in the [f001 report](jobs/feature-job-reports/f001-report-local-runtime.md). Remaining application behavior and browser verification are NOT RUN.
 
 [Product behavior](product-spec.md), [input contracts](data-contracts.md), and [UI requirements](ui-ux-spec.md) govern this design.
 [Verification](verification-plan.md) defines completion evidence. [Runtime procedures](demo.md#6-local-runtime-procedures) define future commands.
@@ -32,7 +34,7 @@ Initial installation requires package access. Later operation uses installed pac
 
 Alex owns scope, pseudocode approvals, and linguistic review. The implementing agent owns code, checks, and accurate evidence.
 Exact dependency versions must be recorded in a tested lock file during implementation. Do not use broad untested upgrades for delivery.
-Target Python 3.11. Use standard synchronous handlers for workbook and SQLite operations.
+Target Python 3.12.5. Use standard synchronous handlers for workbook and SQLite operations.
 Create, use, and close each connection in the same synchronous operation. Keep check_same_thread=True.
 
 SQLite avoids a separate service and supports the required local transactions.
@@ -211,7 +213,7 @@ Translation tests verify keys/fallback. Alex's linguistic review remains separat
 
 ## 7. Sources and limits
 
-The design uses [synchronous FastAPI handlers](https://fastapi.tiangolo.com/async/) and [Python SQLite connection rules](https://docs.python.org/3.11/library/sqlite3.html).
+The design uses [synchronous FastAPI handlers](https://fastapi.tiangolo.com/async/) and [Python SQLite connection rules](https://docs.python.org/3.12/library/sqlite3.html).
 SQLite [foreign-key enforcement](https://www.sqlite.org/foreignkeys.html) requires explicit activation on each connection.
 These references support design feasibility. They do not establish application test results.
 Hosted deployment was considered and then excluded by Alex's final all-local instruction.

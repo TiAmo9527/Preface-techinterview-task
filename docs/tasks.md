@@ -1,7 +1,7 @@
 # Implementation work-plan index
 
 Version: 0.6. Revised: 2026-10-03. Target delivery: 2026-10-05.
-Status: APPROVED dependency plan. Alex approved the plan and adaptations on 2026-10-03. No jobs executed.
+Status: APPROVED dependency plan. Alex approved the plan and adaptations on 2026-10-03. Execution progress is owned by the [series status artifacts](jobs/feature-job-reports/job-status.md).
 
 This is the sole index for planned order, dependencies, and requirement coverage.
 [Delivery approach](plan.md) defines context. [Planning review](implementation-planning-review.md) records readiness and proposals.

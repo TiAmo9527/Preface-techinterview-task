@@ -1,7 +1,7 @@
 # Implementation planning review
 
 Date: 2026-10-03. Target: Monday, 2026-10-05.
-Status: Plan and listed adaptations APPROVED by Alex on 2026-10-03. Application implementation and verification: NOT RUN.
+Status: Plan and listed adaptations APPROVED by Alex on 2026-10-03. Initial planning checks below remain historical. Current execution evidence is in the [f001 report](jobs/feature-job-reports/f001-report-local-runtime.md).
 
 This review explains readiness and proposed adaptations. [Tasks](tasks.md) owns order, dependencies, and coverage.
 It is not another task index or execution status ledger.
@@ -130,3 +130,87 @@ Formal controlled-English dictionary compliance remains unverified. The historic
 No application tests, npm checks, installs, browser runs, or fixture generation ran during this planning pass.
 Lint/typecheck/count were not run: no configured equivalents exist, and this task is planning-only.
 Application implementation, startup, Chrome accessibility, and rehearsal evidence remain NOT RUN.
+
+## f001 Persistence/reset submission verification — 2026-10-03
+
+Recorded the [f001 submission](pseudocode-review.md#f001-persistencereset-submission) under the existing documentation authorization.
+PR-01–PR-06 cover the Persistence/reset portions of f001a/f001b/f001c.
+The group is SUBMITTED — PENDING APPROVAL. No algorithm approval is inferred from authorization to record the submission.
+Other behavior groups remain NOT SUBMITTED. Imports and Finance/display foundations retain their separate gates.
+
+Read the applicable instructions, governing documents, three jobs, and both job-specification skills during this review session.
+Applied approved P-01–P-05 and S-01–S-03 within their recorded scopes.
+The active reasoning effort was unavailable. Its comparison against each job's High recommendation remains unverified.
+
+Rechecked HEAD 4cdd533, the clean starting tree, interpreter registrations, scaffold, and absent environment/store/lock/report files.
+Python 3.11 is not registered locally. Python 3.12.5 is the available interpreter.
+Existing global packages do not establish target-runtime acceptance or tested dependency pins.
+The submission retains the full local prerequisite observations and evidence limits.
+
+Used a read-only Python audit with explicit UTF-8 file reads and Git baseline comparisons.
+The first audit invocation had an orchestration syntax error and ran no audit command.
+Corrected the invocation and completed the audit successfully.
+Repeated the audit after adding this result record.
+
+| Check | Actual documentation result |
+|---|---|
+| Local links/anchors | PASS: 21 local links across the two edited documents resolve, including the submission anchor. |
+| Job references/shape | PASS: three f001 jobs retain required section order and High GPT-6.1 Sol guidance. Their 30 local links resolve. |
+| Scenario coverage | PASS: all 24 scenario IDs required by f001 appear in the submission. Its 25 acceptance IDs and six IX IDs are mapped. |
+| Algorithm completeness | PASS: PR-01–PR-06 each specify inputs, outputs, state changes, failures/retries, and mapped IDs. Validation and transaction boundaries were reviewed. |
+| Approval/history boundaries | PASS: all other group ledger rows remain verbatim. Persistence/reset is pending, with no algorithm approval recorded. |
+| Fixture preservation | PASS: all four supplied workbook SHA-256 hashes still match their inventory. |
+| Change boundaries | PASS: only pseudocode-review.md and this planning review changed. Application, dependency, fixture, and job files remain unchanged. |
+| Execution artifacts | PASS: no series report/status or master execution artifacts were created. |
+| Whitespace | PASS: git diff --check. |
+
+Manually reviewed the exact reset deletion order, transaction ownership, receipt ordering, and browser reset/retry boundaries.
+Checked separate group approvals, deferred checks, unknown transport outcomes, and the explicit AR-002 gap.
+Pseudocode, identifiers, tables, paths, and precision metadata retain necessary technical notation.
+Formal controlled-English dictionary compliance remains unverified.
+
+No application changes, dependency/browser installations, job execution, or generated samples occurred.
+Tests, compileall, browser/manual checks, startup, and rehearsal remain NOT RUN because this task records a review only.
+Lint/typecheck/count remain NOT RUN under S-03 because this Python stack has no configured equivalents.
+Documentation PASS results do not establish application acceptance.
+
+## f001 authorized execution and runtime amendment — 2026-10-03
+
+The preceding planning/submission checks remain historical evidence of their documentation tasks.
+Alex subsequently approved Persistence/reset PR-01–PR-06: "approve pseudocode - directly work on the feature job as needed".
+The [approval record](pseudocode-review.md#approval-decision-record) retains the response, date, and limited scope.
+
+Alex's later runtime instruction was: "evaluate if we can use the current version of python as feasibility check, if can, ignore python 3.11".
+Python 3.12.5 passed dependency resolution/installation, framework imports, P-02 multipart/timezone checks, and SQLite foundation integration.
+It is now the tested delivery runtime. [Technical design v1.1](technical-design.md) records the runtime-only amendment; P-02 uses this runtime.
+The earlier missing-Python-3.11 observations no longer block execution. No Python download was retried after Alex declined it.
+
+Current implementation, test results, deferred checks, and provisioning outcomes are owned by the [f001 report](jobs/feature-job-reports/f001-report-local-runtime.md).
+The [series status](jobs/feature-job-reports/f001-status-local-runtime.md) and [master series row](jobs/feature-job-reports/job-status.md) record progress.
+The combined foundation suite passed 102 tests. This does not establish full feature or browser acceptance.
+Remaining Imports and Finance/display algorithms retain their separate pseudocode gates. PR-04–PR-06 remain approved and deferred by f001c prerequisites.
+AR-002 manual asset creation remains unmet; assessor acceptance of the maintenance reinterpretation remains unconfirmed.
+
+### Execution documentation verification
+
+The [final audit](../runtime/verification/4cdd533-f001/final-audit.json) records actual checked paths and counts.
+Local links/anchors, all 21 job formats, the acyclic dependency graph, 24 f001 scenario identities, stable requirement IDs, installed lock pins, consolidated report/status/master structure, and whitespace passed.
+All four supplied workbook hashes still match their inventory. No runtime state or generated evidence is included in tracked changes.
+Documentation status links were refreshed without changing planned dependencies, acceptance definitions, or other group approvals.
+
+## Jobs instruction update — 2026-10-03
+
+Updated [docs/jobs/AGENTS.md](jobs/AGENTS.md) at Alex's request with directory-wide scope, mandatory stage-specific job skills, writing-before-execution order, and the functional-specification boundary.
+Used writing-for-agents for the instruction edit. Skill references use the verified installed paths under C:/Users/alexl/.codex/skills.
+The requested docs/product/requirements directory is absent; its future template/instruction references are explicit, while current root governing documents remain authoritative.
+Preserved repository ownership, consolidated reporting, reasoning guidance, pseudocode gates, and approved S-03 verification adaptation.
+
+Verification: Governing/skill references, requested instruction branches, retained safeguards, and all 21 existing job formats passed inspection. git diff --check passed.
+This update changes only the jobs instructions and this documentation record. Application tests were not rerun for this instruction-only edit; prior execution results remain unchanged.
+
+## Feature execution report rewrite — 2026-10-03
+
+At Alex's request, used job-specification-execution to rewrite the [f001 report](jobs/feature-job-reports/f001-report-local-runtime.md) as short dated implementation entries and align its [status table](jobs/feature-job-reports/f001-status-local-runtime.md) and [master row](jobs/feature-job-reports/job-status.md).
+Preserved delivered scope, pending approvals, scenario limitations, runtime amendment, provisioning outcomes, and recorded verification. Only the active f001 series has execution artifacts.
+Verification: Local links/anchors, one consolidated report/status/master row, all three job statuses, and the original JUnit evidence of 58 runtime plus 44 coordinator passes checked successfully. git diff --check passed.
+This is a documentation-only rewrite. No implementation, installation, or application test run occurred; lint/typecheck/count and browser/manual UI checks retain their recorded NOT RUN status.

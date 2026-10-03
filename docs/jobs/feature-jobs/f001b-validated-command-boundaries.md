@@ -5,7 +5,7 @@ description: Stable validated service contracts and one atomic command boundary 
 # Objective
 Stable validated service contracts and one atomic command boundary for all later feature jobs.
 
-Scope status: PROPOSED, unexecuted. Trace: FR-003, FR-010, FR-012, FR-015, FR-016, FR-019, SC-002, SC-004, SC-008.
+Scope status at authoring: PROPOSED, unexecuted. Current execution is recorded in the [f001 status](../feature-job-reports/f001-status-local-runtime.md). Trace: FR-003, FR-010, FR-012, FR-015, FR-016, FR-019, SC-002, SC-004, SC-008.
 Read [task order/coverage](../../tasks.md), [planning adaptations](../../implementation-planning-review.md), and applicable AGENTS.md files.
 Use [product](../../product-spec.md), [design](../../technical-design.md), [contracts](../../data-contracts.md), and [UI requirements](../../ui-ux-spec.md).
 [Acceptance](../../acceptance-scenarios.md) and [verification](../../verification-plan.md) govern outcomes and methods.

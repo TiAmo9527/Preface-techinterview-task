@@ -5,7 +5,7 @@ description: A reproducible local store that initializes safely, survives restar
 # Objective
 A reproducible local store that initializes safely, survives restart, and rolls back atomic writes.
 
-Scope status: PROPOSED, unexecuted. Trace: FR-001, FR-015, SC-001, SC-004, SC-008, AR-002.
+Scope status at authoring: PROPOSED, unexecuted. Current execution is recorded in the [f001 status](../feature-job-reports/f001-status-local-runtime.md). Trace: FR-001, FR-015, SC-001, SC-004, SC-008, AR-002.
 Read [task order/coverage](../../tasks.md), [planning adaptations](../../implementation-planning-review.md), and applicable AGENTS.md files.
 Use [product](../../product-spec.md), [design](../../technical-design.md), [contracts](../../data-contracts.md), and [UI requirements](../../ui-ux-spec.md).
 [Acceptance](../../acceptance-scenarios.md) and [verification](../../verification-plan.md) govern outcomes and methods.
@@ -42,10 +42,10 @@ Use [product](../../product-spec.md), [design](../../technical-design.md), [cont
 - Per-subjob reports or planning-time execution report/status/master files. Execution artifacts are owned by the execution skill.
 
 # Acceptance Criteria
-1. Clean Python 3.11 initialization creates an empty supported store. A second initialization preserves generation and independently prepared records.
+1. Clean Python 3.12.5 initialization creates an empty supported store. Alex approved this runtime substitution after feasibility checks on 2026-10-03. A second initialization preserves generation and independently prepared records.
 2. Foreign-key/uniqueness/override constraints reject invalid state. Injected migration/write failure rolls back fully. A held write lock produces the approved timeout outcome.
 3. Restart/reopen retains domain records, evidence, histories, versions, and receipts. Record actual environment/package versions. Browser startup acceptance waits for f001c.
 4. Required scenario references: AC-DEMO-002, AC-DEMO-005, AC-INFRA-008. Run the corresponding methods from verification-plan.md for the implemented surface. Downstream deferred methods remain NOT RUN until their named job executes.
-5. Automated verification (planned, not yet available): Use the pinned .venv Python and pytest for tests/integration/test_runtime.py. Run browser files with --browser chromium when applicable. Use targeted compileall for changed Python surfaces after S-03 approval.
+5. Automated verification: Use the pinned .venv Python and pytest for tests/integration/test_runtime.py. Run browser files with --browser chromium when applicable. Use targeted compileall for changed Python surfaces after S-03 approval.
 6. Browser/manual verification: Browser checks are deferred to f001c because this job creates no rendered UI.
 7. Record build/date, method, independent setup, expected/actual outcome, status, and environment. State lint/typecheck/tests/count results or their approved S-03 absence. Passing fixture/document checks do not establish application acceptance.
