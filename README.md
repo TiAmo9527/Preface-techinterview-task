@@ -2,58 +2,48 @@
 
 Owner: Alex. Target delivery: 2026-10-05.
 
-The room manager is the primary user. The primary decision concerns required maintenance action and its ticket owner.
+The room manager reviews rooms and creates/edits maintenance records through a Maintenance-page card.
+Permitted asset editing and financial overrides remain. Asset creation is through baseline imports only.
+Assessor acceptance of the maintenance interpretation of asset-add/edit remains unconfirmed under AR-002.
 
 ## Current status
 
-Product specification v0.4 covers the 28-item readiness checklist. UI/UX specification v0.3 retains Confirmed choices and separate Proposed details.
-The documentation defines 109 independent Given/When/Then scenarios. Every application scenario remains NOT RUN.
-The supplied ASD-STE100 guidance controls the writing. This revision does not claim official dictionary compliance.
+Product v0.5, UI v0.4, input contracts, and the local technical design are approved documentation.
+The [readiness matrix](docs/spec-review.md#readiness-matrix) records evidence for seven artifacts. The task plan remains Draft.
+Application scenarios remain NOT RUN. The current application prints a title and has no working web UI.
+Supplied workbooks exist in sample/2026-10-03. Their hashes, structure, and deliberate defects are inventoried.
+Original generation provenance is unverified. Application import validation and rehearsal are NOT RUN.
 
-Assets establishes complete initial records. Independent Invoices uploads update existing room/category records.
-Each room has exactly one Lighting, Water supply, and Air conditioning asset record.
-Manual asset creation remains excluded and leaves part of AR-002 unmet.
-Exact technical-contract review and translation review remain pending.
-
-The required demonstration uses a Windows laptop with Chrome. Each rehearsal uses a new isolated store without clearing normal data or preferences.
-Normal restart must preserve successful saves in the selected store. These behaviors are specified, not implemented.
-
-The application remains a title-printing scaffold. Application, test, and fixture directories contain placeholders.
-No working UI, dataset, passing application tests, or successful rehearsal is claimed.
+The planned application runs entirely on localhost with FastAPI, browser modules, and SQLite.
+It requires no external runtime API, API key, cloud database, or hosting account.
+Normal restart preserves saves. Confirmed Reset data clears the shared demo store while retaining configuration/preferences.
+English is required. Other languages remain stretch. Linguistic review remains pending.
 
 ## Documents
 
-- [Product specification](docs/product-spec.md): purpose, scope, journeys, policies, decisions, and 28-item checklist.
-- [Acceptance scenarios](docs/acceptance-scenarios.md): prerequisites, Given/When/Then results, and evidence references.
-- [Shared glossary](docs/glossary.md): domain meanings and consistent terms.
-- [UI/UX specification](docs/ui-ux-spec.md): confirmed views, separate proposals, browser context, and required checks.
-- [Data contracts](docs/data-contracts.md): preserved workbook interfaces and proposed technical details.
-- [Assessment requirements](docs/assessment-requirements.md): external obligations, confidentiality, and pending evidence.
-- [Sample-data plan](docs/sample-data-plan.md): fictional fixtures and proposed templates.
-- [Sample-generation instructions](docs/sample-excel-generation-instructions.md): one valid/invalid run with saved-file checks.
-- [Delivery plan](docs/plan.md): later implementation sequence.
-- [Task checklist](docs/tasks.md): completed documentation and pending application work.
-- [Demo](docs/demo.md): isolated rehearsal setup and proposed twelve-minute walkthrough.
-- [Documentation review](docs/spec-review.md): actual documentation checks and writing limits.
-- [Repository guide](AGENTS.md): code and data boundaries.
+- [Product specification](docs/product-spec.md): scope, journeys, rules, decisions, and checklist.
+- [Data contracts](docs/data-contracts.md): approved source-file interfaces.
+- [Technical design](docs/technical-design.md): components, schema, transactions, endpoint shapes, and browser state.
+- [UI specification](docs/ui-ux-spec.md): confirmed views, interactions, maintenance cards, and reset.
+- [Acceptance scenarios](docs/acceptance-scenarios.md) and [verification mapping](docs/verification-plan.md): required outcomes and evidence methods.
+- [Assessment requirements](docs/assessment-requirements.md): external obligations and pending results.
+- [Sample plan](docs/sample-data-plan.md) and [fixture inventory](sample/2026-10-03/fixture-inventory.md): supplied basis and read-only evidence.
+- [Optional future generation](docs/sample-excel-generation-instructions.md): preserve existing files during regeneration.
+- [Delivery approach](docs/plan.md), [draft tasks](docs/tasks.md), and [pseudocode approvals](docs/pseudocode-review.md): implementation boundaries.
+- [Runtime/demo procedures](docs/demo.md): future install, start, import, reset, test, and rehearsal procedures.
+- [Glossary](docs/glossary.md), [agent instructions](AGENTS.md), and [readiness review](docs/spec-review.md): terminology, authority, and document evidence.
 
-## Startup status
-
-The scaffold requires Python 3.11 or newer.
-
-From the repository root, run:
+## Current scaffold command
 
 ```powershell
 python app.py
 ```
 
-This command prints the title. It does not start a web application.
-Later implementation must document and check clean startup and store selection. No working demo-store command exists yet.
+This prints a title. It does not start the planned web application.
+Use [future runtime procedures](docs/demo.md#6-local-runtime-procedures) only after implementation and verification.
 
-## Data and confidentiality
+## Data boundaries
 
-Use fictional data only. Keep business and persistence logic outside views.
-Use sample_data for supplied fictional fixtures. Use ignored runtime for generated local state.
-Do not commit real customer data or runtime state. Do not publish confidential assessment materials.
-
-Optional sharing remains a separate owner decision.
+Use fictional data. Preserve sample/2026-10-03 as the approved existing-fixture exception.
+Future supplied fixtures belong in sample_data. Local SQLite and generated evidence belong in ignored runtime.
+Keep real customer data, runtime state, and confidential assessment material uncommitted and unpublished.

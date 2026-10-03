@@ -1,15 +1,15 @@
 # Required acceptance scenarios
 
-Version: 0.1
+Version: 0.2
 
 Revised: 2026-10-03
 
 Status: Required verification defined. Every application scenario is NOT RUN.
 
-Authority: [Product specification v0.4](product-spec.md). Domain terms use the [shared glossary](glossary.md).
+Authority: [Product specification v0.5](product-spec.md). Domain terms use the [shared glossary](glossary.md).
 
 These scenarios describe required behavior. They do not report executed tests.
-Delivered stretch translations have conditional acceptance. Proposed interaction details remain separate in [UI/UX requirements](ui-ux-spec.md).
+Delivered stretch translations have conditional acceptance. Previously proposed interactions are approved in [UI/UX requirements](ui-ux-spec.md) and mapped in [verification](verification-plan.md).
 
 ## Verification method
 
@@ -127,7 +127,7 @@ Run each defect independently:
 - Recorded assessment without a date or recorder.
 - Assessment metadata without a status.
 
-Exact parsing examples remain proposals in the data contracts.
+Exact parsing examples are approved in the data contracts.
 
 <a id="ac-us01-007"></a>
 
@@ -141,7 +141,7 @@ Trace: US-01 | FR-001, FR-002, FR-003, FR-005, FR-015 | SC-001, SC-002 | AR-001,
 
 **Then** the interface reports an actionable blocker. No successful writes appear. Saved state remains unchanged.
 
-Exact header, sheet, formula, and format parsing rules remain technical proposals in [data contracts](data-contracts.md).
+Exact header, sheet, formula, and format parsing rules are approved in [data contracts](data-contracts.md).
 
 <a id="ac-us01-008"></a>
 
@@ -887,7 +887,7 @@ Trace: US-04 | FR-012, FR-013, FR-015 | SC-004 | AR-005 | E-MAINT.
 
 **Then** valid changes persist with chronological before/after history and actual timestamps. History survives normal restart. Fixed links remain unchanged.
 
-Run each field independently. Check simultaneous saved changes as one ordered event under the proposed history representation.
+Run each field independently. Check simultaneous saved changes as one ordered event under the approved history representation.
 
 <a id="ac-us04-011"></a>
 
@@ -1219,7 +1219,7 @@ Trace: See journey trace below | FR-009, FR-012, FR-015 | SC-004, SC-005 | AR-00
 
 Trace journey: US-02, US-04. Trace interface: UX-005.
 
-Run selection, closing, and Log fault independently. Proposed dirty-form and return details remain separate proposal checks.
+Run selection, closing, and Log fault independently. Approved dirty-form and return details are required companion interaction checks.
 
 <a id="ac-ux-006"></a>
 
@@ -1231,7 +1231,7 @@ Trace: See journey trace below | FR-012, FR-013, FR-015 | SC-004, SC-005 | AR-00
 
 **When** the manager saves through Maintenance or the room-card handoff.
 
-**Then** one Open ticket persists for the selected room. The manager can assign ownership and progress under the required transition rules. Resolved tickets remain separate.
+**Then** the on-demand creation card saves one Open ticket with a required typed recorder. Cancel saves nothing. The room-card handoff preselects its room. Ownership/progression follow required rules. Resolved tickets remain separate.
 
 Trace journey: US-04. Trace interface: UX-006.
 
@@ -1315,7 +1315,7 @@ Trace: See journey trace below | FR-012, FR-013 | SC-004 | AR-005 | E-UI, E-MAIN
 
 **When** the manager opens its editor.
 
-**Then** unresolved forms expose permitted fields and progression. Fixed associations stay read-only. Resolved information and history remain read-only. Required transition fields remain enforced.
+**Then** unresolved editing uses the maintenance-card pattern with permitted fields, typed recorder, and progression. Fixed associations stay read-only. Resolved information/history remain read-only. Narrow layouts use the approved overlay.
 
 Trace journey: US-04. Trace interface: UX-012.
 
@@ -1377,7 +1377,7 @@ Trace: See journey trace below | FR-009, FR-012, FR-017, FR-018 | SC-005, SC-008
 
 Trace journey: US-02, US-04. Trace interface: UX-016.
 
-Record the actual Windows version, Chrome version, build, and test date. Numeric breakpoint choices remain Proposed.
+Record the actual Windows version, Chrome version, build, and test date. Numeric breakpoint choices are approved in UX-016.
 
 <a id="ac-ux-017"></a>
 
@@ -1393,7 +1393,7 @@ Trace: See journey trace below | FR-009, FR-010, FR-012, FR-015 | SC-004, SC-005
 
 Trace journey: US-02, US-03, US-04. Trace interface: UX-017.
 
-Specific focus destinations, Escape behavior, and overlay focus trapping remain Proposed. Record assistive-technology results without claiming unperformed checks.
+Specific focus destinations, Escape behavior, and overlay focus trapping are approved in UX-017. Record assistive-technology results without claiming unperformed checks.
 
 <a id="ac-ux-018"></a>
 
@@ -1423,7 +1423,7 @@ Trace: See journey trace below | FR-011, FR-014, FR-017, FR-018, FR-019 | SC-003
 
 Trace journey: US-03, US-05. Trace interface: UX-019.
 
-Run each configuration state independently. Check USD rate integrity, numeric examples, unchanged rates across display settings, keyboard access, and narrow layouts. Proposed technical details remain labelled Proposed.
+Run each configuration state independently. Check USD rate integrity, numeric examples, unchanged rates across display settings, keyboard access, and narrow layouts. Approved technical details reference the governing technical design.
 
 <a id="demo"></a>
 
@@ -1431,15 +1431,15 @@ Run each configuration state independently. Check USD rate integrity, numeric ex
 
 <a id="ac-demo-001"></a>
 
-### AC-DEMO-001: New rehearsal isolation
+### AC-DEMO-001: Reset starts an empty rehearsal
 
 Trace: See journey trace below | FR-015, FR-017, FR-018 | SC-004, SC-007, SC-008 | AR-002, AR-006 | E-STARTUP, E-DEMO.
 
-**Given** the setup contains normal saved records and browser preferences, plus a previous rehearsal with saved data.
+**Given** the shared local store contains imported records, evidence, observations, tickets, overrides, and histories, plus saved browser preferences.
 
-**When** the demonstrator selects a new isolated rehearsal store.
+**When** the demonstrator confirms Reset data on Debugging - Assumptions.
 
-**Then** the new store has no imported records, observations, tickets, overrides, or histories. Normal data and browser preferences remain unchanged. No destructive reset is required.
+**Then** the store is empty and its generation changes. Configuration and browser preferences remain. Old drafts/previews cannot save. Overview opens empty with today's financial reporting date.
 
 Trace journeys: US-01, US-02, US-03, US-04, US-05.
 
@@ -1453,7 +1453,7 @@ Trace: See journey trace below | FR-015, FR-017, FR-018 | SC-004, SC-007, SC-008
 
 **When** the demonstrator restarts the application with that store.
 
-**Then** its saved state remains intact. Browser preferences persist. A new session uses actual Hong Kong today for financial reporting. Normal saved data remains unchanged.
+**Then** its saved state remains intact. Browser preferences persist. A newly opened browser-tab session uses actual Hong Kong today for financial reporting. Startup neither resets nor reseeds the store.
 
 Trace journeys: US-01, US-02, US-03, US-04, US-05.
 
@@ -1477,7 +1477,7 @@ Trace journeys: US-01, US-02, US-03, US-04, US-05.
 
 Trace: See journey trace below | FR-015, FR-017, FR-018 | SC-004, SC-007, SC-008 | AR-002, AR-006 | E-STARTUP, E-DEMO.
 
-**Given** the setup contains an implemented build with recorded verification results and an isolated rehearsal store.
+**Given** the setup contains an implemented build with recorded verification results and a shared demo store reset to empty.
 
 **When** the demonstrator completes the planned walkthrough on a Windows laptop with Chrome.
 
@@ -1498,5 +1498,119 @@ Trace: See journey trace below | FR-015, FR-017, FR-018 | SC-004, SC-007, SC-008
 **Then** the web application starts reproducibly. The record states environment, build/date, expected result, actual result, and status. A title-printing scaffold does not pass.
 
 Trace journeys: US-01, US-02, US-03, US-04, US-05.
+
+
+
+<a id="infrastructure"></a>
+
+## Infrastructure
+
+<a id="ac-infra-001"></a>
+
+### AC-INFRA-001: Stale record saves
+
+Trace: US-03, US-04 | FR-010, FR-012, FR-015 | SC-004, SC-007, SC-008 | AR-002, AR-006 | E-ASSET, E-MAINT.
+
+**Given** Two tabs hold the same asset or unresolved-ticket version.
+
+**When** One tab saves, then the other submits its previous version.
+
+**Then** The second save returns STALE_RECORD without writes/history. Its draft and latest saved values remain available for explicit review.
+
+<a id="ac-infra-002"></a>
+
+### AC-INFRA-002: Duplicate maintenance submission
+
+Trace: US-04 | FR-012, FR-015 | SC-004, SC-007, SC-008 | AR-002, AR-006 | E-MAINT.
+
+**Given** A valid creation card has one submission ID and generation.
+
+**When** The same creation request is submitted twice, including a lost-response retry after restart.
+
+**Then** Exactly one Open ticket and one CREATE event exist. Both requests return the original result. Changed payload under the same ID conflicts.
+
+<a id="ac-infra-003"></a>
+
+### AC-INFRA-003: Obsolete browser response
+
+Trace: US-02 | FR-008, FR-009 | SC-004, SC-007, SC-008 | AR-002, AR-006 | E-ROOM, E-UI.
+
+**Given** Room A and room B reads can complete in reverse order.
+
+**When** The user selects A, then B, and A responds last.
+
+**Then** The card still displays B. Old errors/results cannot replace its current context.
+
+<a id="ac-infra-004"></a>
+
+### AC-INFRA-004: Reset cancellation and rollback
+
+Trace: US-01, US-04 | FR-015 | SC-004, SC-007, SC-008 | AR-002, AR-006 | E-STARTUP.
+
+**Given** The store contains baselines, invoices, observations, maintenance, overrides, receipts, and histories.
+
+**When** The user cancels reset, or confirms with an injected failure halfway through deletion.
+
+**Then** All saved records and generation remain unchanged. Cancellation performs no command. Failure reports no success and leaves reset retry available.
+
+<a id="ac-infra-005"></a>
+
+### AC-INFRA-005: Reset invalidates other tabs
+
+Trace: US-01, US-03, US-04 | FR-005, FR-015, FR-018 | SC-004, SC-007, SC-008 | AR-002, AR-006 | E-STARTUP, E-UI.
+
+**Given** Another tab has unsaved edits and an import preview from the current generation.
+
+**When** Reset commits, then the other tab submits its old draft or confirmation.
+
+**Then** STALE_STORE prevents every write. On focus/request, the other tab identifies its old draft as invalid and requires discard. Preferences remain.
+
+<a id="ac-infra-006"></a>
+
+### AC-INFRA-006: Reset response-loss retry
+
+Trace: US-01 | FR-015 | SC-004, SC-007, SC-008 | AR-002, AR-006 | E-STARTUP.
+
+**Given** Reset succeeded and a new-generation baseline was then imported.
+
+**When** The previous reset request is retried with its old generation.
+
+**Then** The retry returns STALE_STORE and preserves the newly imported portfolio.
+
+<a id="ac-infra-007"></a>
+
+### AC-INFRA-007: Preview lifetime and confirmation retry
+
+Trace: US-01 | FR-003, FR-005, FR-015 | SC-004, SC-007, SC-008 | AR-002, AR-006 | E-IMPORT, E-STARTUP.
+
+**Given** An unconfirmed preview expires or the process restarts. Separately, a confirmed import has a durable receipt.
+
+**When** The old unconfirmed preview is submitted, or the identical committed command is retried after restart.
+
+**Then** Expired/missing preview requires renewed upload/review with no domain writes. A committed retry returns its receipt without replaying effects.
+
+<a id="ac-infra-008"></a>
+
+### AC-INFRA-008: Database busy and atomic history
+
+Trace: US-01, US-03, US-04 | FR-015, FR-019 | SC-004, SC-007, SC-008 | AR-002, AR-006 | E-IMPORT, E-MAINT, E-ASSET.
+
+**Given** A write lock exceeds five seconds. Separately, a save fails after its entity write but before its history/receipt.
+
+**When** The user confirms an import or saves a valid maintenance/override change.
+
+**Then** Lock timeout returns STORE_BUSY and preserves input. Injected failure rolls back entity, history, and receipt together. No success is displayed.
+
+<a id="ac-infra-009"></a>
+
+### AC-INFRA-009: Required maintenance recorder
+
+Trace: US-04 | FR-012, FR-013 | SC-004, SC-007, SC-008 | AR-002, AR-006 | E-MAINT.
+
+**Given** Creation, editing, start, and resolve drafts have valid business prerequisites.
+
+**When** The user submits each action with a blank recorder, then with a non-empty typed recorder.
+
+**Then** Blank recorders block all writes. Valid actions record their self-declared recorder separately from the assigned owner.
 
 Application status for every scenario: **NOT RUN**. Documentation checks do not change this status.

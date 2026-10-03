@@ -1,15 +1,17 @@
 # AI instructions: Generate baseline and invoice-update Excel samples
 
-Version: 0.4
+Version: 0.5
 
 Revised: 2026-10-03
 
 Use this document as one self-contained generation prompt. This document creates no workbooks by itself.
-Generation and application validation remain NOT RUN.
+Existing supplied files are inventoried in [fixture evidence](../sample/2026-10-03/fixture-inventory.md).
+Future regeneration and application validation remain NOT RUN.
 [Contracts](data-contracts.md) and [sample scope](sample-data-plan.md) define the same model.
 Report discrepancies before generating incompatible files. Use the [shared glossary](glossary.md).
 
-Exact parsing details remain technical proposals. The owner-approved product model remains authoritative.
+Exact parsing contracts are approved. Existing sample/2026-10-03 files are the default input basis.
+This generation procedure applies only to a later explicit regeneration request. Preserve those existing files.
 
 ## 1. Request, outputs, and defaults
 
@@ -58,7 +60,7 @@ Do not include titles, totals, formulas, merged cells, hidden helpers, charts, e
 
 Freeze row 1. Enable filters. Set readable column widths.
 Place disclaimers and explanations in the manifest.
-Header order is fixed for these examples. The proposed product parser permits other orders.
+Header order is fixed for these examples. The approved product parser permits other orders.
 
 ### Assets.xlsx / Assets: 26 columns
 
@@ -243,7 +245,7 @@ Valid surrounding rows cannot commit from a blocked upload. Application executio
 
 Describe extra ordering, warning, repeat, cancellation, stale-preview, and rollback cases as future acceptance checks.
 Do not generate extra workbooks for those cases. Give each future case its own prerequisite state.
-Rehearsal store isolation follows [the demo](demo.md). Fixture reference dates do not change the operational clock.
+Shared-store rehearsal reset follows [the demo](demo.md). Isolated test stores remain required for independent checks. Fixture reference dates do not change the operational clock.
 
 ## 7. Saved-file checks and delivery
 

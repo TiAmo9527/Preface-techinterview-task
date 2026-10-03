@@ -10,13 +10,13 @@ Revised: 2026-10-03
 
 Target delivery: 2026-10-05
 
-Version: 0.4
+Version: 0.5
 
 This document defines product behavior. Owner approval does not establish client acceptance or implemented behavior.
 
-[Data contracts](data-contracts.md) contain proposed technical interfaces. Database columns, storage types, and architecture remain technical-planning work.
+[Data contracts](data-contracts.md) define approved input interfaces. [Technical design](technical-design.md) defines the local architecture and persistence contracts.
 
-[UI/UX requirements](ui-ux-spec.md) distinguish Inherited, Confirmed, and Proposed details. [Assessment requirements](assessment-requirements.md) preserve external obligations.
+[UI/UX requirements](ui-ux-spec.md) define inherited behavior and owner-confirmed interactions. [Assessment requirements](assessment-requirements.md) preserve external obligations.
 
 Alex must resolve contradictions between product decisions and external obligations. Neither document silently changes the other.
 
@@ -76,11 +76,11 @@ Required capabilities:
 - Permitted asset editing with paired financial overrides and persistent histories.
 - Invoice updates with preserved source evidence and update history.
 - Separate editable Lighting, Water supply, and Air conditioning observations.
-- Manual fault logging, ticket ownership, progress, and history.
+- Manual maintenance creation/editing through a Maintenance-page card, ticket ownership, progress, and history.
 - Financial calculations, USD/local display, and supporting replacement planning.
 - Mandatory English interface text.
 - Independent persistent language/currency preferences and durable local saves.
-- A reproducible startup process and isolated rehearsal data stores.
+- A reproducible local startup process and confirmed reset to an empty demonstration store.
 
 Stretch capabilities:
 
@@ -441,7 +441,12 @@ Maintenance never changes condition automatically. Healthy observations can coex
 
 ### Maintenance
 
+Managers create maintenance records through Add maintenance record on the Maintenance page.
+An on-demand right-side card supplies the creation and unresolved-edit forms. Narrow layouts use the approved overlay.
+Save creates an Open ticket. Cancel or closing an unchanged draft creates no record.
 A ticket requires identity, room, description, severity, status, and actual opened/updated timestamps.
+Every manual creation, edit, and transition requires a non-empty typed recorder distinct from the assigned owner.
+Recorders are self-declared. Generated identities and timestamps are read-only.
 The asset link and target date are optional. The asset must belong to the room.
 Owner is optional while Open. Use a short fictional owner list.
 
@@ -534,7 +539,7 @@ Required [acceptance scenarios](acceptance-scenarios.md) cover these cases:
 - Owner requirements, fixed ticket associations, history, and resolved immutability.
 - Empty filters without stale results and unique-asset financial totals.
 - Language/currency independence and unchanged source/user text.
-- Normal restart persistence and isolated rehearsals.
+- Normal restart persistence, shared-store reset, and stale-draft invalidation.
 
 ## 13. Quality and experience requirements
 
@@ -555,18 +560,21 @@ With no saved preference, use English and USD. Later selections persist across b
 Language and currency preferences remain independent. Reporting date remains a session setting.
 Section 2 defines access. Sections 8–9 define edit boundaries without authentication.
 
-### Persistence and demonstration isolation
+### Persistence and demonstration reset
 
-Successful local records, source evidence, and histories survive normal restart in the selected data store.
-Each rehearsal selects a new isolated demo data store. It starts without imported records, observations, tickets, overrides, or histories.
-Normal saved data and browser preferences remain unchanged. Restarting the same rehearsal retains its saved state.
+Successful records, source evidence, and histories survive normal restart in runtime/app.sqlite3.
+Each rehearsal uses Reset data on Debugging - Assumptions and confirms its shared-store impact.
+Reset removes imported records, observations, tickets, overrides, evidence, histories, and pending previews atomically.
+It preserves configuration, schema, the database file, and browser language/currency preferences.
+Reset is an explicit exception to ordinary source/history preservation. It does not preserve another portfolio in this store.
 
-Another rehearsal uses another empty store. No destructive reset button is required.
-Each new session defaults the financial reporting date to actual Hong Kong today.
+Cancel changes nothing. A failed reset rolls back all deletions. Old drafts cannot save into the new store generation.
+Each new browser-tab session starts with actual Hong Kong today as its financial reporting date.
+Reset also refreshes the initiating tab's financial date and opens empty Overview.
 The demonstrator selects financial example dates explicitly.
 
-Store selection and startup mechanisms remain technical-planning details. Do not invent a working command or control before implementation.
-Document and check a reproducible clean-environment startup later. Disclose any future hosted durability or reset limits accurately.
+[Runtime procedures](demo.md#6-local-runtime-procedures) specify future commands. They remain unimplemented and unverified.
+The approved delivery runs entirely on localhost. It requires no external API or hosting account during operation.
 Core workflows require no live provider. Do not publish real data or confidential materials.
 
 ### Writing policy
@@ -607,7 +615,7 @@ SC-006: Retain this identifier as a traceability marker. AR-006 owns its present
 SC-007: Record evidence for every required scenario before submission. Disclose unmet criteria.
 Documentation coverage does not mean application acceptance.
 
-SC-008: Check mandatory English, delivered translation boundaries, local/USD results, persistent preferences, separate dates, and rehearsal isolation.
+SC-008: Check mandatory English, delivered translation boundaries, local/USD results, persistent preferences, separate dates, and shared-store reset.
 
 The documentation revision requires all 28 checklist rows and complete required scenario coverage.
 Application completion requires actual evidence under these SC and AR identifiers.
@@ -616,7 +624,8 @@ Application completion requires actual evidence under these SC and AR identifier
 
 Alex reconfirmed D-001–D-016 and the existing Confirmed UI choices on 2026-10-03.
 Source: Alex's answers to Q1–Q4 in this specification-readiness planning conversation, followed by the implementation request.
-This confirmation leaves Proposed details pending. It is owner approval, not client acceptance or execution evidence.
+The later planning answers approve existing UI proposals and input contracts on 2026-10-03.
+The instruction to proceed authorizes this documentation revision. It does not establish client acceptance or application execution evidence.
 
 | Decision | Selected policy | Rationale | Trace |
 |---|---|---|---|
@@ -634,11 +643,15 @@ This confirmation leaves Proposed details pending. It is owner approval, not cli
 | D-012 | Installation/purchase fallback, original-day anniversaries, zero residual, and capped straight-line depreciation. | Explainable valuation. | FR-011, SC-003 |
 | D-013 | 90-day category and 12-month future window. Separate overdue/due-today totals. | Explicit spending horizon. | US-05, FR-014 |
 | D-014 | English mandatory. Traditional Chinese, Simplified Chinese, and Japanese stretch. English fallback. | Bounded translation scope. | FR-017 |
-| D-015 | Four properties, twelve rooms, thirty-six assets. One invocation produces fully populated valid and deliberately invalid pairs. | Reproducible fixtures. | AR-001, sample-data plan |
+| D-015 | Adopt sample/2026-10-03 as the supplied valid/invalid fixture basis. Preserve its seed namespace and workbook interfaces. | Existing fictional evidence. | AR-001, sample-data plan |
 | D-016 | Full invoice snapshots and newest-date control. Older items remain evidence. Applied updates replace edits and retain history. | Clear current values. | US-01, US-03, FR-005, FR-019, SC-002, SC-004 |
 | D-017 | Room manager primary. Executives and data-maintenance users support the maintenance decision. | Clear audience. | US-01–US-05, section 1 |
 | D-018 | Windows laptop with Chrome required. Record the actual browser version during tests. | Defined walkthrough context. | Section 13, E-UI, E-DEMO |
-| D-019 | New isolated store per rehearsal. Preserve normal saved data and browser preferences. No destructive reset button required. | Repeatable demonstrations. | FR-015, SC-004, SC-008, E-STARTUP, E-DEMO |
+| D-019 | Reset the shared local store to empty through explicit confirmation. Preserve preferences and configuration. Invalidate old drafts/previews. | Repeatable demonstrations. Supersedes isolated rehearsal stores. | FR-015, SC-004, SC-008, E-STARTUP, E-DEMO |
+| D-020 | Manual maintenance add/edit uses a Maintenance-page card. Retain permitted asset edits and overrides. Require typed recorders. | Explicit manager workflow. Assessor acceptance of asset-add reinterpretation remains unconfirmed. | US-03, US-04, AR-002 |
+| D-021 | One local FastAPI/Uvicorn process, browser modules, and SQLite. No external runtime service. | Simple reproducible prototype. | Technical design, E-STARTUP |
+| D-022 | Approve input contracts and existing UI proposals. Review pseudocode before each behavior group. | Implementable interfaces and owner review. | AGENTS.md, verification plan |
+| D-023 | Fixed fictional FX dated 2026-10-03 and three fictional configured owners. | Reproducible finance and ownership. | FR-011, FR-012, technical design |
 
 Historical record: v0.3 recorded approval on 2026-10-02.
 It recorded revised D-002–D-007 and D-015, plus new D-016, from the approved v0.3 implementation plan.
@@ -656,7 +669,7 @@ Earlier superseded policies include valid-subset imports, Assigned status, parti
 Retained policies include independent observations, atomic writes, and depreciation rules.
 
 Deferred work includes translation review by Alex before submission.
-Exact header spellings, parsing, identifier grammar, and technical history representations remain proposals in the contracts.
+Exact header spellings, parsing, identifier grammar, and history representations are approved in the contracts and technical design.
 The owner-approved exclusion of manual creation does not remove the external AR-002 obligation.
 
 ## 16. Checklist coverage
@@ -692,4 +705,4 @@ Each row is Specified. This status describes documentation only. Application sce
 | CL-25 | Explicit language scope | [Scope](#3-product-scope), [Experience](#13-quality-and-experience-requirements) | [Language checks](acceptance-scenarios.md#ac-us02-017) |
 | CL-26 | Language, currency, and date effects | [Experience](#13-quality-and-experience-requirements) | [Preferences](acceptance-scenarios.md#ac-us02-016), [Date independence](acceptance-scenarios.md#ac-us02-008) |
 | CL-27 | Edit permissions and scope | [Users](#2-users), [Asset rules](#8-asset-and-financial-rules) | [Cross-property edits](acceptance-scenarios.md#ac-us02-007), [Fixed identity](acceptance-scenarios.md#ac-us03-002) |
-| CL-28 | Persistence, demonstration, and reset | [Experience](#13-quality-and-experience-requirements), [Demo](demo.md#1-rehearsal-state) | [Demo isolation](acceptance-scenarios.md#ac-demo-001), [Restart](acceptance-scenarios.md#ac-demo-002) |
+| CL-28 | Persistence, demonstration, and reset | [Experience](#13-quality-and-experience-requirements), [Demo](demo.md#1-rehearsal-state) | [Demo reset](acceptance-scenarios.md#ac-demo-001), [Restart](acceptance-scenarios.md#ac-demo-002) |

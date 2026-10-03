@@ -1,6 +1,6 @@
 # UI/UX specification: Hotel asset-management prototype
 
-Version: 0.3
+Version: 0.4
 
 Created / revised: 2026-10-03
 
@@ -8,27 +8,29 @@ Owner: Alex
 
 Target delivery: 2026-10-05
 
-Status: Requirements defined. Proposed interactions remain pending. Application verification: NOT RUN.
+Status: Existing interaction proposals approved on 2026-10-03, with maintenance-card and shared-reset amendments. Application verification: NOT RUN.
 
-This document complements [product specification v0.4](product-spec.md). [Data contracts](data-contracts.md) contain proposed technical interfaces.
+This document complements [product specification v0.5](product-spec.md). [Data contracts](data-contracts.md) contain approved input interfaces.
 [Assessment requirements](assessment-requirements.md) preserve external obligations. Use the [shared glossary](glossary.md) for terms.
 
 ## 1. Authority and context
 
 - **Inherited:** A requirement already defined by the product specification.
 - **Confirmed:** A layout or styling choice that Alex confirmed.
-- **Proposed:** A supporting detail without owner approval.
+- **Proposed:** A future detail without owner approval. Existing proposals below are now Confirmed.
 
 Alex reconfirmed the existing Confirmed choices on 2026-10-03 in this specification-readiness planning conversation.
-The implementation request approves documentation changes, not all Proposed details. Owner approval does not establish client acceptance or passing tests.
+Alex later approved the existing proposals and the maintenance-card/reset amendments in this planning conversation.
+Owner approval does not establish client acceptance or passing tests.
 
 Required context: Windows laptop with Chrome. Record the actual Windows version, Chrome version, build, and test date.
 Retain responsive checks at 1440px, 1024px, 768px, and 360px. Other browsers are not additional mandatory targets.
 
-The application remains a title-printing scaffold. No UI, screenshot, fixture, or application result exists.
+The application remains a title-printing scaffold. Supplied fixtures exist under sample/2026-10-03.
+No implemented UI, application screenshot, or passing application result exists.
 Manual asset creation remains excluded and leaves part of AR-002 unmet.
 No property/room forms, observation history, authentication, geographic coordinates, or floor-plan data are added.
-Framework, APIs, database design, deployment, and detailed wireframes remain outside this revision.
+[Technical design](technical-design.md) selects the local stack, internal APIs, database behavior, and browser state ownership. Hosting is excluded.
 
 ## 2. Styling and layout
 
@@ -47,7 +49,7 @@ Status text or icons distinguish Healthy, Attention needed, Critical, and Unknow
 On narrow screens, navigation becomes compact and content stacks. Room details use an overlay with an explicit Close action.
 Wide tables scroll inside labelled containers. Controls remain usable at 360px.
 
-Numeric layout and font defaults remain Proposed under UX-015 and UX-016.
+Numeric layout and font defaults are Confirmed under UX-015 and UX-016.
 
 ## 3. Essential views
 
@@ -59,15 +61,15 @@ Numeric layout and font defaults remain Proposed under UX-015 and UX-016.
 | Room card | Property/room context, three assets, three observations, separate ticket groups, nested editors, and Log fault. |
 | Maintenance | Fault logging, ownership, progress, unresolved/resolved views, room links, and inline editors. |
 | Import | Independent workflow selection, upload, preview, explicit confirmation, diagnostics, and actual results. |
-| Debugging - Assumptions | Product rules, calculation assumptions, actual configuration, and identified technical proposals. |
+| Debugging - Assumptions | Product rules, calculation assumptions, actual configuration, and approved technical design. |
 
 Editors remain nested views, not extra primary destinations. Financial and replacement results remain supporting Overview sections.
 Source/history inspection belongs with the selected asset or ticket.
 
-## 4. Requirements and proposal checks
+## 4. Requirements and approved interaction checks
 
 Required Given/When/Then checks are in [confirmed UI acceptance](acceptance-scenarios.md#confirmed-ui).
-They cover only Inherited and Confirmed behavior. Proposed checks below remain pending design choices.
+All existing interaction checks below are approved requirements. [Verification mapping](verification-plan.md) includes them with scenario evidence.
 All application checks are NOT RUN.
 
 ### UX-001: Application shell and navigation
@@ -77,11 +79,11 @@ Labelled Language/Currency controls occupy the upper-right header on every page.
 
 **Inherited:** US-02, FR-017, FR-018, SC-008.
 
-**Proposed:** Overview is the initial destination. Text and outline identify the active destination.
+**Confirmed:** Overview is the initial destination. Text and outline identify the active destination.
 Navigation retains filters and session reporting date. Destination changes close the room card.
 Unsaved forms require explicit discard or continued editing before navigation.
 
-Proposal check: Check active navigation, retained context, and explicit handling of unsaved forms.
+Required interaction check: Check active navigation, retained context, and explicit handling of unsaved forms.
 
 Required check: [AC-UX-001](acceptance-scenarios.md#ac-ux-001).
 
@@ -92,11 +94,11 @@ Parent changes clear incompatible children. Empty scope shows no stale records.
 
 **Confirmed:** Search room labels and property names without changing reporting scope.
 
-**Proposed:** Search uses case-insensitive substrings and narrows visible rooms only.
+**Confirmed:** Search uses case-insensitive substrings and narrows visible rooms only.
 Use the label “Search rooms (view only)”. Retain search between Map and List.
 Keep totals and portfolio maintenance unaffected by search.
 
-Proposal check: Compare Map/List search results. Check separate search-empty and filter-empty feedback.
+Required interaction check: Compare Map/List search results. Check separate search-empty and filter-empty feedback.
 Clear search must restore visible rooms without changing reporting filters.
 
 Required checks: [AC-UX-002](acceptance-scenarios.md#ac-ux-002) and [US-02](acceptance-scenarios.md#us-02).
@@ -108,10 +110,10 @@ Use “Schematic room map” for property-grouped tiles. Do not imply physical p
 
 **Inherited:** US-02, FR-009. Each representation shows the same three observations and unresolved-ticket count.
 
-**Proposed:** Retain the representation for the session. Sort properties and room labels consistently, using identities for ties.
+**Confirmed:** Retain the representation for the session. Sort properties and room labels consistently, using identities for ties.
 Retain selected room and search across representation changes.
 
-Proposal check: Check retained scope, search, selection, and totals across Map/List changes.
+Required interaction check: Check retained scope, search, selection, and totals across Map/List changes.
 
 Required check: [AC-UX-003](acceptance-scenarios.md#ac-ux-003).
 
@@ -134,10 +136,10 @@ Closing retains filters, representation, and central scroll position. Log fault 
 **Inherited:** US-02, US-03, US-04, FR-009, FR-010, FR-016.
 The card shows property, observations, assets, separate ticket groups, nested editors, and source/history evidence.
 
-**Proposed:** Keep the heading and Close action visible. Retain selected room across Map/List changes.
+**Confirmed:** Keep the heading and Close action visible. Retain selected room across Map/List changes.
 Protect unsaved forms before switching rooms or closing. Close excluded room cards after filter changes with the same protection.
 
-Proposed Log fault details:
+Confirmed Log fault details:
 
 - Display the preselected room clearly.
 - Leave the optional asset unselected initially.
@@ -151,7 +153,7 @@ Proposed Log fault details:
 
 Opening a draft alone does not persist a ticket under FR-015.
 
-Proposal check: Check unsaved-form protection, selected-room retention, excluded-card closure, and complete return context.
+Required interaction check: Check unsaved-form protection, selected-room retention, excluded-card closure, and complete return context.
 
 Required check: [AC-UX-005](acceptance-scenarios.md#ac-ux-005).
 
@@ -163,13 +165,16 @@ The room-card action opens a room-preselected fault form.
 
 **Inherited:** US-04, FR-012, FR-013, SC-004, SC-005. Required sorting uses actual operational date.
 
-**Proposed:** Start with unresolved tickets. Show owner, target, room, asset link, severity, and status.
+**Confirmed:** Start with unresolved tickets. Show owner, target, room, asset link, severity, and status.
 Use “Unassigned”, “No target date”, and “Room only” where appropriate.
-Maintenance's Log fault action uses the same inline creation form.
+Maintenance's Add maintenance record button opens an on-demand right-side creation card.
+Unresolved editing uses the same card pattern. Narrow layouts use an explicit-close overlay.
 The form selects an existing room and optional same-room asset.
-Creation exposes description, severity, optional owner, and optional target date.
+Creation exposes description, severity, optional owner, optional target date, and required typed recorder.
+Save creates Open with generated identity/timestamps. Cancel creates no record.
+The room-card Log fault shortcut uses this card with the room preselected and asset initially unselected.
 
-Proposal check: Check both form entries, field presentation, cancelled drafts, and prevention of duplicate submissions.
+Required interaction check: Check both form entries, field presentation, cancelled drafts, and prevention of duplicate submissions.
 
 Required checks: [AC-UX-006](acceptance-scenarios.md#ac-ux-006) and [maintenance scenarios](acceptance-scenarios.md#us-04).
 
@@ -181,11 +186,11 @@ Invoice previews show six-field changes and override clearing. Do not add paired
 
 **Inherited:** US-01, FR-001–FR-005, FR-015, FR-019, SC-001, SC-002.
 
-**Proposed:** Keep the selected file/workflow visible throughout review. Hide or disable confirmation when blockers exist.
+**Confirmed:** Keep the selected file/workflow visible throughout review. Hide or disable confirmation when blockers exist.
 Explain that warnings permit confirmation and blockers reject the whole upload.
 Explain invoice prerequisites before baseline creation. File/workflow changes invalidate the previous preview.
 
-Proposal check: Check workflow changes, cancelled previews, and visible confirmation availability.
+Required interaction check: Check workflow changes, cancelled previews, and visible confirmation availability.
 
 Required check: [AC-UX-007](acceptance-scenarios.md#ac-ux-007).
 
@@ -195,10 +200,10 @@ Required check: [AC-UX-007](acceptance-scenarios.md#ac-ux-007).
 
 **Inherited:** US-01, FR-003, FR-005, FR-015, SC-002.
 
-**Proposed:** Prevent duplicate submissions while confirming. Retain the reviewed summary.
+**Confirmed:** Prevent duplicate submissions while confirming. Retain the reviewed summary.
 Retain upload and diagnostics after failure for retry. Refresh affected views only after a successful commit.
 
-Proposal check: Check pending submission controls and retry presentation.
+Required interaction check: Check pending submission controls and retry presentation.
 
 Required checks: [AC-UX-008](acceptance-scenarios.md#ac-ux-008) and [rollback](acceptance-scenarios.md#ac-us01-020).
 
@@ -210,10 +215,10 @@ No observation history is added.
 
 **Inherited:** US-02, FR-009, FR-016, SC-004, SC-005.
 
-**Proposed:** Separate Clear from Save. Explain Clear before explicit confirmation.
+**Confirmed:** Separate Clear from Save. Explain Clear before explicit confirmation.
 Distinguish “Unknown — not assessed” from recorded Unknown with metadata.
 
-Proposal check: Check distinct Unknown presentation and explicit Clear confirmation.
+Required interaction check: Check distinct Unknown presentation and explicit Clear confirmation.
 
 Required check: [AC-UX-009](acceptance-scenarios.md#ac-ux-009).
 
@@ -225,10 +230,10 @@ Evidence sections show original baseline, invoices, provenance, and applied befo
 
 **Inherited:** US-03, FR-010, FR-011, FR-019, SC-003, SC-004.
 
-**Proposed:** Label source, current operational, and effective values separately.
+**Confirmed:** Label source, current operational, and effective values separately.
 Explain purchase fallback. Separate historical-only evidence from applied-update events.
 
-Proposal check: Check source/current/effective labels and evidence presentation.
+Required interaction check: Check source/current/effective labels and evidence presentation.
 
 Required check: [AC-UX-010](acceptance-scenarios.md#ac-ux-010).
 
@@ -238,26 +243,26 @@ Required check: [AC-UX-010](acceptance-scenarios.md#ac-ux-010).
 
 **Inherited:** US-03, FR-019, SC-003, SC-004. Reset requires reason/recorder under the operational contract.
 
-**Proposed:** Use “Apply financial override” and “Reset to source”. Identify the latest applied invoice or baseline as reset source.
+**Confirmed:** Use “Apply financial override” and “Reset to source”. Identify the latest applied invoice or baseline as reset source.
 Show current/source/effective pairs. Explain that reset does not restore names, dates, or observations.
 
-Proposal check: Check action labels and explicit reset-source explanation.
+Required interaction check: Check action labels and explicit reset-source explanation.
 
 Required check: [AC-UX-011](acceptance-scenarios.md#ac-ux-011).
 
 ### UX-012: Ticket editor and history
 
-**Confirmed:** Inline forms expose description, severity, owner, target date, and permitted progression.
+**Confirmed:** Unresolved-ticket cards expose description, severity, owner, target date, typed recorder, and permitted progression.
 Associations remain fixed after creation. Owner and resolution-note requirements apply.
 Resolved tickets remain read-only with chronological history.
 
 **Inherited:** US-04, FR-012, FR-013, SC-004.
 
-**Proposed:** Use “Start work” and “Resolve”, not an unrestricted status selector.
+**Confirmed:** Use “Start work” and “Resolve”, not an unrestricted status selector.
 Explain unavailable actions beside prerequisites. Show the resolution note with Resolve.
 Keep Save/Cancel for editable fields. Owner removal follows the existing Open-only rule.
 
-Proposal check: Check action wording, prerequisites, and resolution-note presentation.
+Required interaction check: Check action wording, prerequisites, and resolution-note presentation.
 
 Required check: [AC-UX-012](acceptance-scenarios.md#ac-ux-012).
 
@@ -268,9 +273,9 @@ Failed saves retain input. Success requires confirmed persistence.
 
 **Inherited:** US-01–US-03, FR-003, FR-008, FR-015, SC-002, SC-004, SC-005.
 
-**Proposed:** Use these presentations:
+**Confirmed:** Use these presentations:
 
-| State | Proposed presentation |
+| State | Confirmed presentation |
 |---|---|
 | No imported data | Explain baseline initialization and offer Import Assets. Show honest zero counts. |
 | Filter/search empty | Explain the cause. Offer Clear filters or Clear room search. |
@@ -281,7 +286,7 @@ Failed saves retain input. Success requires confirmed persistence.
 | Success | Announce after persistence. Refresh affected information. |
 | Persistence failure | Explain that nothing saved. Retain the draft/upload for retry. |
 
-Proposal check: Check presentation and accessible feedback for every state.
+Required interaction check: Check presentation and accessible feedback for every state.
 
 Required check: [AC-UX-013](acceptance-scenarios.md#ac-ux-013).
 
@@ -292,15 +297,15 @@ Local totals remain grouped. Source/user text stays unchanged. Financial and ope
 
 **Inherited:** US-02, US-05, FR-011, FR-014, FR-017, FR-018, SC-003, SC-008.
 
-**Proposed:** Offer only delivered language sets. Label modes “USD” and “Local transaction currency”.
+**Confirmed:** Offer only delivered language sets. Label modes “USD” and “Local transaction currency”.
 Place the session reporting date at the start of supporting financial sections.
 Offer custom date and Reset to today. Show timezone offsets with actual history timestamps.
-Demo presets remain optional proposals.
+Demo presets remain optional. Custom date and Reset to today are required.
 
 Display the fixed FX date and fictional-rate disclaimer. Invalid configuration requires correction without partial or fabricated totals.
 Label spending as acquisition-cost proxies and replacement dates as planning assumptions.
 
-Proposal check: Check control labels, date placement, and actual timestamp presentation.
+Required interaction check: Check control labels, date placement, and actual timestamp presentation.
 
 Required check: [AC-UX-014](acceptance-scenarios.md#ac-ux-014).
 
@@ -308,10 +313,10 @@ Required check: [AC-UX-014](acceptance-scenarios.md#ac-ux-014).
 
 **Confirmed:** Apply the palette, typography, spacing, borders, numeric alignment, and prohibited effects in section 2.
 
-**Proposed:** Use a 16px base font and an 8px spacing rhythm.
+**Confirmed:** Use a 16px base font and an 8px spacing rhythm.
 Use readable white text on blue primary buttons. Keep clearing actions separate from Save with explicit neutral wording.
 
-Proposal check: Check numeric styling defaults and clearing-action placement.
+Required interaction check: Check numeric styling defaults and clearing-action placement.
 
 Required check: [AC-UX-015](acceptance-scenarios.md#ac-ux-015).
 
@@ -320,13 +325,13 @@ Required check: [AC-UX-015](acceptance-scenarios.md#ac-ux-015).
 **Confirmed:** The desktop card narrows central space. Narrow layouts use compact navigation, stacked forms, and an explicit-close overlay.
 Usability extends to 360px.
 
-**Proposed:** At 1200px and above, use 200px left navigation and an approximately 400px right card.
+**Confirmed:** At 1200px and above, use 200px left navigation and an approximately 400px right card.
 Below 1200px, use compact top navigation and a bounded overlay.
 At 600px and below, use a full-width overlay and stacked fields.
 Keep card heading, Close, and Log fault reachable. Scroll wide tables inside labelled containers.
-Header controls may wrap at narrow widths without disappearing. Overlay Log fault honors the proposed unsaved-form protection.
+Header controls may wrap at narrow widths without disappearing. Overlay Log fault honors the confirmed unsaved-form protection.
 
-Proposal check: Check proposed breakpoints and control wrapping with long names and errors.
+Required interaction check: Check confirmed breakpoints and control wrapping with long names and errors.
 
 Required check: [AC-UX-016](acceptance-scenarios.md#ac-ux-016).
 
@@ -335,13 +340,13 @@ Required check: [AC-UX-016](acceptance-scenarios.md#ac-ux-016).
 **Confirmed:** Inputs have labels and visible focus. Statuses include text. Room selection and closing support keyboard use.
 Feedback remains accessible. No action requires hover or color interpretation.
 
-**Proposed:** Use semantic headings, controls, tables, and labels. Expose selected and expanded states.
+**Confirmed:** Use semantic headings, controls, tables, and labels. Expose selected and expanded states.
 Announce results and associate errors with inputs. Focus the first invalid field.
 Opening cards focuses their heading. Close restores trigger focus or a suitable heading.
-Only narrow overlays trap focus and deactivate background content. Escape uses the proposed unsaved-form protection.
+Only narrow overlays trap focus and deactivate background content. Escape uses the confirmed unsaved-form protection.
 Desktop cards permit access to the central workspace.
 
-Proposal check: Check focus destinations, announcements, Escape, and overlay focus boundaries with assistive technology.
+Required interaction check: Check focus destinations, announcements, Escape, and overlay focus boundaries with assistive technology.
 
 Required check: [AC-UX-017](acceptance-scenarios.md#ac-ux-017).
 
@@ -350,12 +355,12 @@ Required check: [AC-UX-017](acceptance-scenarios.md#ac-ux-017).
 **Confirmed:** Map/List, room context, maintenance navigation, cancellation, import states, keyboard access, responsive layouts, and display boundaries require verification.
 
 **Inherited:** US-01–US-05, SC-002–SC-005, SC-008, AR-002, AR-004–AR-006.
-New isolated rehearsal stores follow D-019. Normal restart retains successful state in the selected store.
-Browser preferences remain independent of store selection. A new session reporting date starts at actual Hong Kong today.
+Shared-store reset follows D-019. Normal restart retains successful state in runtime/app.sqlite3.
+Browser preferences remain independent of domain reset. A new session reporting date starts at actual Hong Kong today.
 
-**Proposed:** Use the integrated sequence in [the demo](demo.md). Preserve proposed complete return context between Overview and Maintenance.
+**Confirmed:** Use the integrated sequence in [the demo](demo.md). Preserve confirmed complete return context between Overview and Maintenance.
 
-Proposal check: Check complete return context and sequence timing.
+Required interaction check: Check complete return context and sequence timing.
 
 Required checks: [AC-UX-018](acceptance-scenarios.md#ac-ux-018) and [demo scenarios](acceptance-scenarios.md#demo).
 
@@ -365,8 +370,11 @@ Required checks: [AC-UX-018](acceptance-scenarios.md#ac-ux-018) and [demo scenar
 
 **Inherited:** Product sections 3–4, 7–10, 13, and 15. US-03, US-05, FR-011, FR-014, FR-017–FR-019, SC-003, SC-008.
 
-**Proposed:** Use read-only sections with source references. Separate approved rules, loaded configuration, and technical/display proposals.
-Allow access before imports and during invalid financial configuration. Do not add editable configuration or application logs.
+**Confirmed:** Use read-only sections with source references. Separate approved rules, loaded configuration, and technical/display decisions.
+Allow access before imports and during invalid financial configuration. Keep configuration read-only.
+Provide Reset data with a confirmation dialog explaining its shared-store deletion. Cancel changes nothing.
+Confirmed reset opens empty Overview and refreshes the financial date. Preserve language/currency preferences.
+Old drafts/previews become invalid. Failed reset preserves saved data. Application logs are not a product view.
 
 Required inventory:
 
@@ -378,20 +386,20 @@ Required inventory:
 | Replacement | Service anchor plus life. Overdue/today/90-day categories and twelve-month endpoint. Separate spending proxies without book-value subtraction or price predictions. |
 | FX | Actual HKD, SGD, GBP, JPY, and USD rates. USD per source unit. USD equals 1. Fixed date and fictional disclaimer. |
 | Missing configuration | Not configured or explicit invalid-rate diagnostics. No fabricated rates or incomplete financial totals. |
-| Money and aggregation | Unrounded calculation/aggregation and two-decimal USD display. Grouped local totals and unique-asset valuation. JPY display precision remains Proposed. |
+| Money and aggregation | Unrounded calculation/aggregation and two-decimal USD display. Grouped local totals and unique-asset valuation. JPY uses zero decimal places. |
 | Import model | Independent prescribed workbooks, exactly three categories, preview without writes, blockers, warnings, confirmed atomic commit, and stale-preview recheck. |
 | Invoice precedence | Maximum invoice date, historical-only evidence, controlling-date conflicts, equivalent ties, identical skips, changed-source conflicts, and applied update history. |
 | Conditions and links | Independent latest observations, Unknown meanings, required metadata, Clear, no observation history, and explicit ticket links. Schematic map limits. |
 | Maintenance | Fictional owners, attribution limits, required owner in progress, forward-only statuses, resolution note/time, fixed links, sorting, and history. |
 | Languages | English mandatory, other named sets stretch, fallback, unchanged stored text, independent persistent preferences, and pending linguistic review. |
-| Prototype and persistence | Fictional sample coverage, exclusions, AR-002 gap, normal restart, isolated rehearsal stores, and any future hosting limits. |
-| Technical proposals | Proposed parsing, identifiers, history representation, local precision, and layout defaults. |
+| Prototype and persistence | Fictional sample coverage, exclusions, AR-002 gap, normal restart, shared-store reset, and localhost-only delivery. |
+| Technical design | Approved parsing, identifiers, local architecture, histories, local precision, and layout defaults. |
 
 Show the loaded fictional owner configuration when available. Show Not configured otherwise.
 Changing Currency does not change displayed source-to-USD rates. Update this inventory when source rules or actual configuration change.
 Presentation must use the same calculation rules as services. Do not maintain a conflicting calculation model in views.
 
-Proposal check: Check read-only grouping, source references, and access before imports or during configuration failure.
+Required interaction check: Check read-only grouping, source references, and access before imports or during configuration failure.
 
 Required check: [AC-UX-019](acceptance-scenarios.md#ac-ux-019).
 
@@ -409,4 +417,4 @@ Required check: [AC-UX-019](acceptance-scenarios.md#ac-ux-019).
 
 Record actual method, environment, build/date, expected result, actual result, and status in [the evidence ledger](assessment-requirements.md#5-evidence-ledger).
 Documentation checks establish link, identifier, writing, and requirement consistency only.
-They do not establish application, accessibility, startup, fixture, or rehearsal results.
+Read-only fixture inspection is separate evidence. Documentation checks do not establish application, accessibility, startup, or rehearsal results.
