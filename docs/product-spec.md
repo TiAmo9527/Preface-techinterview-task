@@ -1,6 +1,6 @@
 # Product specification: Hotel asset-management prototype
 
-Status: Revised draft; owner-approved policies recorded below
+Status: Documented requirements with owner-approved policies. Application verification: NOT RUN.
 
 Owner: Alex
 
@@ -10,407 +10,686 @@ Revised: 2026-10-03
 
 Target delivery: 2026-10-05
 
-Version: 0.3
+Version: 0.4
 
-This document defines product behaviour. Approval of the policies in section 15 does not claim client approval, implemented features, or verified application behaviour. Technical contract proposals are identified in [data contracts](data-contracts.md). Architecture and implementation tasks belong in [the delivery plan](plan.md) and [task checklist](tasks.md).
+This document defines product behavior. Owner approval does not establish client acceptance or implemented behavior.
 
-The complementary [UI/UX specification](ui-ux-spec.md) records existing interface requirements, Alex's confirmed layout/styling choices, and proposed interaction details. It does not change the v0.3 product requirements or approval record below; implementation and UI verification remain pending.
+[Data contracts](data-contracts.md) contain proposed technical interfaces. Database columns, storage types, and architecture remain technical-planning work.
 
-[Assessment requirements](assessment-requirements.md) record external obligations separately. Any contradiction between those obligations and product decisions requires explicit resolution by Alex; neither document silently overrides the other.
+[UI/UX requirements](ui-ux-spec.md) distinguish Inherited, Confirmed, and Proposed details. [Assessment requirements](assessment-requirements.md) preserve external obligations.
+
+Alex must resolve contradictions between product decisions and external obligations. Neither document silently changes the other.
+
+Use the [shared glossary](glossary.md) for domain terms. [Acceptance scenarios](acceptance-scenarios.md) define independent Given/When/Then checks.
 
 ## 1. Problem and intended outcome
 
-The fictional hotel portfolio maintains room and asset information across separate spreadsheets and invoices. Managers lack one view connecting facilities, recorded condition, asset details, and maintenance ownership.
+The fictional hotel portfolio stores room and asset information in spreadsheets and invoice records.
+The room manager needs connected room information and accountable maintenance actions.
 
-The primary outcome is: **Managers can understand a room's facilities and take accountable maintenance action.**
+**Primary user:** Room manager.
 
-Data consolidation establishes trust. Financial values and replacement information support management decisions and remain secondary.
+**Primary decision:** Determine the required maintenance action and assign its ticket owner.
 
-The primary journey is:
+The primary outcome is room understanding with accountable maintenance action. Finance and replacement planning support this outcome.
 
-Import and validate source data → review maintenance and condition → inspect a room → assess condition or edit an asset → log or update maintenance.
+The demonstration sequence is:
 
-Users can then review book values and replacement planning. This is a decision-support prototype, not a production hotel-management or accounting-compliance product.
+1. Preview and confirm source imports.
+2. Review observations and unresolved tickets.
+3. Select a room.
+4. Assess condition or edit an asset record.
+5. Log a fault or update maintenance.
+6. Review supporting financial and replacement results.
+
+The [demo](demo.md) defines the proposed 12-minute sequence. This is a decision-support prototype, not a production accounting product.
 
 ## 2. Users
 
-### Executive
-
-Needs portfolio filters, clearly labelled condition and ticket counts, prioritised maintenance, room drill-downs, acquisition/book values, and secondary replacement visibility.
-
 ### Room manager
 
-Needs to inspect and edit assets and room-system assessments across any existing fictional property; log faults, assign owners, and update progress; and distinguish recorded condition from tickets.
+The room manager is the primary user. This user reviews rooms, edits permitted asset information, assesses condition, and manages maintenance.
+This user can work across all imported fictional properties.
+
+### Executive
+
+The executive is a supporting user. This user reviews portfolio priorities, room context, book values, and replacement spending proxies.
 
 ### Data-maintenance user
 
-Needs to initialise the portfolio from Assets, upload invoice updates independently, preview changes/diagnostics before saving, and inspect source evidence, conflicts and update history.
+The data-maintenance user is a supporting user. This user establishes the baseline and uploads independent invoice updates.
+This user inspects diagnostics, source evidence, conflicts, and update history.
 
-These are user perspectives, not permission roles. Authentication and property-level access enforcement are excluded. Property and room master data are import-only; cross-property access does not permit forms to create/edit that master data.
+These perspectives are not permission roles. Authentication and property-level access enforcement remain excluded.
+Property and room master data are import-only. Cross-property access does not permit master-data editing forms.
 
 ## 3. Product scope
 
 Required capabilities:
 
-- A working web application with the observable workflows below.
-- Two prescribed workbook types: Assets baseline initialisation and independent Invoices updates to existing assets. Every room has exactly one lighting, one water-supply and one air-conditioning record.
-- Whole-batch preview/validation, explicit confirmation, atomic commit, and exception reporting.
-- Maintenance-first dashboard with location, property, and room filters and room drill-downs.
-- Asset viewing, permitted editing, invoice-driven replacement fields/history and explicit financial overrides; identity, room and category stay fixed.
-- Separate editable lighting, water-supply, and air-conditioning observations.
-- Manual fault logging, owner assignment, progress, and persistent change history.
-- Financial calculations, effective transaction-currency/USD display, and secondary replacement planning.
-- English interface as mandatory scope. Traditional Chinese, Simplified Chinese, and Japanese are stretch translation sets with English fallback.
-- Persistent display preferences, actionable validation, integrity, durable local saves, and reproducible startup.
+- A working web application for the required journeys.
+- Independent Assets baseline and Invoices update uploads.
+- Exactly one asset record per room in each of the three categories.
+- Preview, validation, explicit confirmation, atomic commit, and diagnostics.
+- An operational overview with shared location, property, and room filters.
+- Room selection with asset records, observations, and maintenance tickets.
+- Permitted asset editing with paired financial overrides and persistent histories.
+- Invoice updates with preserved source evidence and update history.
+- Separate editable Lighting, Water supply, and Air conditioning observations.
+- Manual fault logging, ticket ownership, progress, and history.
+- Financial calculations, USD/local display, and supporting replacement planning.
+- Mandatory English interface text.
+- Independent persistent language/currency preferences and durable local saves.
+- A reproducible startup process and isolated rehearsal data stores.
 
-Assessment coverage and presentation fixtures are defined in [assessment requirements](assessment-requirements.md) and [sample-data plan](sample-data-plan.md), not product-size limits.
+Stretch capabilities:
 
-Exclusions:
+- Traditional Chinese interface text.
+- Simplified Chinese interface text.
+- Japanese interface text.
 
-- Arbitrary PDF OCR, arbitrary spreadsheet compatibility, multi-sheet-workbook imports, live FX, sensors, and live-system integrations.
-- Authentication/authorisation, real customer/hotel data, and AI features inside the application.
-- Manual asset creation, baseline-based updates to existing records, property/room editing forms, asset relocation/category changes and editing accepted invoice-item evidence.
-- Bundled purchases or quantity allocation, procurement/payments/orders, and production accounting compliance.
-- Automated condition inference, observation history, ticket reopening/deletion/stage skipping, and resolved-ticket editing.
+Delivered stretch sets require English fallback. Translation review remains pending.
 
-Fictional data only. Confidential assessment materials must not be published. Presentation and optional sharing obligations live in the assessment document.
+Excluded capabilities:
+
+- Arbitrary PDF OCR, arbitrary spreadsheets, and multi-sheet imports.
+- Live FX, sensors, and live-system integrations.
+- Authentication, property-level authorization, real customer data, and application AI features.
+- Manual asset creation and baseline updates to existing records.
+- Property/room editing forms and asset relocation, category changes, or identity changes.
+- Editing accepted invoice evidence.
+- Bundled purchases, quantity allocation, procurement, payments, or orders.
+- Production accounting compliance.
+- Automatic condition inference and observation history.
+- Ticket reopening, deletion, stage skipping, or resolved-ticket editing.
+
+Use fictional data only. Do not publish confidential assessment materials.
+The four-property sample is demonstration coverage, not a product capacity limit.
+Manual asset creation remains an unmet part of AR-002.
 
 ## 4. Source data, identity, and evidence
 
-The supported input boundary is two .xlsx workbook types, uploaded independently: Assets.xlsx / Assets establishes the baseline; Invoices.xlsx / Invoices updates recorded assets. Filenames are recommended, sheet names are required, and each file has one prescribed sheet. Headers-only sheets represent no new rows. [Data contracts](data-contracts.md) defines exact fields, types, identifier grammar, comparisons and precedence.
+Assets.xlsx has the Assets sheet. Invoices.xlsx has the Invoices sheet.
+Filenames are recommendations. Each supported workbook contains its required single sheet.
+Headers-only sheets contain no new rows.
 
-- Baseline rows contain complete initial asset values, including cost/currency, and repeated property/room/assessment details. No invoice link is required to initialise or report finance.
-- Every room has exactly three records, one per supported category. Repeated property/room values must agree; duplicate asset IDs, missing/duplicate categories or occupied-category collisions block the upload. No empty-room or fourth-category import.
-- Property IDs and room IDs encode region/property/room; asset IDs include their room prefix. Text IDs preserve leading zeros. Room numbers are unique within their property.
-- An invoice item is identified by invoice_id plus line_id and matches one existing asset via (room_id, facility_type). Many invoice items can update one asset over time; one item cannot target multiple assets.
-- Invoice updates replace name, purchase/installation dates, useful life, cost and currency. Blank optional installation clears it. Asset identity, room, category, assessments and tickets remain unchanged.
-- The maximum invoice_date per asset controls current invoice-sourced values. Older new items are historical evidence; conflicting snapshots at the controlling maximum date block the upload. Equal-date equivalent evidence does not replay a current update.
-- Preserve original baselines, accepted invoice items, source coordinates/timestamps and invoice-update/override history independently of editable operational state.
-- Identical baseline/invoice re-imports skip without restoring previous values; changed content under an existing source identity conflicts. Newly identified invoice items can update current records according to date precedence.
+Assets supplies complete initial asset values with repeated property, room, and observation information.
+Baseline finance requires no invoice link. Each room requires exactly three asset records with distinct required categories.
 
-Workbook content and provenance are source evidence. There is no invoice_file column, accompanying PDF requirement or OCR import path. Manual asset creation is excluded, leaving the assessment's add-asset obligation unmet; this owner-selected gap must be disclosed under AR-002.
+Property and room identities contain their region and parent information. Asset identities contain their room prefix.
+Text identities preserve leading zeros. Room numbers are unique within a property.
+
+An invoice item uses invoice_id plus line_id as its identity. Its room/category pair selects one existing asset record.
+Many invoice items can target that record over time. One item cannot target multiple asset records.
+
+Each invoice snapshot replaces six fields:
+
+1. Asset name.
+2. Purchase date.
+3. Installation date.
+4. Useful life.
+5. Acquisition cost.
+6. Currency.
+
+Blank installation clears the previous date. Identity, room, category, observations, and tickets remain unchanged.
+
+The maximum invoice_date controls source updates. Older new items remain historical-only evidence.
+Different snapshots at the controlling maximum date block the upload. Equivalent tied evidence does not replay an update.
+
+Preserve original baselines, accepted invoice items, provenance, invoice-update history, and override history.
+Identical source repeats skip without restoring previous operational values. Changed evidence under an existing source identity conflicts.
+
+Workbook information and provenance are source evidence. There is no invoice_file field, PDF attachment requirement, or OCR path.
 
 ## 5. User journeys and acceptance scenarios
 
-Acceptance scenarios describe required verification, not completed tests.
+All required scenarios are in [acceptance scenarios](acceptance-scenarios.md). Every scenario states its own prerequisite information.
+Prepare that information independently. Do not require an earlier scenario to establish it.
+Fixture checks do not establish product acceptance.
 
 ### US-01: Initialise and update source records
 
-Priority: Required
+Actor: Data-maintenance user.
 
-As a data-maintenance user, I want to establish a trusted baseline and then update existing room assets from invoices while retaining previous evidence.
+Priority: Required.
 
-Journey: select Assets or Invoices workflow → preview proposed inserts/updates/history-only records/skips/diagnostics → correct blockers → confirm → inspect actual results and provenance.
+Starting state: Empty portfolio for baseline import. Invoice updates require independently prepared existing room/category targets.
 
-Acceptance scenarios:
+Entry point: Import, with Assets or Invoices selected.
 
-- A valid Assets-only upload creates linked properties, rooms and their three assets together; initial finance works without invoices.
-- An Invoices-only upload targets existing room/category records, including a subset of rooms. It creates no room/asset identities.
-- Unknown targets, inconsistent repeated baseline values, missing/duplicate categories, duplicate source identities, invalid dates/observations/types or changed-source conflicts block every change in the upload.
-- Preview writes nothing and shows before/after invoice field changes and override clearing. Diagnostics identify file, sheet, row, field and actionable reason.
-- Missing/unsupported files or unusable columns block confirmation; only the selected workflow's one workbook is required. Warning-only valid uploads can be confirmed.
-- Newest invoice_date wins across existing and incoming items regardless of row/upload order. Older valid items are stored without asset updates. Different snapshots at the controlling newest date block; equivalent tied evidence is retained without duplicating/replaying an update.
-- Identical baseline/invoice repeats skip after invoice, asset, override or assessment edits. Changed source content under an existing identity conflicts rather than silently modifying evidence.
-- A newly applied invoice replaces manual edits to its six fields and clears an active financial override with linked histories. Historical-only/equal-date evidence leaves edits and overrides intact.
-- A commit failure rolls back baseline records, invoice evidence, asset changes and histories together; failed/blocked uploads never display successful writes. Confirmation rechecks integrity and precedence against a stale preview.
+Actions:
 
-Independent verification compares state before preview, after blocked/failed uploads, after confirmed baseline, after invoice updates, after older/equal-date evidence and after repeats. Fixture verification alone is not product acceptance evidence.
+1. Select the workbook.
+2. Inspect preview counts, field changes, override effects, and diagnostics.
+3. Correct blockers.
+4. Confirm the reviewed upload.
+5. Inspect actual results and provenance.
+
+Successful outcome: Atomic saved changes with accurate counts and inspectable source evidence.
+
+Independent setup: Prepare an empty store or the stated baseline, invoices, manager edits, and overrides for that scenario.
+
+Coverage: [US-01 scenarios](acceptance-scenarios.md#us-01). Blocked, cancelled, or failed imports preserve the previous saved state.
 
 ### US-02: Inspect portfolio and room context
 
-Priority: Required
+Actor: Room manager. The executive can use the same review journey.
 
-As a manager or executive, I want condition and maintenance results with room context.
+Priority: Required.
 
-Acceptance scenarios:
+Starting state: An independently prepared portfolio with the observations, tickets, currencies, and preferences required by the scenario.
 
-- One filter scope applies to every metric, table, and replacement result. Changing a parent filter clears incompatible child selections.
-- Empty results show an empty state and no stale records.
-- The dashboard presents labelled entity/ticket/observation counts and a prioritised unresolved-ticket table before secondary finance and replacement sections.
-- Each operational table row drills down to its room, which shows property, three observations, assets, and unresolved/resolved tickets.
-- Two tickets for one asset count as two tickets without duplicating asset acquisition value.
-- A critical room-only ticket remains visible without flagging all room assets as critically faulty.
-- Managers can select any imported property; property/room editing forms are absent.
-- Changing the financial reporting date does not change observations, ticket timestamps, or operational overdue ordering.
-- A recorded satisfactory assessment saves as Healthy with date/recorder; missing metadata blocks it. Clear removes metadata and returns to Unknown, including after restart.
-- Invalid imported observation metadata blocks the whole batch; identical Assets baseline re-imports do not undo a manager's latest assessment.
-- With no saved preference, the interface starts in English/USD. Changing language leaves the currency preference independent; both selected preferences survive browser restart.
-- A delivered translation set localises interface text and falls back to English for missing keys without translating stored names, notes, descriptions, IDs, or enums.
-- Local mode groups a mixed-currency portfolio into labelled currency totals; USD mode uses the complete configured rate table. Neither mode alters source or override values.
+Entry point: Overview.
 
-Observation editing is additionally covered by FR-016 and section 9; language/currency behaviour by FR-017–018 and section 13.
+Actions:
+
+1. Select location, property, or room filters.
+2. Review labelled counts and unresolved tickets.
+3. Select a room from Map, List, or a ticket link.
+4. Inspect its observations, asset records, and tickets.
+5. Save or clear an observation when required.
+
+Successful outcome: Consistent filtered results, accurate room context, and persistent valid observation changes.
+
+Independent setup: Prepare the required portfolio directly. Use an empty portfolio for first-use and empty-state checks.
+
+Coverage: [US-02 scenarios](acceptance-scenarios.md#us-02). Invalid, cancelled, or failed observation saves preserve the previous assessment.
 
 ### US-03: View and edit asset records
 
-Priority: Required
+Actor: Room manager.
 
-As a room manager, I want to view/edit the three room asset records while retaining their baseline and invoice evidence.
+Priority: Required.
 
-Acceptance scenarios:
+Starting state: An existing asset record with defined baseline, invoice evidence, current operational values, and override state.
 
-- View each room's lighting, water-supply and air-conditioning records; there is no manual asset-creation action.
-- Asset ID, room and category remain fixed. Name, purchase/installation dates and useful life are editable; cost/currency corrections use paired overrides.
-- Invalid fields block saving with feedback. Cancelled/failed writes leave state unchanged; successful saves survive restart and refresh financial/room/dashboard results.
-- Inspect original baseline, all invoice items and applied update history, including previous operational fields and override state.
-- A paired cost/currency override requires reason/recorder and records before/after values and actual timestamp; it changes calculations without changing source evidence.
-- Reset requires a reason and restores latest applied invoice cost/currency, or baseline values before invoices, while retaining history. Reset does not restore source names/dates or room observations.
-- A newly applied invoice replaces its six current fields, clears active overrides and recalculates finance/replacement values. Older or identical invoice uploads do not undo manager edits.
+Entry point: The room card's asset editor or evidence section.
 
-Manual creation is deliberately excluded. This does not satisfy the external add-asset obligation; preserve that gap in assessment evidence rather than claiming full AR-002 compliance.
+Actions:
+
+1. Inspect the asset record and its source evidence.
+2. Edit permitted operational fields or the paired financial override.
+3. Correct validation errors.
+4. Save the change or reset financial values to source values.
+5. Inspect refreshed results and retained history.
+
+Successful outcome: Valid persistent changes without identity changes or source-evidence changes.
+
+Independent setup: Prepare the specific asset, applied invoice state, manual edits, and override required by the scenario.
+
+Coverage: [US-03 scenarios](acceptance-scenarios.md#us-03). Manual asset creation remains excluded and does not satisfy AR-002.
 
 ### US-04: Manage maintenance
 
-Priority: Required
+Actor: Room manager.
 
-As a room manager, I want faults to have clear ownership and progress.
+Priority: Required.
 
-Acceptance scenarios:
+Starting state: An existing room and optional same-room asset. Transition checks use an independently prepared ticket in the stated status.
 
-- A new ticket starts Open and may already have an owner. A linked asset must belong to the ticket's room.
-- Room/asset associations cannot change after creation.
-- Open → In progress requires an owner; In progress → Resolved requires a non-empty resolution note and a recorded resolution timestamp.
-- Direct Open → Resolved, reopening, and deletion are disallowed.
-- Owner removal is permitted in Open but blocked in In progress; reassignment remains possible while unresolved.
-- Unresolved description, severity, target date, owner, and status edits persist with chronological history. Resolved tickets are read-only.
-- Unresolved rows sort by severity, then overdue target date, then oldest opening timestamp; resolved tickets appear separately.
-- Resolution never changes a room observation or an expected replacement date.
+Entry point: Maintenance or the room card's Log fault action.
+
+Actions:
+
+1. Save a valid fault as Open.
+2. Assign a ticket owner.
+3. Start work as In progress.
+4. Resolve the ticket with a resolution note.
+5. Inspect its history and resolved read-only state.
+
+Successful outcome: Accountable maintenance progress with valid associations, required ownership, actual timestamps, and persistent history.
+
+Independent setup: Prepare the room and ticket status directly for each transition, rejection, or history check.
+
+Coverage: [US-04 scenarios](acceptance-scenarios.md#us-04). Ticket changes do not update observations or replacement dates.
 
 ### US-05: Review replacement needs
 
-Priority: Required; secondary presentation
+Actor: Executive. This journey supports the room manager's primary decision.
 
-As an executive, I want explainable replacement dates and separate spending proxies.
+Priority: Required. Presentation priority: Secondary.
 
-Acceptance scenarios:
+Starting state: Independently prepared asset records, valid fixed FX configuration, and an explicit financial reporting date.
 
-- Replacement dates before/on/after the financial reporting date classify as overdue/due today/future.
-- Due soon is strictly after the reporting date through reporting date + 90 days inclusive.
-- The 12-month future window excludes overdue/due-today and includes its calendar-month endpoint.
-- Overdue, due-today, and future-window spending have separate totals and follow the selected filters.
-- Spending uses effective acquisition cost, including overrides, through the fixed FX table; it does not subtract book value.
-- An asset's critical unresolved flag requires an explicitly linked ticket; room-only faults remain separate.
-- Labels identify an acquisition-cost proxy, not a quotation, inflation allowance, installation-labour estimate, or failure prediction.
+Entry point: Overview's financial and replacement sections.
+
+Actions:
+
+1. Select the reporting scope.
+2. Select the financial reporting date.
+3. Inspect book values and replacement categories.
+4. Compare separate spending proxies.
+5. Inspect assumptions and explicit critical asset links.
+
+Successful outcome: Correct, explainable categories and spending proxies for the selected scope and date.
+
+Independent setup: Prepare boundary dates and effective values directly. Prepare invalid FX configuration separately for failure checks.
+
+Coverage: [US-05 scenarios](acceptance-scenarios.md#us-05). Reporting changes do not change operational records or source evidence.
 
 ## 6. Functional requirements
 
-FR-001: Preserve property-room-asset relationships, exactly one asset per required room/category, and a single existing target per invoice item.
+FR-001: Preserve property, room, asset, and invoice relationships. Each room has one asset record per required category.
 
-FR-002: Preview and validate one Assets baseline or one Invoices update workbook independently before explicit confirmation.
+FR-002: Preview one Assets or Invoices workbook before explicit confirmation.
 
-FR-003: Distinguish blocking file/row/conflict errors from non-blocking warnings; any blocker prevents the entire batch commit.
+FR-003: Distinguish blockers from warnings. Any blocker prevents the whole upload commit.
 
-FR-004: Keep invalid/conflicting source rows inspectable in diagnostics without creating operational records.
+FR-004: Keep rejected source rows inspectable in diagnostics without operational records.
 
-FR-005: Preserve source identities, skip identical repeats, block changed source IDs/upload duplicates, and apply new invoice snapshots by maximum invoice_date with controlling-date conflict checks.
+FR-005: Preserve source identities. Skip identical repeats. Block changed identities, upload duplicates, and conflicting controlling-date snapshots.
+Apply eligible invoice snapshots by maximum invoice_date.
 
 FR-006: Filter portfolio outputs by location, property, and room.
 
-FR-007: Show property/room/asset counts; unresolved/critical unresolved ticket counts; observation counts by system/state; prioritised unresolved tickets; acquisition/book values; and secondary replacement counts/proxies. Label units explicitly.
+FR-007: Label entity counts, ticket counts, and observation counts separately. Present unresolved tickets before supporting financial and replacement results.
 
-FR-008: Use one consistent filter scope for all outputs, clear incompatible filters, and avoid stale empty results.
+FR-008: Use one filter scope for all outputs. Clear incompatible child filters. Avoid stale empty results.
 
-FR-009: Show each room's three separate observations, including unassessed Unknown.
+FR-009: Display three separate room-system observations, including unassessed Unknown.
 
-FR-010: View/edit existing asset records without manual creation; identity, room and category remain fixed and derived values read-only.
+FR-010: Permit existing asset editing only. Keep identity, room, category, and calculated outputs read-only.
 
-FR-011: Display the financial reporting date, calculation assumptions, FX date/disclaimer, and separate current operational date.
+FR-011: Display the financial reporting date, operational date, calculation assumptions, and FX date/disclaimer.
 
-FR-012: Create faults, assign owners, and use Open → In progress → Resolved with required transition fields and fixed associations.
+FR-012: Create faults and assign ticket owners. Enforce Open → In progress → Resolved with fixed associations and required fields.
 
-FR-013: Persist chronological history of saved unresolved-ticket field changes; resolved tickets are immutable.
+FR-013: Preserve chronological unresolved-ticket history. Keep resolved tickets read-only.
 
-FR-014: Provide secondary replacement dates, urgency flags, and separately labelled overdue/due-today/future effective-cost proxies.
+FR-014: Display replacement dates, urgency categories, and separate overdue, due-today, and future spending proxies.
 
-FR-015: Persist successful saves and atomic valid imports; cancelled, blocked, invalid, or failed operations must not alter operational records.
+FR-015: Persist successful saves and atomic imports. Cancelled, blocked, invalid, or failed operations preserve saved records.
 
-FR-016: Edit or clear latest observations, validate assessment metadata, and never infer condition from tickets.
+FR-016: Edit or clear latest observations with required metadata. Do not infer condition from maintenance.
 
-FR-017: Provide English and switchable stretch translation sets for interface text, retaining canonical data values and English fallback.
+FR-017: Provide English interface text. Delivered stretch translations require English fallback and unchanged stored information.
 
-FR-018: Provide an independent USD/effective-transaction-currency display preference, grouped mixed-currency totals, and persistent language/currency selections.
+FR-018: Provide USD/local display with grouped local totals and independent persistent preferences.
 
-FR-019: Preserve baselines/invoice evidence and invoice-update history; record paired overrides/resets, clear active overrides on applied invoices, and reset cost/currency to latest invoice or baseline fallback.
+FR-019: Preserve source evidence and invoice-update history. Record paired overrides and resets.
+Clear active overrides on applied invoices. Reset to the latest applied invoice pair or baseline fallback.
 
-FR-001–015 retain their v0.1 identities; FR-016–019 were added in v0.2. v0.3 revises source/update/asset policies without renumbering requirements.
+FR-001–FR-015 retain their v0.1 identities. FR-016–FR-019 first appeared in v0.2.
+Later revisions preserve these identifiers.
 
-## 7. Import policies
+## 7. Import rules
 
-Preview and validation never write operational records. Assets initialisation and Invoices updates are independent single-workbook workflows. Baseline imports create complete new rooms; invoice imports resolve existing targets only. Validate all rows and dependencies before confirmation, including historical invoice items.
+Preview and validation save no records, evidence, or histories. Assets and Invoices are independent single-workbook workflows.
+Baseline import creates complete new rooms. Invoice import resolves existing targets only.
+Validate every row, including historical invoice evidence.
 
-Blocking errors include unreadable/unsupported files, invalid headers/IDs/types/dates, inconsistent repeated property/room values, missing/duplicate room categories, unknown invoice targets, duplicate source identities, changed source content and conflicting snapshots at a target's maximum invoice date. Any blocker prevents all operational and evidence/history writes; do not offer import-valid-rows. Warnings include missing installation date, zero cost and missing optional supplier. Fully populated valid examples omit these warning cases.
+Blockers include:
 
-For each target, use maximum invoice_date across accepted existing and incoming items. If there is no applied invoice, apply the first accepted controlling snapshot regardless of baseline purchase date. Subsequently apply only strictly newer dates. Older new items and equal-date/equal-snapshot evidence are historical-only. Same maximum date with different six-field snapshots blocks the upload; conflicts at older dates do not choose current state. Compare source snapshots rather than manager-edited operational values.
+- Missing, unreadable, or unsupported files and invalid headers.
+- Invalid identities, types, dates, observations, or repeated property/room information.
+- Missing or duplicate categories and occupied room/category combinations.
+- Unknown invoice targets and duplicate source identities.
+- Changed evidence under an existing identity.
+- Different snapshots at the controlling maximum invoice date.
 
-Existing identical invoice identities skip; changed values under the same identity conflict. A newly applied invoice replaces all six current fields, clears active overrides and records histories; blanks in optional installation clear previous values. Asset identity/category/room, assessments and maintenance stay unchanged. Equivalent newest evidence references are retained without duplicating asset values.
+Any blocker rejects the whole upload. Rejected rows remain visible in diagnostics.
+Valid surrounding rows do not commit separately. Partial import is excluded.
 
-Preview distinguishes proposed baseline entity inserts, new invoice items, distinct asset updates, historical-only items, skips, blockers and warnings. Show invoice before/after values and override effects. Only a blocker-free upload can be confirmed. Revalidate stale previews; commit evidence, records, updates and histories together or roll everything back. Report actual results only after success. Detailed precedence/comparison/provenance rules are in [data contracts](data-contracts.md).
+Missing installation dates, zero cost, and absent optional suppliers produce warnings. Warning-only valid uploads can proceed after confirmation.
+The fully populated valid demonstration examples contain no such warnings.
+
+Use the maximum invoice_date across stored and incoming evidence for each asset record.
+The first controlling invoice applies regardless of baseline purchase date. Later applied invoices require a strictly newer date.
+Older and equivalent equal-date items remain historical-only. Older-date snapshot differences do not select current values.
+Compare source snapshots, not manager-edited operational values.
+
+Applied invoices replace all six fields and clear active overrides with linked history.
+Historical-only items and skips preserve manual edits and overrides.
+
+Preview distinguishes entity inserts, new invoice items, distinct asset updates, historical-only items, skips, warnings, and blockers.
+Display before/after fields and override effects. Diagnostics identify file, sheet, row, field, and actionable reason when available.
+
+Recheck integrity and precedence at confirmation. Changed preview effects require refreshed review and renewed confirmation.
+Commit records, evidence, updates, and histories together. Failure preserves the previous saved state.
+Display actual committed counts only after success.
 
 ## 8. Asset and financial rules
 
-Assets supplies each record's initial ID, room, category, name, purchase/installation dates, positive whole-month useful life and cost/currency. Supported types are Lighting, Water supply and Air conditioning only; exactly one of each per room. There is no manual creation or category/room/ID editing. Invoice updates supply a full replacement snapshot of name, purchase/installation dates, life, cost and currency for an existing target.
+Assets supplies initial identities, names, categories, dates, useful life, cost, and currency.
+Useful life is a positive whole number of months. Cost is non-negative. Zero cost produces a warning.
+Installation is optional and cannot precede purchase. Missing installation uses purchase as the service anchor.
 
-Cost is non-negative; zero warns. Installation is optional, cannot precede purchase and falls back to purchase when absent. Invoice_date is required for precedence and is independent of the service-date financial calculation; no extra invoice/purchase ordering constraint is imposed by the product.
+Invoice_date controls precedence independently of service dates. The product imposes no invoice/purchase date-order constraint.
 
 ### Source, operational, and effective values
 
-Preserve the original baseline and every accepted invoice snapshot. Source cost/currency means latest applied invoice values, or baseline values when there is no applied invoice. Current dates/name/life can differ after manager edits until a newer invoice replaces them.
+Preserve baseline and invoice snapshots. Source values use the latest applied invoice pair, or the baseline pair before invoices.
+Manager edits can change current operational names, dates, and useful life until a newer invoice replaces them.
 
-A financial override is a cost/currency pair with required reason, recorder, actual timestamp and persistent before/after history. Calculations use active override values, otherwise the source pair. Reset restores that latest source pair, retaining history; it does not reset names/dates. Applied invoices clear active overrides with linked system-attributed history and before/after state. Historical-only and skipped invoice items do not clear them. Manual reset-baseline/origin handling is removed.
+An override requires a cost/currency pair, reason, recorder, actual timestamp, and before/after history.
+Calculations use effective financial values. Reset restores source values and retains history.
+Reset does not restore names, dates, or observations. Applied invoices clear overrides with system attribution and linked history.
+Historical-only items and skips do not clear overrides.
 
 ### In-service and financial reporting dates
 
-Installation is the in-service date; visibly use purchase date when absent. Use one explicit financial reporting date throughout financial and replacement results.
+The current installation date is the service anchor. Display purchase-date fallback when installation is absent.
+The original date in anniversary calculations means the current service anchor before clamping.
+It does not mean an immutable imported date.
 
-Use current operational purchase/installation dates when deriving the in-service anchor. "Original date" in the anniversary rule means that anchor before month clamping, not an immutable imported date that ignores manager edits.
-
-Timezone: Asia/Hong_Kong. A fresh session defaults financial reporting to the actual current date; keep the selected date for that session until changed/reset. This control does not advance the clock, change source data, generate faults, modify observations/timestamps, or reconstruct historical portfolio snapshots. Operational sections show current recorded state; maintenance overdue uses the actual current Hong Kong date independently.
+Use one financial reporting date for financial and replacement results. A new session starts with actual Hong Kong today.
+Retain the selected date for that session until the user changes or resets it.
+The control does not advance the operational clock or reconstruct historical portfolio state.
+It does not change source evidence, observations, faults, or timestamps.
+Operational overdue checks use the actual current Asia/Hong_Kong date.
 
 ### Depreciation
 
-Straight-line, zero residual, whole completed service months; none before service. Derive every month anniversary from the original in-service date and clamp to the destination month's last day when necessary. Cap completed months at useful life.
+Use straight-line depreciation, zero residual, and whole completed service months. Before service, completed months equal zero.
+Derive each anniversary from the original service day. Clamp to the destination month's last day when necessary.
+Cap completed months at useful life.
 
-Accumulated depreciation = effective acquisition cost × completed months ÷ useful-life months.
+Accumulated depreciation = effective acquisition cost × capped completed months ÷ useful-life months.
 
 Remaining book value = effective acquisition cost − accumulated depreciation.
 
-Use unrounded values for calculations/aggregation; depreciation cannot exceed cost and remaining value cannot be negative.
+Calculate and aggregate unrounded values. Depreciation cannot exceed cost. Book value cannot be negative.
 
-Examples:
+| Service anchor | Life | Reporting date | Required result |
+|---|---|---|---|
+| 2026-01-15, USD 1,200 | 12 months | 2026-07-14 | Five months. Depreciation USD 500. Book value USD 700. |
+| 2026-01-15, USD 1,200 | 12 months | 2026-07-15 | Six months. Depreciation USD 600. Book value USD 600. |
+| 2026-01-31 | Positive life | 2026-03-30 | First anniversary 2026-02-28. Second anniversary 2026-03-31. One completed month. |
+| 2024-01-31 | Positive life | 2024-03-31 | Anniversaries 2024-02-29 and 2024-03-31. Two completed months. |
+| 2024-02-29 | 12 months | 2025-02-28 | Replacement due. Book value zero. |
 
-- USD 1,200, service 2026-01-15, useful life 12 months: on 2026-07-14, five months gives USD 500 depreciation and USD 700 remaining; on 2026-07-15, six months gives USD 600 each.
-- Service 2026-01-31: first anniversary 2026-02-28, second 2026-03-31. On 2026-03-30 only one month is complete.
-- Service 2024-01-31: first anniversary 2024-02-29, second 2024-03-31.
-- Service 2024-02-29 with 12-month life: replacement 2025-02-28. Before service, depreciation is zero; at/beyond useful life, remaining value is zero.
-
-Expected replacement = original in-service date + useful-life months using the same anniversary convention. This is a planning assumption, not a predicted failure.
+Expected replacement = service anchor + useful-life months, using the same anniversary convention.
+This date is a planning assumption, not a predicted failure.
 
 ### Currency
 
-Supported currencies only: HKD, SGD, GBP, JPY, USD. Use one complete dated fixed fictional table; rates mean USD per one source unit, and USD = 1.
+Supported currencies are HKD, SGD, GBP, JPY, and USD. Use one complete, dated, fixed fictional FX table.
+Each rate means USD per one source-currency unit. USD equals 1.
 
-USD amount = effective transaction-currency amount × rate.
+USD amount = effective transaction-currency amount × configured rate.
 
-Validate completeness and rate integrity before financial reporting. A missing/invalid configured rate is a configuration failure requiring correction, not a normal partial-USD reporting workflow. Never replace missing rates with zero, omit affected amounts, or present an incomplete portfolio total. Source values remain preserved.
+Validate rate completeness and integrity before financial reporting. Missing or invalid configuration requires correction.
+Do not substitute zero, omit affected amounts, or display incomplete portfolio totals.
+Preserve source values when configuration fails. No live rates apply.
 
-Display the FX date and "Fictional fixed rates — not live market rates". USD display rounds to two decimals after calculation/aggregation. Local means effective transaction currency: group totals by currency, never combine unlike currencies into one local amount. Display mode never changes stored currency or rates.
+Display the configured FX date and “Fictional fixed rates — not live market rates”.
+The FX date identifies the fixed table. Changing the financial reporting date does not select another rate date.
+Round USD to two decimals after calculation and aggregation.
+Local mode groups totals by effective transaction currency. Never combine unlike local currencies into one amount.
+
+Display settings do not change stored currencies or rates.
 
 ## 9. Condition and maintenance rules
 
 ### Latest room-system observations
 
-Separate Lighting, Water supply, and Air conditioning. States:
+Lighting, Water supply, and Air conditioning have separate observations.
 
-- Healthy: recorded satisfactory assessment.
-- Attention needed: recorded non-critical concern.
-- Critical: recorded serious issue.
-- Unknown: no assessment, or an explicitly recorded assessment that could not establish condition.
+| State | Meaning |
+|---|---|
+| Healthy | Recorded satisfactory assessment. |
+| Attention needed | Recorded non-critical concern. |
+| Critical | Recorded serious issue. |
+| Unknown | No assessment, or an assessment that could not establish condition. |
 
-Unassessed Unknown can lack date/recorder. Every recorded assessment, including a recorded Unknown, requires observation date and recorder; note is optional. Missing imported observations default Unknown. Assets baseline observation fields and blocking validation are specified in the contracts.
+Unassessed Unknown requires no date or recorder. Every recorded assessment requires a date and recorder, including recorded Unknown.
+The note is optional. Missing imported observations initialize as Unknown.
+Managers may assess rooms across properties. Clear removes the date, recorder, and note.
 
-Managers may edit the latest assessment across properties. Clear assessment removes its date/recorder/note and returns to unassessed Unknown. Mark Healthy records satisfactory condition and requires metadata. Keep no observation history. Maintenance never automatically changes condition; a Healthy room can still show unresolved faults.
+Clear returns the observation to unassessed Unknown. No observation history exists.
+Maintenance never changes condition automatically. Healthy observations can coexist with unresolved tickets.
 
 ### Maintenance
 
-Ticket fields include ID, room, optional asset, description, Low/Medium/Critical severity, optional owner while Open, status, opened/updated timestamps, optional target date, and resolution note/timestamp when resolved. Use a short fictional owner list.
+A ticket requires identity, room, description, severity, status, and actual opened/updated timestamps.
+The asset link and target date are optional. The asset must belong to the room.
+Owner is optional while Open. Use a short fictional owner list.
 
-Allowed transitions: Open → In progress → Resolved. Entering In progress requires an owner; removing that owner is prohibited, but reassignment is allowed. Resolution requires a note and recorded actual timestamp. No skipping, reopening, deletion, or resolved edits.
+Allowed transitions are Open → In progress → Resolved.
+In progress requires a ticket owner. Owner removal is blocked in that status, but reassignment is allowed.
+Resolution requires a non-empty note and actual timestamp. Resolved tickets are read-only.
+Stage skipping, reopening, and deletion are excluded.
 
-Unresolved description/severity/target-date/owner/status changes retain persistent chronological before/after history. Ticket room/asset links remain fixed; linked assets must belong to the room.
+Room and asset links remain fixed after creation. Saved unresolved changes retain chronological before/after history.
+These changes include description, severity, target date, owner, and status.
 
-Unresolved sorting: Critical before Medium before Low; within severity, overdue target dates before others; then oldest opened timestamp. A target date is overdue only when before the actual current operational date. Display owner or "Unassigned", target date or its absence, and separate resolved tickets.
+Sort unresolved tickets by:
 
-Room-only critical faults are room issues. Only explicit asset linkage flags an asset as having a critical unresolved fault; never infer assets from room/facility type.
+1. Severity: Critical, Medium, then Low.
+2. Overdue target dates before other target dates within that severity.
+3. Oldest opening timestamp within that group.
+
+Overdue means a target date before the actual operational date. Show Unassigned when no owner exists.
+Show target-date absence explicitly. Present resolved tickets separately.
+
+Only an explicit asset link creates a critical unresolved asset flag. Room-only critical faults do not flag all room assets.
 
 ## 10. Dashboard and replacement planning
 
-Condition and ticket-count cards lead, followed by the prioritised unresolved-ticket table with room links. Finance and secondary replacement sections follow; resolved records are separately accessible.
+Overview orders shared filters, labelled operational counts, central room view, unresolved maintenance, then finance and replacement results.
+Resolved tickets remain separately accessible.
 
-Counts have distinct units:
+Count unique properties, rooms, and asset records. Count unresolved tickets in Open or In progress.
+Count critical unresolved tickets as the Critical subset. Group observations by system and state, including unassessed Unknown.
+Do not interchange ticket, room, asset, or observation counts. Sum each asset's value once, independent of ticket or invoice joins.
 
-- Properties, rooms, and assets count unique entities in scope.
-- Unresolved tickets are Open/In progress; critical unresolved tickets are that subset with Critical severity.
-- Observation counts group each room's three systems by system/state, including unassessed Unknown.
-- Ticket, affected-room, asset, and observation counts must not be presented as interchangeable.
-- Sum asset values once per unique asset, independent of joined ticket rows.
+All outputs use the same reporting filters. Condition and maintenance show current records.
+Only finance and replacement use the financial reporting date.
 
-All results share filters. Condition/maintenance reflect current records; only finance/replacement use the financial reporting date.
+| Replacement category | Rule |
+|---|---|
+| Overdue | Replacement date before the financial reporting date. |
+| Due today | Replacement date equal to the financial reporting date. |
+| Due soon | Replacement date after reporting date through reporting date + 90 days, inclusive. |
+| Later | Replacement date beyond reporting date + 90 days. |
 
-Replacement categories: overdue before that date, due today equal to it, due soon strictly after through +90 days inclusive, later beyond 90 days. Future spending window: strictly after reporting date through +12 calendar months inclusive. Separate overdue/due-today/future totals; overlapping categorisation must not duplicate assets within a total.
+The future spending window excludes overdue and due-today records. It includes dates through reporting date + 12 calendar months.
+Use the month-clamping convention for the calendar-month endpoint.
+Separate overdue, due-today, and future totals. Do not duplicate an asset within a total.
 
-Use effective acquisition-cost proxies, with currency display/rates from section 8. Do not subtract book value or claim inflation, installation labour, quotations, or predicted failures. Show explicit critical asset-link flags separately from dates.
+Use effective acquisition-cost spending proxies with configured FX/display rules. Do not subtract book value.
+These proxies exclude quotations, inflation, installation labor, and failure predictions.
+Display critical asset-link flags separately from date categories. They do not infer condition or automatically change replacement dates.
 
-## 11. Key entities and contracts
+## 11. Data meaning and relationships
 
-Property; Room; stable room/category Asset record; Invoice item; Invoice update history; latest Facility observation; Maintenance ticket; Maintenance history; Financial override history; preserved Source baseline/provenance; Import result.
+The [glossary](glossary.md) supplies the shared definitions. The following table states required relationships and information.
 
-Their field contracts and comparison boundaries are defined in [data contracts](data-contracts.md). These are logical interfaces, not a chosen database schema or architecture.
+| Entity | Identity and relationship | Required information | Optional information |
+|---|---|---|---|
+| Property | Stable property identity. Contains rooms in one location. | Identity, name, location, city. | None in the baseline interface. |
+| Room | Stable room identity. Belongs to one property. | Identity, parent property, unique property-local room label, three category records. | Assessment metadata when unassessed. |
+| Asset record | Stable asset identity. Belongs to one room/category combination. | Identity, room, category, name, purchase date, useful life, acquisition cost, currency. | Installation date and active financial override. |
+| Invoice item | Invoice identity plus line identity. Resolves to one existing room/category asset. | Both identities, target, full snapshot, invoice date, provenance. | Installation date and supplier. |
+| Observation | One latest assessment per room/system. Independent of tickets and purchases. | State. Recorded states also require date and recorder. | Note. Unassessed Unknown has no metadata. |
+| Maintenance ticket | Generated ticket identity. Belongs to one room. | Description, severity, status, actual timestamps. In progress also requires owner. Resolved also requires note/timestamp. | Same-room asset, target date, owner while Open. |
+
+Asset identity represents the room/category record, not a newly identified physical unit after every purchase.
+Ticket links therefore continue through replacements. An invoice does not prove fault resolution or satisfactory condition.
+The manager resolves tickets and records observations separately.
+
+Imported provenance includes upload reference, filename, sheet, row, and actual timestamp.
+Property and room baselines retain all contributing coordinates. Source comparisons ignore filenames, formatting, row order, and operational edits.
+
+Histories preserve invoice updates, financial overrides, and maintenance changes. Observations keep only the latest state.
+Import results distinguish proposed counts from actual committed counts.
+Financial results are calculated, not imported financial-result fields.
+
+Missing costs block import. Explicit zero costs warn. Missing observations remain Unknown, not Healthy.
+Missing installation uses the stated fallback. Missing FX configuration blocks complete financial reporting, not a zero-value substitute.
+
+Logical interfaces remain in [data contracts](data-contracts.md). Exact database columns and storage types remain deferred.
 
 ## 12. Failure and edge cases
 
-- Never guess source links or report success for a failed write.
-- Blocked uploads write no operational/evidence/history records; failed commits roll back inserts and existing-asset updates.
-- Edits survive identical baseline/invoice repeats and historical-only invoices; newly applied invoices intentionally replace their six fields and clear overrides. Changed evidence under an existing identity conflicts.
-- Validate existing room/category targets and exact three-category completeness; one invoice item has one target, while multiple items may reference that target over time.
-- Missing observation information never implies Healthy.
-- Healthy observations and unresolved faults may coexist.
-- Test pre-service, life-cap, month-end, and leap-year calculations.
-- Missing FX configuration prevents complete financial reporting; no fabricated totals.
-- Keep ticket room/asset integrity, owner requirements, fixed associations, history, and resolved immutability.
-- Cancelled edits, empty filters, and failed saves must not expose stale/successful-looking state.
-- Financial reporting-date changes must not affect operational overdue indicators.
-- Translation/currency preferences must not modify identifiers, source values, or user-entered text.
+Required [acceptance scenarios](acceptance-scenarios.md) cover these cases:
 
-## 13. Quality and interface requirements
+- Invalid source links, identity conflicts, category completeness, and repeated baseline disagreements.
+- Atomic rejection, commit failure, cancellation, stale previews, and accurate success feedback.
+- Identical repeats after edits and historical-only invoice preservation.
+- New invoice replacement of operational edits and active overrides.
+- Unknown observations, required assessment metadata, and independent faults.
+- Before-service, month-end, leap-year, useful-life cap, and replacement boundaries.
+- Missing FX configuration without fabricated totals.
+- Owner requirements, fixed ticket associations, history, and resolved immutability.
+- Empty filters without stale results and unique-asset financial totals.
+- Language/currency independence and unchanged source/user text.
+- Normal restart persistence and isolated rehearsals.
 
-Persist local operational records and histories across normal restart. Supply actionable field/coordinate diagnostics and a startup process reproducible in a clean local environment. No live provider is required for core workflows. Confidential materials and real data must not enter published artifacts.
+## 13. Quality and experience requirements
 
-Interface sets: English (base), Traditional Chinese, Simplified Chinese, Japanese. Translate labels, navigation, validation, status labels, and explanations/assumptions. Do not automatically translate names, notes, descriptions, IDs, source headers, or stored enums. Missing translated text falls back to English. English is mandatory; the other sets are stretch. Translation verification is deferred; completeness checks do not establish linguistic accuracy.
+### Device and browser
 
-English and USD are initial defaults when no preference exists. Later language/currency choices persist across browser restarts on that device and remain independent. Hosted storage, if later provided, must disclose durability/reset limits accurately.
+Required context: Windows laptop with Chrome. Record the actual Windows version, Chrome version, build, and date during testing.
+Existing responsive checks cover 1440px, 1024px, 768px, and 360px widths.
+These widths do not add mandatory alternative browsers. Keyboard and accessible feedback requirements remain required.
+
+### Language, currency, and editing
+
+English is mandatory. Traditional Chinese, Simplified Chinese, and Japanese remain stretch.
+Translate interface labels, navigation, validation, status labels, and assumptions for delivered sets.
+Do not translate names, notes, descriptions, identities, source headers, or stored enums automatically.
+Missing translations use English. Translation completeness does not establish linguistic accuracy.
+
+With no saved preference, use English and USD. Later selections persist across browser restarts on that device.
+Language and currency preferences remain independent. Reporting date remains a session setting.
+Section 2 defines access. Sections 8–9 define edit boundaries without authentication.
+
+### Persistence and demonstration isolation
+
+Successful local records, source evidence, and histories survive normal restart in the selected data store.
+Each rehearsal selects a new isolated demo data store. It starts without imported records, observations, tickets, overrides, or histories.
+Normal saved data and browser preferences remain unchanged. Restarting the same rehearsal retains its saved state.
+
+Another rehearsal uses another empty store. No destructive reset button is required.
+Each new session defaults the financial reporting date to actual Hong Kong today.
+The demonstrator selects financial example dates explicitly.
+
+Store selection and startup mechanisms remain technical-planning details. Do not invent a working command or control before implementation.
+Document and check a reproducible clean-environment startup later. Disclose any future hosted durability or reset limits accurately.
+Core workflows require no live provider. Do not publish real data or confidential materials.
+
+### Writing policy
+
+Apply the supplied ASD-STE100 guidance. Use Strict mode for procedures, acceptance scenarios, message examples, and verification instructions.
+Use STE-flavored mode for descriptions. This policy does not claim official dictionary compliance.
+
+- Limit instruction sentences to 20 words.
+- Limit descriptive sentences to 25 words.
+- Write one instruction per sentence.
+- Use active voice and simple tenses.
+- Avoid semicolons, phrasal verbs, unnecessary nominalizations, and marketing adjectives.
+- Limit paragraphs to one topic and six sentences.
+- Use lists for sequences with three or more steps.
+- Use the shared glossary consistently.
+- Preserve facts, conditions, scope, numbers, and uncertainty.
+
+Check these rules manually. The supplied linter is unavailable locally.
+Record necessary precision exceptions in [the review record](spec-review.md).
 
 ## 14. Measurable completion criteria
 
-SC-001: Every committed room has exactly one asset record in each required category, each linked to its property/room. Every invoice item resolves to one existing target; initial assets need no invoice. Four-location evidence from v0.1 maps to AR-001.
+SC-001: Every committed room has exactly three linked category records. Each invoice item resolves to one existing asset.
+Initial assets require no invoice. AR-001 owns four-location fixture coverage.
 
-SC-002: Verify independent baseline/invoice commits, subset updates, mixed-validity rejection, duplicates/changed-source conflicts, date precedence/equal-date conflicts, historical-only evidence, repeats after edits, stale previews and rollback. Atomic uploads retain the superseding v0.2 policy over v0.1 valid-subset imports.
+SC-002: Check independent uploads, subsets, blockers, conflicts, precedence, historical-only items, repeats, stale previews, and atomic rollback.
+Atomic uploads retain the v0.2 policy that superseded v0.1 partial imports.
 
-SC-003: Verify numerical examples, month-end/leap boundaries, effective-cost overrides, FX completeness, and replacement-window boundaries.
+SC-003: Check numerical examples, calendar boundaries, effective overrides, complete FX configuration, and replacement endpoints.
 
-SC-004: Verify asset viewing/editing, invoice replacement/override clearing/history, latest-invoice/baseline reset fallback, observation assessment/clear and maintenance progression/history; successful records survive restart. Manual creation is excluded and the AR-002 gap disclosed.
+SC-004: Check permitted asset editing, invoice updates, overrides, source reset, observations, maintenance, histories, and normal restart persistence.
+Disclose the excluded manual creation part of AR-002.
 
-SC-005: Verify consistent filters, counting units, drill-downs, empty states, and no financial duplication.
+SC-005: Check consistent filters, distinct count units, room selection, empty states, and unique-asset financial totals.
 
-SC-006: Relocated to AR-006; this ID is retained as a traceability marker, not an additional product criterion.
+SC-006: Retain this identifier as a traceability marker. AR-006 owns its presentation obligation.
 
-SC-007: Record evidence for all required product acceptance scenarios before submission; disclose unmet criteria. Assessment evidence is tracked separately.
+SC-007: Record evidence for every required scenario before submission. Disclose unmet criteria.
+Documentation coverage does not mean application acceptance.
 
-SC-008: Verify mandatory English UI, translation boundary/fallback for delivered stretch sets, grouped local/USD values, persistent preferences, and financial/operational date independence.
+SC-008: Check mandatory English, delivered translation boundaries, local/USD results, persistent preferences, separate dates, and rehearsal isolation.
+
+The documentation revision requires all 28 checklist rows and complete required scenario coverage.
+Application completion requires actual evidence under these SC and AR identifiers.
 
 ## 15. Decision and approval record
 
-The following are owner-approved prototype policies, approved by Alex on 2026-10-02. They are not client requirements or claims of implemented/tested behaviour.
+Alex reconfirmed D-001–D-016 and the existing Confirmed UI choices on 2026-10-03.
+Source: Alex's answers to Q1–Q4 in this specification-readiness planning conversation, followed by the implementation request.
+This confirmation leaves Proposed details pending. It is owner approval, not client acceptance or execution evidence.
 
-| Decision | Selected policy | Rationale | Affected requirements |
+| Decision | Selected policy | Rationale | Trace |
 |---|---|---|---|
-| D-001 | Room understanding and accountable maintenance first; finance/replacement secondary | Reflect primary management outcome | US-02–05, FR-007, FR-014 |
-| D-002 | Two workbook types with independent atomic confirmed uploads: Assets baseline then Invoices updates; warnings visible | Trustworthy initialisation and updates | US-01, FR-002–004, FR-015 |
-| D-003 | Preserve normalised baseline/invoice identities; identical skip and changed-identity conflict; new invoices update current records by newest invoice_date | Preserve evidence while allowing accountable updates | US-01, FR-005 |
-| D-004 | Each invoice item targets one existing room/category asset; many items over time; baseline has independent cost/currency; no allocation | Traceable update evidence | FR-001, FR-019 |
-| D-005 | Paired override/reset/history; applied invoices clear overrides; reset to latest invoice or baseline fallback; effective-cost calculations | Correct values while preserving each source | US-03/05, FR-019 |
-| D-006 | Cross-property record viewing/editing; master data import-only; no manual asset creation; identity/room/category fixed | Define edit boundary and disclose AR-002 add-asset gap | FR-001, FR-010, FR-016 |
-| D-007 | Latest observations repeated consistently in Assets baseline; invoices do not change them; assessed metadata required; Clear → Unknown | Keep assessments independent from purchase updates | FR-009, FR-016 |
-| D-008 | Three forward-only statuses; owner required in progress; resolved read-only; unresolved edits/history and agreed sorting | Accountable work | US-04, FR-012–013 |
-| D-009 | Complete fixed fictional five-currency FX table, USD rate 1 | Reproducible reporting | FR-011, FR-018 |
-| D-010 | Effective transaction-currency local mode, grouped totals; independent persistent defaults English/USD | Understandable display | FR-017–018 |
-| D-011 | Asia/Hong_Kong actual operational date; separate session financial date | Avoid historical/simulation claims | FR-011, FR-014 |
-| D-012 | Installation/purchase fallback; whole original-date anniversaries; zero residual; capped straight-line | Explainable valuation | FR-011, SC-003 |
-| D-013 | 90-day category and 12-month future window; overdue/due-today totals separate | Explicit spending horizon | US-05, FR-014 |
-| D-014 | Four interface sets; English mandatory, others stretch; English fallback | Bound translation scope | FR-017 |
-| D-015 | Four properties, twelve rooms, exactly thirty-six assets; three universal categories; one AI invocation generates fully populated valid and deliberately invalid pairs | Manageable reproducible update fixtures | Sample-data plan, AR-001 |
-| D-016 | Invoice full snapshots; newest-date control; historical-only older items; controlling-date conflicts blocked; applied updates replace edits and retain histories | Explainable current values and repeat safety | US-01/03, FR-005/019, SC-002/004 |
+| D-001 | Room understanding and accountable maintenance first. Finance/replacement remain secondary. | Primary management outcome. | US-02–US-05, FR-007, FR-014 |
+| D-002 | Independent atomic confirmed Assets and Invoices uploads with visible warnings. | Trusted initialization and updates. | US-01, FR-002–FR-004, FR-015 |
+| D-003 | Preserve source identities. Skip identical repeats. Block changed identities. Apply new invoices by newest date. | Evidence and accountable updates. | US-01, FR-005 |
+| D-004 | One existing room/category target per invoice item. Many items over time. Baseline finance is independent. No allocation. | Traceable purchases. | FR-001, FR-019 |
+| D-005 | Paired override/reset/history. Applied invoices clear overrides. Reset restores latest invoice values or baseline values. | Accountable corrections. | US-03, US-05, FR-019 |
+| D-006 | Cross-property editing within boundaries. Master data is import-only. No manual asset creation or identity changes. | Explicit edit scope and AR-002 gap. | FR-001, FR-010, FR-016 |
+| D-007 | Consistent baseline observations. Assessed metadata is required. Clear returns Unknown. Invoices do not change observations. | Independent condition assessment. | FR-009, FR-016 |
+| D-008 | Three forward-only statuses. Required owner in progress. Resolved read-only. Persistent history and defined sorting. | Accountable work. | US-04, FR-012, FR-013 |
+| D-009 | Complete fixed fictional five-currency FX table. USD equals 1. | Reproducible reporting. | FR-011, FR-018 |
+| D-010 | Grouped local totals and independent persistent language/currency choices. Initial defaults are English/USD. | Clear display. | FR-017, FR-018 |
+| D-011 | Actual Asia/Hong_Kong operational date with separate session financial reporting date. | No historical-state claim. | FR-011, FR-014 |
+| D-012 | Installation/purchase fallback, original-day anniversaries, zero residual, and capped straight-line depreciation. | Explainable valuation. | FR-011, SC-003 |
+| D-013 | 90-day category and 12-month future window. Separate overdue/due-today totals. | Explicit spending horizon. | US-05, FR-014 |
+| D-014 | English mandatory. Traditional Chinese, Simplified Chinese, and Japanese stretch. English fallback. | Bounded translation scope. | FR-017 |
+| D-015 | Four properties, twelve rooms, thirty-six assets. One invocation produces fully populated valid and deliberately invalid pairs. | Reproducible fixtures. | AR-001, sample-data plan |
+| D-016 | Full invoice snapshots and newest-date control. Older items remain evidence. Applied updates replace edits and retain history. | Clear current values. | US-01, US-03, FR-005, FR-019, SC-002, SC-004 |
+| D-017 | Room manager primary. Executives and data-maintenance users support the maintenance decision. | Clear audience. | US-01–US-05, section 1 |
+| D-018 | Windows laptop with Chrome required. Record the actual browser version during tests. | Defined walkthrough context. | Section 13, E-UI, E-DEMO |
+| D-019 | New isolated store per rehearsal. Preserve normal saved data and browser preferences. No destructive reset button required. | Repeatable demonstrations. | FR-015, SC-004, SC-008, E-STARTUP, E-DEMO |
 
-Approval date is 2026-10-02. D-002–007 and D-015 are revised, and D-016 added, by Alex's explicit approval of the v0.3 implementation plan. Other policy rows retain earlier approval. This is owner approval, not client acceptance or application evidence.
+Historical record: v0.3 recorded approval on 2026-10-02.
+It recorded revised D-002–D-007 and D-015, plus new D-016, from the approved v0.3 implementation plan.
+Other rows retained earlier recorded approval. The current confirmation does not independently prove those older dates.
 
-Superseded in v0.3: four-file paired imports, prohibition of all import-driven current-value updates, mandatory invoice links on initial assets, fixed single invoice linkage over an asset's lifetime, generated manual asset creation, separate Rooms source workbook, OTHER category/minimum-only three-asset coverage, and opt-in invalid generation. Earlier superseded policies remain: valid-subset imports, Assigned status, partial-FX reporting and source-only replacement proxies. Observation independence, atomic writes and depreciation remain retained.
+The v0.3 superseded policies remain superseded:
 
-Unresolved/deferred: translation verification (owner: Alex; revisit before submission). Exact header spellings, parsing/identifier grammar and technical history representations remain implementation proposals in the contracts. The owner-approved removal of manual asset creation leaves AR-002's add-asset obligation unmet and must be disclosed; do not rewrite that external obligation to imply compliance.
+- Four-file paired imports and separate Rooms workbooks.
+- Mandatory initial invoice links and single lifetime invoice linkage.
+- Prohibition of all invoice-driven current-value updates.
+- Generated manual asset creation, OTHER category, and minimum-only category coverage.
+- Opt-in invalid sample generation.
+
+Earlier superseded policies include valid-subset imports, Assigned status, partial FX reporting, and source-only spending proxies.
+Retained policies include independent observations, atomic writes, and depreciation rules.
+
+Deferred work includes translation review by Alex before submission.
+Exact header spellings, parsing, identifier grammar, and technical history representations remain proposals in the contracts.
+The owner-approved exclusion of manual creation does not remove the external AR-002 obligation.
+
+## 16. Checklist coverage
+
+Each row is Specified. This status describes documentation only. Application scenarios remain NOT RUN.
+
+| ID | Checklist item | Defining section | Acceptance or authority coverage |
+|---|---|---|---|
+| CL-01 | Main user and primary decision | [Purpose](#1-problem-and-intended-outcome) | [Room review](acceptance-scenarios.md#us-02), [Maintenance](acceptance-scenarios.md#us-04), D-017 |
+| CL-02 | End-to-end demonstration | [Purpose](#1-problem-and-intended-outcome), [Demo](demo.md#1-rehearsal-state) | [Demo scenarios](acceptance-scenarios.md#demo) |
+| CL-03 | Required, optional, excluded capabilities | [Scope](#3-product-scope) | [Asset boundaries](acceptance-scenarios.md#ac-us03-001), [Languages](acceptance-scenarios.md#ac-us02-017) |
+| CL-04 | Prototype limits | [Scope](#3-product-scope), [Demo disclosures](demo.md#4-explanation-and-disclosure) | [Assumptions](acceptance-scenarios.md#ac-ux-019) |
+| CL-05 | Correct owner-approval labels | [Approval record](#15-decision-and-approval-record), [UI authority](ui-ux-spec.md#1-authority-and-context) | Q4 dated 2026-10-03. [Documentation review](spec-review.md) |
+| CL-06 | Journey starts and successful outcomes | [Journeys](#5-user-journeys-and-acceptance-scenarios) | [Independent setups](acceptance-scenarios.md#verification-method) |
+| CL-07 | Journey priorities and independent checks | [Journeys](#5-user-journeys-and-acceptance-scenarios) | [Verification method](acceptance-scenarios.md#verification-method) |
+| CL-08 | Concrete Given/When/Then outcomes | [Journeys](#5-user-journeys-and-acceptance-scenarios) | [Required scenarios](acceptance-scenarios.md) |
+| CL-09 | Invalid, empty, and failure cases | [Failures](#12-failure-and-edge-cases) | [Import](acceptance-scenarios.md#us-01), [Room](acceptance-scenarios.md#us-02), [Writes](acceptance-scenarios.md#ac-ux-013) |
+| CL-10 | Measurable completion | [Completion](#14-measurable-completion-criteria) | SC-001–SC-008, [Evidence ledger](assessment-requirements.md#5-evidence-ledger) |
+| CL-11 | Depreciation timing and fallback | [Finance](#8-asset-and-financial-rules) | [Financial scenarios](acceptance-scenarios.md#us-05) |
+| CL-12 | Reporting and replacement dates | [Finance](#8-asset-and-financial-rules), [Replacement](#10-dashboard-and-replacement-planning) | [Financial scenarios](acceptance-scenarios.md#us-05) |
+| CL-13 | FX direction, date, and missing rates | [Currency](#currency) | [FX checks](acceptance-scenarios.md#ac-us05-008) |
+| CL-14 | Import warnings, rejection, conflict, and partial import | [Import](#7-import-rules) | [Import scenarios](acceptance-scenarios.md#us-01) |
+| CL-15 | Observations and maintenance relationship | [Condition](#9-condition-and-maintenance-rules) | [Independent conditions](acceptance-scenarios.md#ac-us02-013), [Resolution](acceptance-scenarios.md#ac-us04-013) |
+| CL-16 | Maintenance transitions and required information | [Maintenance](#maintenance) | [Maintenance scenarios](acceptance-scenarios.md#us-04) |
+| CL-17 | Replacement priorities and spending proxies | [Replacement](#10-dashboard-and-replacement-planning) | [Replacement scenarios](acceptance-scenarios.md#us-05) |
+| CL-18 | Entity meanings | [Data meaning](#11-data-meaning-and-relationships), [Glossary](glossary.md) | [Asset identity](acceptance-scenarios.md#ac-us03-001), [Invoice](acceptance-scenarios.md#ac-us01-002) |
+| CL-19 | Identity and relationship rules | [Sources](#4-source-data-identity-and-evidence) | [Import integrity](acceptance-scenarios.md#us-01), [Ticket links](acceptance-scenarios.md#ac-us04-002) |
+| CL-20 | Required and optional information | [Data meaning](#11-data-meaning-and-relationships) | [Warnings](acceptance-scenarios.md#ac-us01-008), [Assessment metadata](acceptance-scenarios.md#ac-us02-010) |
+| CL-21 | Imported provenance | [Data meaning](#11-data-meaning-and-relationships) | [Source history](acceptance-scenarios.md#ac-us03-005) |
+| CL-22 | Stored and calculated information | [Finance](#8-asset-and-financial-rules), [Data meaning](#11-data-meaning-and-relationships) | [Read-only results](acceptance-scenarios.md#ac-us03-002), [FX](acceptance-scenarios.md#ac-us05-008) |
+| CL-23 | Unknown does not mean zero or Healthy | [Data meaning](#11-data-meaning-and-relationships) | [Unknown](acceptance-scenarios.md#ac-us02-009), [Missing FX](acceptance-scenarios.md#ac-us05-009) |
+| CL-24 | Primary device and browser | [Experience](#13-quality-and-experience-requirements) | [Browser checks](acceptance-scenarios.md#ac-ux-016), [Demo record](acceptance-scenarios.md#ac-demo-004) |
+| CL-25 | Explicit language scope | [Scope](#3-product-scope), [Experience](#13-quality-and-experience-requirements) | [Language checks](acceptance-scenarios.md#ac-us02-017) |
+| CL-26 | Language, currency, and date effects | [Experience](#13-quality-and-experience-requirements) | [Preferences](acceptance-scenarios.md#ac-us02-016), [Date independence](acceptance-scenarios.md#ac-us02-008) |
+| CL-27 | Edit permissions and scope | [Users](#2-users), [Asset rules](#8-asset-and-financial-rules) | [Cross-property edits](acceptance-scenarios.md#ac-us02-007), [Fixed identity](acceptance-scenarios.md#ac-us03-002) |
+| CL-28 | Persistence, demonstration, and reset | [Experience](#13-quality-and-experience-requirements), [Demo](demo.md#1-rehearsal-state) | [Demo isolation](acceptance-scenarios.md#ac-demo-001), [Restart](acceptance-scenarios.md#ac-demo-002) |
