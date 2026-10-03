@@ -2,7 +2,7 @@
 
 Version: 1.0
 
-Approved: 2026-10-03. Status: Verification design ready. All application checks NOT RUN.
+Approved: 2026-10-03. Status: Verification design ready. Foundation execution results are in the [f001 report](jobs/feature-job-reports/f001-report-local-runtime.md); full scenario completion remains pending.
 
 Use [acceptance scenarios](acceptance-scenarios.md), [UI requirements](ui-ux-spec.md), and [technical design](technical-design.md).
 The required ledger fields are in [assessment evidence](assessment-requirements.md#5-evidence-ledger).
@@ -34,7 +34,7 @@ Manual evidence is required for installed Chrome even when Chromium automation p
 
 ## 2. Scenario-to-check matrix
 
-All rows are NOT RUN. U/I/B/M identify planned checks, not existing tests.
+U/I/B/M identify required methods. This table owns the mapping; series reports own actual execution results and deferred subcases.
 
 | Scenario and expected behavior | Methods | Evidence groups |
 |---|---|---|

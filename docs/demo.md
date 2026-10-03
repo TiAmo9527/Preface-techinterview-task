@@ -6,7 +6,7 @@ Revised: 2026-10-03
 
 Target delivery: 2026-10-05
 
-Status: Planned. Application verification and rehearsal: NOT RUN.
+Status: Planned walkthrough. Persistence foundation verification exists in the f001 series report. Web journeys and rehearsal: NOT RUN.
 
 [Product requirements](product-spec.md), [UI/UX requirements](ui-ux-spec.md), and [assessment requirements](assessment-requirements.md) define this demonstration.
 Use fictional [planned samples](sample-data-plan.md). Use the [shared glossary](glossary.md) for terms.
@@ -34,7 +34,7 @@ English/USD apply only when browser preferences do not exist.
 Operational date remains actual Hong Kong today regardless of financial example dates.
 
 Required checks: [Demo scenarios](acceptance-scenarios.md#demo) and [infrastructure scenarios](acceptance-scenarios.md#infrastructure).
-Application status remains NOT RUN.
+The timed walkthrough and its feature journeys remain NOT RUN. Foundation execution is recorded in the [f001 report](jobs/feature-job-reports/f001-report-local-runtime.md).
 
 ## 2. Proposed 12-minute sequence
 
@@ -74,7 +74,7 @@ Before later rehearsal:
 6. Record any failed or omitted checks.
 7. Measure the walkthrough duration.
 
-The current application only prints a title. No application verification or timed rehearsal occurred.
+The persistence foundation supports initialization and has integration evidence. Web journeys and timed rehearsal remain NOT RUN.
 
 ## 4. Explanation and disclosure
 
@@ -106,25 +106,26 @@ Keep confidential evidence local or within explicitly authorized interview shari
 
 ## 6. Local runtime procedures
 
-Status: Approved future command contract. These commands require later application implementation and have NOT RUN.
-The current python app.py command prints a title. It does not implement these options.
+Status: Initialization and persistence checks are implemented. Serving, imports, reset UI, and browser checks require later jobs.
+Use --init-db now. Running without that option explains that browser serving is pending f001c.
 Run from the repository root. Keep one application process on port 8000.
-Use Python 3.11. Initial installation downloads dependencies. Later application operation is fully local.
+Use Python 3.12.5. Alex approved the tested current runtime on 2026-10-03, superseding Python 3.11.
+Initial installation downloads dependencies. Later application operation is fully local.
 
 ### Install and initialize
 
 ```powershell
-py -3.11 -m venv .venv
+py -3.12 -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -r requirements-dev.lock
 .\.venv\Scripts\python.exe app.py --init-db
 ```
 
-Implementation must supply tested requirements.lock and requirements-dev.lock files with pinned versions.
+requirements.lock and requirements-dev.lock contain the pinned Windows/Python 3.12.5 environment.
 The development lock includes runtime packages plus the test packages.
 --init-db applies schema version 1 to runtime/app.sqlite3 and exits. It retains supported existing records.
 An unsupported schema or failed migration blocks startup with an actionable message.
 
-### Start, stop, and restart
+### Start, stop, and restart (pending f001c)
 
 ```powershell
 .\.venv\Scripts\python.exe app.py
