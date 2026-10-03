@@ -106,8 +106,9 @@ Keep confidential evidence local or within explicitly authorized interview shari
 
 ## 6. Local runtime procedures
 
-Status: Initialization and persistence checks are implemented. Serving, imports, reset UI, and browser checks require later jobs.
-Use --init-db now. Running without that option explains that browser serving is pending f001c.
+Status: F001 initialization, serving, reset and browser foundations are implemented.
+Alex confirmed the remaining scoped checks passed on 2026-10-03. Imports and complete workflows require later jobs.
+Use the [README startup guide](../README.md#start-the-demonstration-from-zero) for first-time Windows instructions.
 Run from the repository root. Keep one application process on port 8000.
 Use Python 3.12.5. Alex approved the tested current runtime on 2026-10-03, superseding Python 3.11.
 Initial installation downloads dependencies. Later application operation is fully local.
@@ -125,7 +126,7 @@ The development lock includes runtime packages plus the test packages.
 --init-db applies schema version 1 to runtime/app.sqlite3 and exits. It retains supported existing records.
 An unsupported schema or failed migration blocks startup with an actionable message.
 
-### Start, stop, and restart (pending f001c)
+### Start, stop, and restart
 
 ```powershell
 .\.venv\Scripts\python.exe app.py
@@ -139,6 +140,8 @@ Restart preserves domain state and command receipts. Pending in-memory previews 
 Browser-tab sessions retain their reporting date during reload. A newly opened session starts with Hong Kong today.
 
 ### Seed through reviewed imports
+
+This procedure requires F002. It is unavailable in the F001 build.
 
 1. Reset the shared store through the confirmed UI when an empty state is needed.
 2. Select Import Assets and upload sample/2026-10-03/invalid/Assets.xlsx.

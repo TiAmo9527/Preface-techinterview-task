@@ -4,10 +4,47 @@ from datetime import datetime, timezone
 import hashlib
 import json
 from uuid import uuid4
+import socket
+from threading import Thread
+import time
 
 import pytest
 
 from src.db import Store
+
+
+def pytest_configure(config):
+    # Mapped integration/browser files intentionally share test_runtime.py.
+    # Import by qualified path so the prescribed full-suite command collects both.
+    if config.option.importmode == 'prepend':
+        config.option.importmode = 'importlib'
+
+
+@pytest.fixture
+def runtime_server(store, clock):
+    """One production Uvicorn server and isolated on-disk store per browser case."""
+    import uvicorn
+    from app import create_app
+    application = create_app(store_path=store.path, clock=clock)
+    sock = socket.socket()
+    sock.bind(('127.0.0.1', 0))
+    port = sock.getsockname()[1]
+    server = uvicorn.Server(uvicorn.Config(application, host='127.0.0.1', port=port, log_level='error'))
+    thread = Thread(target=server.run, kwargs={'sockets': [sock]}, daemon=True)
+    thread.start()
+    deadline = time.monotonic() + 10
+    while not server.started and thread.is_alive() and time.monotonic() < deadline:
+        time.sleep(.02)
+    if not server.started:
+        server.should_exit = True
+        thread.join(timeout=10)
+        sock.close()
+        raise RuntimeError('Isolated browser server failed to start')
+    yield {'url': f'http://127.0.0.1:{port}', 'app': application, 'store': store}
+    server.should_exit = True
+    thread.join(timeout=10)
+    sock.close()
+    assert not thread.is_alive(), 'Browser server did not stop'
 
 
 def json_text(value) -> str:

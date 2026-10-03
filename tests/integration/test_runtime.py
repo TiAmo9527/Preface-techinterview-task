@@ -18,6 +18,10 @@ from app import create_app
 from src.db import SaveFailed, SchemaError, Store, StoreBusy
 from src.db import schema
 from src.db.store import DEFAULT_STORE_PATH, REPOSITORY_ROOT
+from src.db import reset_queries
+from src.services.runtime import reset_store
+from src.services.contracts import ResetRequest
+from src.services.errors import CommandError
 
 
 def snapshot(store):
@@ -26,6 +30,148 @@ def snapshot(store):
             "SELECT name FROM sqlite_schema WHERE type='table' AND name NOT LIKE 'sqlite_%' ORDER BY name"
         )]
         return {table: [tuple(row) for row in connection.execute(f'SELECT * FROM "{table}" ORDER BY rowid')] for table in tables}
+
+
+def test_ac_demo_001_reset(seeded_store, clock):
+    before = seeded_store.metadata()
+    application = create_app(store_path=seeded_store.path, clock=clock)
+    evicted = []
+    application.state.evict_previews = evicted.append
+    with TestClient(application) as client:
+        config = client.get('/api/config')
+        assert config.status_code == 200 and config.headers['cache-control'] == 'no-store'
+        result = client.post('/api/reset', json={'generation_id': before.generation_id, 'confirm': True})
+        assert result.status_code == 200
+        assert result.headers['cache-control'] == 'no-store'
+        assert result.json()['generation_id'] != before.generation_id
+        assert all(value == 0 for value in result.json()['counts'].values())
+        updated = client.get('/api/config').json()
+        for key in ('fx', 'configured_fx', 'owners', 'delivered_languages', 'schema_version', 'configuration_version'):
+            assert updated[key] == config.json()[key]
+        assert '/static/shell.js' in client.get('/').text
+        assert client.get('/static/shell.js').status_code == 200
+    assert evicted == [before.generation_id]
+    assert seeded_store.path.exists()
+    assert all(not rows for name, rows in snapshot(seeded_store).items() if name != 'store_metadata')
+    assert seeded_store.initialize().schema_version == before.schema_version
+
+
+@pytest.mark.parametrize('payload', [{}, {'confirm': False}, {'confirm': 'true'}, {'confirm': 1},
+                                     {'confirm': True, 'extra': 'no'}, {'confirm': True, 'generation_id': 'bad'}])
+def test_ac_infra_004_invalid_reset(seeded_store, payload):
+    before = snapshot(seeded_store)
+    body = {'generation_id': seeded_store.metadata().generation_id, **payload}
+    with TestClient(create_app(store_path=seeded_store.path)) as client:
+        result = client.post('/api/reset', json=body)
+    assert result.status_code == 422
+    assert result.json()['code'] == 'INVALID_INPUT'
+    assert snapshot(seeded_store) == before
+
+
+@pytest.mark.parametrize('failure_at', ['halfway', 'metadata', 'commit'])
+def test_ac_infra_004_failed_reset(seeded_store, monkeypatch, failure_at):
+    before = snapshot(seeded_store)
+    if failure_at == 'halfway':
+        original = reset_queries.DELETE_ORDER
+        monkeypatch.setattr(reset_queries, 'DELETE_ORDER', original[:7] + ('missing_reset_table',) + original[7:])
+    elif failure_at == 'metadata':
+        def fail(connection, replacement):
+            raise sqlite3.DatabaseError('injected metadata failure')
+        monkeypatch.setattr(reset_queries, 'replace_generation', fail)
+    else:
+        original_connect = Store._connect
+
+        class FailingCommit:
+            def __init__(self, connection):
+                self.connection = connection
+            def __getattr__(self, name):
+                return getattr(self.connection, name)
+            def commit(self):
+                raise sqlite3.DatabaseError('injected commit failure')
+
+        def connect(self, *, write):
+            connection = original_connect(self, write=write)
+            return FailingCommit(connection) if write else connection
+        monkeypatch.setattr(Store, '_connect', connect)
+    evicted = []
+    with pytest.raises(CommandError) as caught:
+        reset_store(seeded_store, ResetRequest(generation_id=seeded_store.metadata().generation_id, confirm=True),
+                    evict_previews=evicted.append)
+    assert caught.value.code == 'SAVE_FAILED'
+    assert snapshot(seeded_store) == before and evicted == []
+
+
+def test_ac_infra_005_generation_selective_hook(seeded_store):
+    old = seeded_store.metadata().generation_id
+    entries = {'old': old}
+    def evict(generation):
+        # This read must work after commit and must see the replacement generation.
+        replacement = seeded_store.metadata().generation_id
+        assert replacement != old
+        entries['new'] = replacement
+        for key in list(entries):
+            if entries[key] == generation:
+                del entries[key]
+    result = reset_store(seeded_store, ResetRequest(generation_id=old, confirm=True), evict_previews=evict)
+    assert entries == {'new': result.generation_id}
+
+
+def test_ac_infra_005_hook_failure_does_not_claim_rollback(seeded_store, caplog):
+    old = seeded_store.metadata().generation_id
+    def fail(generation):
+        raise RuntimeError('injected registry cleanup failure')
+    result = reset_store(seeded_store, ResetRequest(generation_id=old, confirm=True), evict_previews=fail)
+    assert result.generation_id == seeded_store.metadata().generation_id != old
+    assert all(value == 0 for value in result.counts.model_dump().values())
+    assert 'after committed reset' in caplog.text
+
+
+def test_ac_infra_006_old_reset_preserves_new_portfolio(seeded_store):
+    old = seeded_store.metadata().generation_id
+    with TestClient(create_app(store_path=seeded_store.path)) as client:
+        assert client.post('/api/reset', json={'generation_id': old, 'confirm': True}).status_code == 200
+        with seeded_store.transaction() as connection:
+            connection.execute("INSERT INTO properties VALUES ('HK-P02', 'New fictional portfolio', 'HONG_KONG', 'Hong Kong')")
+        before = snapshot(seeded_store)
+        result = client.post('/api/reset', json={'generation_id': old, 'confirm': True})
+        assert result.status_code == 409 and result.json()['code'] == 'STALE_STORE'
+    assert snapshot(seeded_store) == before
+
+
+def test_ac_infra_004_http_failure_preserves_store(seeded_store, monkeypatch):
+    before = snapshot(seeded_store)
+    with TestClient(create_app(store_path=seeded_store.path)) as client:
+        monkeypatch.setattr(reset_queries, 'DELETE_ORDER', reset_queries.DELETE_ORDER[:7] + ('missing',))
+        result = client.post('/api/reset', json={'generation_id': seeded_store.metadata().generation_id, 'confirm': True})
+        assert result.status_code == 500 and result.json()['code'] == 'SAVE_FAILED'
+    assert snapshot(seeded_store) == before
+
+
+def test_ac_us02_017_config_invalid_fx_readable(store, clock):
+    from copy import deepcopy
+    from src.services.configuration import DEFAULT_CONFIGURATION
+    config = deepcopy(DEFAULT_CONFIGURATION)
+    config['fx']['usd_per_unit']['USD'] = '2'
+    before = snapshot(store)
+    with TestClient(create_app(store_path=store.path, config=config, clock=clock)) as client:
+        result = client.get('/api/config')
+        assert result.status_code == 200
+        assert result.json()['fx'] is None and result.json()['diagnostics']
+        assert result.json()['configured_fx']['usd_per_unit']['USD'] == '2'
+        assert result.json()['operational_date'] == '2026-10-03'
+        assert result.json()['delivered_languages'] == ['en']
+        assert client.get('/').status_code == 200
+    assert snapshot(store) == before
+
+
+def test_ac_infra_004_busy_reset(seeded_store):
+    before = snapshot(seeded_store)
+    generation = seeded_store.metadata().generation_id
+    with TestClient(create_app(store_path=seeded_store.path)) as client:
+        with seeded_store.transaction():
+            result = client.post('/api/reset', json={'generation_id': generation, 'confirm': True})
+            assert result.status_code == 503 and result.json()['code'] == 'STORE_BUSY'
+    assert snapshot(seeded_store) == before
 
 
 def test_ac_demo_002(seeded_store):
@@ -51,7 +197,7 @@ def test_ac_demo_005(tmp_path, clock, local_config):
     assert not application.state.store.path.exists()
     local_config["nested"]["isolated"] = False
     with TestClient(application) as client:
-        assert client.get("/").status_code == 404  # No browser surface is claimed by f001a.
+        assert client.get("/").status_code == 200  # F001C now supplies the browser shell.
         metadata = application.state.store.metadata()
         assert metadata.schema_version == 1
         assert str(uuid4()) != metadata.generation_id

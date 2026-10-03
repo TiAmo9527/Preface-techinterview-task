@@ -1,11 +1,11 @@
 # Pseudocode approval record
 
-Version: 1.3
+Version: 1.4
 
 Date: 2026-10-03
 
 Status: Persistence/reset PR-01–PR-06 APPROVED by Alex on 2026-10-03.
-F001B FB-01–FB-03 shared-contract, Imports-validation, and Finance/display foundations are also APPROVED. All later algorithms retain their separate gates.
+F001B FB-01–FB-03 and F001C FC-01–FC-03 foundations are also APPROVED. All later algorithms retain their separate gates.
 
 Use [technical design](technical-design.md), [verification mapping](verification-plan.md), and [agent instructions](../AGENTS.md).
 The instruction to adjust documentation does not authorize application coding past this gate.
@@ -26,7 +26,7 @@ An unanswered request is pending. An approval applies only to its recorded group
 | Observations/reporting | Shared scope, independent observations, distinct counts, room reads | NOT SUBMITTED | None |
 | Assets/overrides | Operational edits, source/effective values, override/reset history | NOT SUBMITTED | None |
 | Maintenance | Creation card, recorder, owners, progression, immutable resolution, retries | NOT SUBMITTED | None |
-| Finance/display settings | FB-02/FB-03 contracts, owner/FX configuration, operational clock, invalid-finance diagnostics only | FOUNDATION APPROVED | Alex selected "Approve scoped pseudocode (Recommended)" on 2026-10-03. Calculations/browser state remain unapproved. |
+| Finance/display settings | FB-02/FB-03 contracts/configuration/clock/diagnostics; FC-01–FC-03 browser preferences, sessions, dictionaries and shell | FOUNDATION APPROVED | Alex approved FC-01–FC-03 on 2026-10-03. Calculations and consuming feature views remain unapproved. |
 
 This is an approval ledger, not the deferred implementation task plan.
 
@@ -529,3 +529,74 @@ retain the single caller-owned PR-03 transaction and rollback/retry ordering.
 Verification: named import/display unit cases and record integration cases, independent
 temporary stores/values/aware clocks, F001A regressions, targeted compileall.
 Record actual execution/evidence in the single F001 report/status and master row.
+
+## F001C browser/display submission — FC-01–FC-03
+
+Submitted and approved: 2026-10-03. Status: **APPROVED** before browser implementation.
+Alex's actual response: **"Approve FC-01–FC-03 and implement F001C"**.
+This submission completes only F001C's scoped Finance/display browser foundation.
+PR-04–PR-06 remain approved. Financial calculations and later feature forms retain their gates.
+Authority versions: product/contracts/sample plan/assessment/demo v0.5; design v1.1;
+UI v0.4; acceptance/glossary v0.2; verification v1.0; tasks v0.6; approved P-01–P-05/S-01–S-03.
+There is no proposed policy or architecture deviation. Active reasoning effort is unavailable.
+
+```text
+FC-01 — Browser context and preferences
+Inputs: GET /api/config; browser storage; current hash; explicit preference/date actions.
+Outputs: one tab context, independent preferences, labelled operational/reporting dates.
+Validate stored values before use. Default to English/USD. Offer delivered dictionaries only.
+Persist language and currency separately in localStorage; neither changes the other.
+Render interface keys through the English dictionary with English fallback.
+Never translate source/user text or calculate financial amounts in the browser.
+Store navigation, filters, search, Map/List, selection, return/scroll context and date in sessionStorage.
+Use a tab identity and live-tab ownership handshake to reject cloned session context.
+A fresh tab starts Overview with the server's Hong Kong today, even with copied storage.
+Reload/same-tab navigation retains valid context and reporting date.
+Custom date validates an ISO calendar date. Reset to today rereads server configuration.
+Preference/date changes write no database state, evidence, history or command receipt.
+Unavailable storage uses in-memory state and visible persistence feedback.
+Configuration/network failure shows Retry and no invented date, generation or totals.
+Invalid FX preserves config/assumptions access and displays existing diagnostics.
+
+FC-02 — Shared state and request integration
+Inputs: route actions, loaded versions/generation, drafts, request results/errors, tab focus.
+Outputs: current-route rendering, retained drafts, guarded transitions and sequenced results.
+Own drafts and request sequences in one state module; use one request helper.
+Before navigation/closure/reset, offer Continue editing or Discard changes for dirty drafts.
+Continue cancels transition; Discard clears the draft and completes the requested transition.
+Hash destinations are Overview, Maintenance, Import and Debugging - Assumptions.
+Keep reporting/filter/search/representation context; destination changes close selection/card.
+On focus/request and before writes, reread generation through configuration.
+Changed generation invalidates pending reads/previews and marks old drafts unsavable.
+Keep obsolete draft text until explicit discard. Never replace its generation/version silently.
+Accept results/errors only for the active request sequence and captured context.
+Writes use captured generation and draft versions; disable duplicates and never auto-retry.
+Retain unchanged command ID/payload for explicit retry; edited drafts need a fresh ID.
+PR-06 reset uses captured generation without receipts, including unknown-outcome retries.
+Known rollback retains retry input. Unknown outcome rereads config and announces uncertainty.
+Confirmed reset clears initiating-tab context and opens Overview with server today.
+State writes are browser-only. Server mutations still use PR-02/PR-04 transactions.
+
+FC-03 — Shell and assumptions
+Inputs: config/diagnostics, approved rules, active route, feedback and explicit dialog actions.
+Outputs: local English shell, read-only assumptions, accessible reset and dirty dialogs.
+Use 16px system type, 8px spacing, beige/white/neutral panels and blue primary actions.
+Use semantic labels/headings, live feedback, visible focus and text status meanings.
+At 1200px use 200px navigation and a reusable roughly 400px card primitive.
+Below 1200px use top navigation and bounded overlays; at <=600px stack fields/full-width overlays.
+Focus dialog/card headings; restore trigger focus on close. Trap modal/overlay focus only.
+Escape follows dirty protection. beforeunload uses the standard browser prompt.
+Show baseline initialization guidance; downstream workflow shells disclose availability honestly.
+Display approved assumptions/source references, actual owners/rates/date/disclaimer and AR-002 gap.
+Never fabricate portfolio counts or report values before their server endpoints exist.
+Reset confirmation explains shared record/evidence/history deletion; Cancel sends no write.
+Use PR-04 exact deletion order and post-commit generation-selective PR-05 eviction hook.
+Hook failure logs locally and cannot claim that committed reset rolled back.
+```
+
+Validation/check mapping: AC-US02-016/017/019; AC-UX-001/013/015/016/017/019 and their IX companions;
+AC-DEMO-001/002/005; AC-INFRA-003/004/005/006. Use isolated production API/browser helpers.
+Check reload/new-tab storage cloning, preferences, dirty drafts, reverse reads, reset failures,
+unknown reset outcome, stale-tab writes, keyboard/focus and all specified widths/breakpoints.
+Record Chromium and installed Windows Chrome separately. Missing consuming feature subcases
+and the F002C preview race remain NOT RUN. Approval covers only the recorded scope.

@@ -1,7 +1,7 @@
 # f001 local runtime execution report
 
-Updated: 2026-10-03. Series status: **in progress**.
-Build: `4cdd533` plus uncommitted foundation changes. [Detailed status](f001-status-local-runtime.md).
+Updated: 2026-10-03. Series status: **implemented**.
+Verified build: `62c1f78` plus F001C implementation changes. Git history identifies the release commit. [Detailed status](f001-status-local-runtime.md).
 
 Execution follows the [recorded Persistence/reset approval](../../pseudocode-review.md#approval-decision-record) and approved P-01–P-05 / S-01–S-03 adaptations.
 Python 3.12.5 is the approved tested runtime; Python 3.11 is no longer required. SQLite is 3.45.3 on Windows 11 build 26200.
@@ -38,9 +38,31 @@ Setup history: uv provisioning/resolution failed with certificate/path errors; t
 F001B is **implemented within its stated foundation acceptance limits**. F001 is still in progress.
 Milestone completion is 2/3 F001 jobs (66.7%) and 2/21 project jobs (9.5%), counting only fully implemented jobs equally. This is not an effort estimate or full product-acceptance percentage.
 
+### 2026-10-03 — f001c: browser shell and reset, partial acceptance
+
+- Recorded Alex's actual response, "Approve FC-01–FC-03 and implement F001C", before browser coding. Implemented approved PR-04–PR-06 and the scoped display/browser foundation without changing product policies or dependencies.
+- `python app.py` now serves one localhost Uvicorn worker, without reload. Added the typed configuration/reset endpoints, no-store responses, safe structured errors and a server-derived shell snapshot. Reset uses the existing transaction helper, exact FK deletion order and atomic generation replacement. Registry eviction runs only after commit and logs cleanup failure without falsely claiming rollback.
+- Added the four hash destinations, mandatory English/fallback, read-only assumptions with actual configuration and AR-002 disclosure, preferences, tab-local context/date, cloned-tab protection, draft/version ownership and request sequencing. Reset retains preferences, clears initiating context, rejects obsolete drafts, and keeps unknown-outcome retry bound to its original generation. Added approved styling, focus/feedback, dirty dialogs and reusable responsive card primitives. Downstream workflows are explicitly unavailable.
+- Key surfaces: [launcher](../../../app.py), [thin routes](../../../src/views/routes.py), [runtime service](../../../src/services/runtime.py), [reset queries](../../../src/db/reset_queries.py), [shell](../../../src/views/static/shell.js), [state](../../../src/views/static/state.js), [request helper](../../../src/views/static/request.js), [dictionary](../../../src/views/static/i18n.js), [runtime browser tests](../../../tests/browser/test_runtime.py), [UI browser tests](../../../tests/browser/test_ui.py).
+- Final verification: **393 passed**, 0 failed, 1 upstream warning, 60.67s: 362 unit/integration and 31 Chromium browser cases. All eight widths/breakpoints passed. Coverage includes cancel, halfway/metadata/commit rollback, busy HTTP/retry, post-commit selective cleanup, stale tabs, lost reset responses, reverse results/errors, persistent-profile restart, actual isolated server-process restart, session cloning, dates, unavailable storage and keyboard/focus. [Output](../../../runtime/verification/62c1f78-f001c/tests.txt), [JUnit](../../../runtime/verification/62c1f78-f001c/tests.xml), [environment/commands](../../../runtime/verification/62c1f78-f001c/environment.json).
+- An earlier 28-case suite also passed through installed Windows Chrome 154.0.8037.93 automation, 45.23s. Final added cases ran in Chromium 140.0.7339.16. This does not establish manual acceptance. The actual production launcher, foreign-directory initialization, unchanged demo state and all four workbook inventory hashes passed. [Startup evidence](../../../runtime/verification/62c1f78-f001c/startup.json). Compileall and pip check passed; lint/typecheck/count remain NOT RUN under approved S-03.
+- Preserved failed attempts: Chromium cache initially required sandbox approval; verified download initially failed TLS. Exported Windows-trusted public roots locally and successfully retried with TLS verification enabled. The first combined run found duplicate test-module names; the allowed conftest importlib hook fixed collection. A later busy-reset test held the lock before startup; corrected setup to acquire it after startup. Failure output remains in the local evidence folder.
+- Required manual Windows Chrome/assistive review is **NOT RUN**. Computer Use stopped because it could not determine the current browser URL confidently enough to enforce policy. No further desktop input was issued. F001C remains **partial**, rather than receiving completion credit. Automated keyboard/semantic checks do not claim screen-reader results.
+- Documentation links/anchors, all sixteen F001C scenario references, consolidated status/percentage and whitespace passed the [local audit](../../../runtime/verification/62c1f78-f001c/documentation-audit.json). Planned dependencies, job specifications, schema, dependencies and supplied workbook bytes remain unchanged.
+
+The spec-driven milestone remains **2/3 F001 jobs (66.7%)** and **2/21 project jobs (9.5%)**.
+Partial jobs receive no credit. Full product acceptance and the AR-002 interpretation remain unresolved.
+
+### 2026-10-03 — f001c: owner confirmation and demo guide
+
+- Alex confirmed the remaining scoped F001C checks through the response **"all check passes."** This follows the explicit manual Chrome, layout, keyboard/focus and assistive-review checklist in this conversation. F001C is implemented within its foundation acceptance limits. No new agent manual run, device details, screenshots or screen-reader output are invented. The earlier tool stop remains historical evidence.
+- Updated the [root README](../../../README.md) with ASD-STE100-style instructions for a first-time Windows user. It covers Python/project download, one-time setup, each-session startup, empty-store reset, available features, stop/restart and common failures. It clearly identifies downstream workflows as unavailable.
+- Updated the single series status and master row. F001 is **3/3 jobs, 100%**. Project milestone completion is **3/21 jobs, 14.3%**, with equal job weighting. Later feature acceptance, the timed rehearsal and AR-002 assessor interpretation remain pending.
+- Verification uses the existing **393-test PASS** because this follow-up changes documentation only. Local links, command paths, direct code counts, 20/25-word statement limits and whitespace passed the [release audit](../../../runtime/verification/62c1f78-f001c/release-documentation-audit.json). Formal ASD-STE100 dictionary compliance remains unverified; the supplied linter is unavailable. Owner confirmation is separate from automated assertion evidence and prior local scenario records.
+
 ## Verification evidence
 
-The original 102-case foundation run remains historical evidence below. The latest F001B completion run adds the current checks and scenario-foundation evidence.
+The original 102-case foundation and F001B runs remain historical evidence below. The F001C entry above and scenario table below own current results.
 Tests use independent temporary on-disk stores, production persistence helpers, and explicit clocks. Automated checks never write or reset the demonstration store.
 
 | Check | Recorded result | Evidence / limitation |
@@ -85,7 +107,34 @@ Each linked record states build/date, method, independent setup, expected/actual
 ## Remaining scope
 
 F001B foundations are complete following the scoped FB-01–FB-03 approval.
-F001C has not executed: its F001B prerequisite is now delivered, but Finance/display browser-state approval is still required. PR-04–PR-06 remain approved and deferred.
-Reset service/API, preview eviction, browser state, serving, and feature UI remain undelivered. [Task order](../../tasks.md) retains dependency ownership.
+F001C is implemented under the FC-01–FC-03 approval and Alex's later confirmation that all remaining scoped checks passed.
+The full preview-registry race repeats in F002C. Actual room-read sequencing repeats in F004C.
+Imports, observations/reporting, maintenance, assets/overrides and financial calculations/views remain undelivered. [Task order](../../tasks.md) retains dependency ownership.
 AR-002 manual asset creation remains unmet; assessor acceptance of the maintenance reinterpretation is unconfirmed.
-Changes remain local and uncommitted.
+The current release is prepared for Alex's authorized GitHub push and pull request.
+
+### F001C scenario evidence and acceptance limits
+
+Each record includes build/date, environment, independent setup, expected/actual outcome, assertions and concrete omissions.
+The table below preserves the agent-run results before Alex's later completion confirmation.
+Its M omissions are historical. The owner confirmation closes scoped F001C manual checks only.
+Downstream methods remain deferred. Existing local JSON records are not rewritten to fabricate new agent evidence.
+
+| Scenario / companion | Scoped evidence | Remaining methods/surfaces |
+|---|---|---|
+| AC-DEMO-001 | [Reset/empty shell](../../../runtime/verification/62c1f78-f001c/AC-DEMO-001/result.json) | M and full import/rehearsal journey. |
+| AC-DEMO-002 | [Lifecycle/process restart](../../../runtime/verification/62c1f78-f001c/AC-DEMO-002/result.json) | M and completed consuming workflows. |
+| AC-DEMO-005 | [Lifespan/launcher](../../../runtime/verification/62c1f78-f001c/AC-DEMO-005/result.json) | M and second-host clean installation. |
+| AC-INFRA-003 | [Late results/errors](../../../runtime/verification/62c1f78-f001c/AC-INFRA-003/result.json) | Actual room A/B reads in F004C. |
+| AC-INFRA-004 | [Cancel/rollback/busy/retry](../../../runtime/verification/62c1f78-f001c/AC-INFRA-004/result.json) | Implemented reset surface I/B passed. |
+| AC-INFRA-005 | [Old drafts/selective hook](../../../runtime/verification/62c1f78-f001c/AC-INFRA-005/result.json) | F002C actual preview/reset race. |
+| AC-INFRA-006 | [Lost response/old retry](../../../runtime/verification/62c1f78-f001c/AC-INFRA-006/result.json) | Portfolio prepared independently through SQL; importer remains downstream. |
+| AC-US02-016 | [Independent persistent preferences](../../../runtime/verification/62c1f78-f001c/AC-US02-016/result.json) | M. |
+| AC-US02-017 | [English/fallback](../../../runtime/verification/62c1f78-f001c/AC-US02-017/result.json) | M; translations not delivered, linguistic review conditional. |
+| AC-US02-019 | [Session/date/cloning](../../../runtime/verification/62c1f78-f001c/AC-US02-019/result.json) | M. |
+| AC-UX-001 / IX-UX-001 | [Navigation/dirty context](../../../runtime/verification/62c1f78-f001c/AC-UX-001/result.json) | M and actual feature forms. |
+| AC-UX-013 / IX-UX-013 | [Feedback/storage/pending](../../../runtime/verification/62c1f78-f001c/AC-UX-013/result.json) | M; downstream filter/upload/field-error states. |
+| AC-UX-015 / IX-UX-015 | [Shell styling](../../../runtime/verification/62c1f78-f001c/AC-UX-015/result.json) | M and consuming feature UI. |
+| AC-UX-016 / IX-UX-016 | [Eight widths/card primitive](../../../runtime/verification/62c1f78-f001c/AC-UX-016/result.json) | M and actual room/Log fault forms. |
+| AC-UX-017 / IX-UX-017 | [Keyboard/focus/dirty Escape](../../../runtime/verification/62c1f78-f001c/AC-UX-017/result.json) | M, screen reader, actual room controls. |
+| AC-UX-019 / IX-UX-019 | [Read-only assumptions/config](../../../runtime/verification/62c1f78-f001c/AC-UX-019/result.json) | M and financial calculation integration in F003C. |
