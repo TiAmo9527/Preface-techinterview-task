@@ -1,6 +1,6 @@
 # Domain glossary
 
-Version: 0.1
+Version: 0.2
 
 Revised: 2026-10-03
 
@@ -24,7 +24,7 @@ This is the shared glossary for the repository documentation. The product specif
 | Observation | The latest manual assessment of one room system. It has condition information separate from maintenance tickets. |
 | Unassessed Unknown | No recorded assessment. The observation has no date, recorder, or note. |
 | Recorded Unknown | An assessment that could not establish condition. It requires an observation date and recorder. |
-| Maintenance ticket | One recorded fault for a room, with an optional same-room asset link. |
+| Maintenance ticket | One manually created maintenance record for a room, with an optional same-room asset link. |
 | Ticket owner | A fictional person assigned to maintenance work. This person is not an authenticated permission role. |
 | Recorder | A self-declared person attributed to a manual change or assessment. This name does not prove authenticated identity. |
 | History | Persistent before/after information for invoice updates, overrides, or maintenance changes. Observations have no history. |
@@ -43,7 +43,10 @@ This is the shared glossary for the repository documentation. The product specif
 | Historical-only item | New invoice evidence that does not apply an asset update. |
 | Atomic commit | All writes for one confirmed upload succeed together. A failed commit preserves the previous saved state. |
 | Preview | Proposed upload effects and diagnostics. Preview does not save records, evidence, or histories. |
-| Demo data store | Isolated local state used for one rehearsal. Selecting a new store does not clear normal saved data. |
+| Demo data store | Shared local SQLite state for this prototype. Explicit reset clears its saved domain data to empty. |
+| Reset data | Confirmed atomic deletion of domain records, evidence, and histories. Browser preferences and configuration remain. |
+| Store generation | An identity changed on reset. Commands from the previous generation cannot mutate the new store. |
+| Submission receipt | An atomic record of a successful command response. Identical retries do not repeat the mutation. |
 | Normal restart | Stop and start the application with the same selected data store. |
 | Owner approval | Alex's product or design decision. It does not mean client acceptance or passing application tests. |
 | Inherited | A UI requirement already defined by a product requirement. |

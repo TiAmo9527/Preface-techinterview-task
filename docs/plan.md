@@ -1,86 +1,53 @@
-# Delivery and implementation plan
+# Approved delivery approach
 
-Version: 0.4
+Version: 0.5
 
 Revised: 2026-10-03
 
-Owner: Alex
+Owner: Alex. Target delivery: 2026-10-05.
 
-Target delivery: 2026-10-05
+Status: Documentation readiness completed subject to the recorded review. Application implementation and verification: NOT RUN.
+The dependency-ordered implementation task plan remains [Draft](tasks.md).
 
-Status: Documentation revised. Application implementation and verification: NOT RUN.
+## 1. Governing decisions
 
-[Product requirements](product-spec.md) define behavior. [UI/UX requirements](ui-ux-spec.md) distinguish Confirmed and Proposed details.
-[Contracts](data-contracts.md) define proposed technical interfaces. [Assessment requirements](assessment-requirements.md) preserve external obligations.
-Use [acceptance scenarios](acceptance-scenarios.md) and the [shared glossary](glossary.md).
+[Product requirements](product-spec.md) define behavior. [Contracts](data-contracts.md) define approved inputs.
+[Technical design](technical-design.md) selects the local stack, persistence, internal endpoints, and shared helpers.
+[UI requirements](ui-ux-spec.md) include the formerly proposed interactions, now approved.
+[Assessment requirements](assessment-requirements.md) preserve external obligations and the unconfirmed AR-002 interpretation.
 
-## 1. Settle technical interfaces
+Use one local FastAPI/Uvicorn process, browser modules, and SQLite. No external runtime API or hosting account applies.
+Manual maintenance creation/editing uses the Maintenance-page card. Permitted asset edits and financial overrides remain.
+Each manual maintenance change requires a typed recorder separate from the assigned owner.
+Use sample/2026-10-03 as the supplied fixture basis. Preserve its files and seeded identities.
+Normal restart preserves saved data. Explicit shared-store reset clears domain data and retains preferences/configuration.
 
-1. Review proposed headers, types, identifiers, normalization, comparisons, and history representation.
-2. Select the framework, persistence design, configuration interfaces, and startup process during technical planning.
-3. Define selection of normal and isolated demo stores without destructive reset.
-4. Preserve existing identities and public workbook interfaces.
-5. Map acceptance scenarios to actual tests and evidence records.
-6. Keep Proposed UI choices separate from approved requirements.
+## 2. Implementation controls
 
-Translation review remains Alex's pre-submission responsibility. The target date is fixed, not a relative-day estimate.
+Follow the [pseudocode-first approval process](pseudocode-review.md) before coding each behavior group.
+Keep views thin. Services own business rules and financial calculations. Persistence owns connections and atomic transactions.
+Use one service implementation for each rule, one transaction helper, and one browser state/request boundary.
+Use versions/generation checks and durable command receipts for stale writes and safe retries.
+Refresh actual server results after writes. Reject obsolete browser responses.
 
-## 2. Establish trusted data and persistence
+English is mandatory. Delivered stretch languages use local dictionaries and English fallback.
+Alex reviews linguistic accuracy before submission or records its omission.
+The fixed fictional FX/owner configuration is in the technical design.
 
-1. Implement independent baseline and invoice workflows with preview, diagnostics, confirmation, and atomic persistence.
-2. Validate repeated baselines, identities, exactly three categories, and existing invoice targets.
-3. Preserve baselines, invoice items, provenance, and source equality.
-4. Apply newest eligible invoices with tied-conflict checks and historical-only evidence.
-5. Replace snapshot fields and clear overrides with linked before/after history.
-6. Recheck stale previews before confirmation.
-7. Preserve previous saved state on failure.
-8. Validate complete fictional FX configuration.
-9. Implement normal restart persistence and isolated rehearsal stores.
+## 3. Verification and delivery evidence
 
-Generate templates and valid/invalid samples later. Use one generation invocation and verify all saved files and expected updates.
-Do not add maintenance imports, observation imports, or PDF requirements.
+[Verification mapping](verification-plan.md) maps every scenario to automated or manual checks and evidence groups.
+[Runtime/demo procedures](demo.md) define planned install, startup, imports, reset, restart, and rehearsal commands.
+[Fixture inventory](../sample/2026-10-03/fixture-inventory.md) records actual supplied-file inspection and expected import outcomes.
+[Readiness review](spec-review.md) records documentation checks, limitations, and the eight-artifact matrix.
 
-## 3. Build the primary operational journey
+Application completion requires actual scenario results, actual Windows/Chrome versions, and a timed twelve-minute rehearsal.
+Disclose the unconfirmed asset-add reinterpretation and all failed or omitted checks.
+Hosting and publication are outside the approved delivery.
 
-1. Implement Overview filters, distinct counts, unresolved priorities, and room selection.
-2. Implement Map/List, right-side room cards, and confirmed styling.
-3. Implement latest observation editing and Clear without observation history.
-4. Implement permitted asset edits, source evidence, paired overrides, reset, and history.
-5. Implement room-card Log fault navigation to Maintenance.
-6. Implement fault creation, ownership, forward-only progression, and read-only resolution.
-7. Check fixed same-room links and actual timestamps.
-8. Check identical repeats and historical-only items preserve edits.
-9. Sum each asset value once regardless of ticket or evidence joins.
+## 4. Repository boundaries
 
-Proposed complete return context, focus rules, and numeric layout defaults remain design proposals.
-
-## 4. Add supporting financial and display behavior
-
-1. Implement depreciation anniversaries, fallback dates, life caps, and replacement windows.
-2. Separate actual operational date from session financial reporting date.
-3. Implement mandatory English and independent persistent local/USD preferences.
-4. Add delivered stretch languages only with English fallback.
-5. Implement upper-right Language/Currency controls.
-6. Implement Debugging - Assumptions with complete inventory and actual configuration.
-7. Display missing configuration honestly without fabricated rates or partial totals.
-
-## 5. Verify and rehearse
-
-1. Execute required scenarios independently.
-2. Record actual SC/AR evidence with expected and actual results.
-3. Check Windows-laptop Chrome context and record actual versions.
-4. Check keyboard operation and all required viewport widths.
-5. Check clean startup, normal restart, new-store isolation, and retained browser preferences.
-6. Rehearse the existing demo within twelve minutes.
-7. Disclose missing manual creation, undelivered translations, and failed criteria.
-8. Review fictional-data and confidentiality boundaries before any authorized sharing.
-
-Optional publication remains a separate future decision. No hosting design is selected by this documentation revision.
-
-## Repository boundaries
-
-app.py is the entry point. src/views contains presentation. src/services contains business behavior. src/db contains persistence.
-tests contains verification. Keep business and persistence logic outside views.
-
-sample_data contains supplied fictional fixtures. runtime contains ignored local generated state.
-The current code only prints a title. Placeholder directories do not establish implementation or passing checks.
+app.py is the entry point. src/views, src/services, and src/db retain their presentation/business/persistence responsibilities.
+tests contains verification. sample/2026-10-03 is the existing-fixture exception. sample_data holds future supplied fixtures.
+runtime holds ignored generated local state. The current application only prints a title.
+This revision changes documentation and fixture evidence only. It does not implement the planned commands or application behavior.

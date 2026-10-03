@@ -1,14 +1,14 @@
 # Data contracts: Hotel asset-management prototype
 
-Version: 0.4
+Version: 0.5
 
 Revised: 2026-10-03
 
-Status: Documented logical interfaces. Application validation and workbook generation: NOT RUN.
+Status: Owner-approved input interfaces. Existing workbook structure inspected. Application validation: NOT RUN.
 
-[Product specification v0.4](product-spec.md) defines behavior. The owner-approved model uses independent baseline and invoice uploads.
-Exact headers, parsing, identifier grammar, configuration representation, and technical history representation remain implementation proposals.
-This document selects no database columns or storage types. Use the [shared glossary](glossary.md) for domain meaning.
+[Product specification v0.5](product-spec.md) defines behavior. The owner-approved model uses independent baseline and invoice uploads.
+Alex approved the exact headers, parsing, identifier grammar, and configuration contracts on 2026-10-03.
+[Technical design](technical-design.md) selects storage types, relationships, transaction helpers, and history representation. Use the [shared glossary](glossary.md) for domain meaning.
 
 ## 1. Upload and workbook boundary
 
@@ -21,7 +21,7 @@ Import a valid baseline before invoice updates. Do not require both workbooks in
 Invoices can target a subset of existing assets. They cannot create property, room, or asset identities.
 Baseline financial values require no invoices. Headers-only uploads contain no new rows.
 
-Proposed workbook structure:
+Approved workbook structure:
 
 - Each file contains its required single sheet.
 - Row 1 contains all headers, including optional-value columns.
@@ -36,7 +36,7 @@ Workbook information and provenance supply source evidence.
 
 ## 2. Common types and identifiers
 
-| Type | Proposed representation and validation |
+| Type | Approved representation and validation |
 |---|---|
 | ID | Non-empty text. Trim outer whitespace. Preserve case and leading zeros. Reject numeric identity cells. |
 | Text | Unicode text. Trim outer whitespace. Preserve internal whitespace and case. Required text cannot be blank. |
@@ -58,7 +58,7 @@ Region mappings:
 | LDN | LONDON |
 | JP | JAPAN |
 
-Proposed identity grammar:
+Approved identity grammar:
 
 1. Use an optional S<digits>- namespace.
 2. Use the uppercase region code.
@@ -77,7 +77,7 @@ Room numbers are unique text labels within a property. They need not equal the i
 Use exact identities for relationships. Do not guess relationships from names.
 
 Equivalent parsed dates and decimals compare equal. UI translation does not change source text or enums.
-Use unrounded calculations and aggregates. Proposed local display uses zero decimals for JPY and two for other supported currencies.
+Use unrounded calculations and aggregates. Approved local display uses zero decimals for JPY and two for other supported currencies.
 USD display uses two decimals under the product policy.
 
 ## 3. Assets baseline sheet
@@ -220,7 +220,7 @@ Property/room baselines retain all contributing coordinates. Skips do not rewrit
 Ignore filename, file bytes/styles, row position, timestamps, calculated results, operational edits, and override history for source equality.
 Imports never update existing baseline or invoice-item identities. New item identities can update current assets under precedence rules.
 
-Proposed invoice-update history includes:
+Approved invoice-update history includes:
 
 - Event identity and asset identity.
 - Controlling invoice date and all equivalent item references.
@@ -254,7 +254,7 @@ Blocked or failed uploads display no successful writes.
 | effective_cost/currency | Active override pair, otherwise source values. Read-only result. |
 | depreciation, remaining_value, replacement_date | Calculated and read-only. |
 
-Proposed override-history entries include identity, asset, action, before/after values, override state, reason, attribution, and actual timestamp.
+Approved override-history entries include identity, asset, action, before/after values, override state, reason, attribution, and actual timestamp.
 Actions are SET_OVERRIDE, RESET_TO_SOURCE, and CLEAR_ON_INVOICE.
 Use manager attribution for manual actions and linked invoice attribution for system clearing.
 Preserve entries after reset or clearing. Self-declared recorders do not prove authenticated identity.
@@ -268,6 +268,8 @@ Display settings do not create overrides.
 These records have no extra source-file import path.
 
 Maintenance requires ticket identity, room, non-empty description, LOW/MEDIUM/CRITICAL severity, status, and actual opened/updated timestamps.
+Every manual creation, edit, and transition also requires a non-empty typed recorder.
+The assigned owner remains a separate field. Generated identity, status at creation, and timestamps are read-only.
 Status values are OPEN, IN_PROGRESS, and RESOLVED.
 Asset link and target date are optional. Owner is optional only while OPEN.
 RESOLVED requires a note and actual resolution timestamp. Validate same-room links at creation.
@@ -277,7 +279,7 @@ Reassignment remains permitted while unresolved. No skipping, reopening, deletio
 
 Use stable owner identities and display names from a short fictional configuration list.
 Names and list size are sample configuration, not permission roles.
-Proposed history stores event identity, actual timestamp, changed fields, before/after values, and recorder attribution.
+Approved history stores event identity, actual timestamp, changed fields, before/after values, and recorder attribution.
 Simultaneous changes form one ordered event. Display ties deterministically without adding business priority.
 
 Observations use the baseline condition/date/recorder/note contract. Clear returns unassessed UNKNOWN without metadata.
@@ -285,14 +287,15 @@ Healthy requires assessment metadata. No observation history or automatic mainte
 
 ## 10. Fixed configuration, display, and local state
 
-Proposed FX representation uses as_of_date, a fictional disclaimer, and currency→usd_per_unit.
+Approved FX representation uses as_of_date, a fictional disclaimer, and currency→usd_per_unit.
 Exactly five supported currencies require positive finite rates. USD must equal 1.
-Check completeness, uniqueness, positivity, and date before reporting. Numerical application rates remain unselected.
+Check completeness, uniqueness, positivity, and date before reporting.
+Approved fictional rates and owner identities are in [technical configuration](technical-design.md#2-data-representation-and-schema).
 
 Missing configuration blocks complete reporting without zero substitutions or omitted assets. No live lookup applies.
 The configured FX date is independent of financial reporting date and language.
 
-Proposed language identifiers are en, zh-Hant, zh-Hans, and ja.
+Approved language identifiers are en, zh-Hant, zh-Hans, and ja.
 English is mandatory. Other sets remain stretch. Missing translation keys use English.
 Stored enums, filenames, headers, names, notes, and descriptions stay unchanged.
 
@@ -300,19 +303,20 @@ Display modes are USD and LOCAL_TRANSACTION. First use defaults to English/USD.
 Later choices persist independently across browser restarts on the same device.
 Local mode uses effective currency with separate currency totals. Preferences do not change stored money.
 
-Operational dates and timestamps use Asia/Hong_Kong. Display explicit offsets for actual instants under the proposed display contract.
+Operational dates and timestamps use Asia/Hong_Kong. Display explicit offsets for actual instants under the approved display contract.
 Financial reporting uses a separate session date, initially today. It never advances the operational clock.
 
 Normal restart preserves the selected store's records, source evidence, and histories.
-Each rehearsal selects a new isolated empty store. Normal data and browser preferences remain unchanged.
-Another rehearsal selects another store. No destructive reset button is required.
-Selection mechanisms and storage representation remain technical-planning work.
+Each rehearsal confirms Reset data for the shared local demo store.
+Reset atomically removes all domain data, evidence, histories, and receipts and changes the store generation.
+Configuration, schema, database file, and browser preferences remain. Pending previews and old drafts become invalid.
+Reset deliberately clears previous successful saves. [Technical design](technical-design.md) defines its transaction and stale-store behavior.
 
 ## 11. Verification obligations
 
 Required domain checks are in [acceptance scenarios](acceptance-scenarios.md). All application results remain NOT RUN.
 
-Proposed parser checks must cover:
+Required parser checks must cover:
 
 - Equivalent decimal/date representations.
 - Leading-zero text identities and rejected numeric identity cells.
@@ -321,6 +325,7 @@ Proposed parser checks must cover:
 - Missing-value normalization and filename/row-independent source comparisons.
 - Rejected booleans, non-finite numbers, ambiguous date text, and date cells containing time.
 
-Exact parsing checks do not imply owner approval of every technical proposal.
+Owner approval governs these contracts. Executed application checks still require recorded evidence.
 Map actual domain results to SC-001–SC-005, SC-007, SC-008, and [assessment evidence](assessment-requirements.md#5-evidence-ledger).
-No contract execution or application tests occurred.
+Read-only structural inspection is recorded in [the fixture inventory](../sample/2026-10-03/fixture-inventory.md).
+Application contract execution remains NOT RUN.

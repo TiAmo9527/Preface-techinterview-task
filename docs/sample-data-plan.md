@@ -1,15 +1,15 @@
 # Sample-data and import-template plan
 
-Version: 0.4
+Version: 0.5
 
 Revised: 2026-10-03
 
 Owner: Alex
 
-Status: Owner-approved fixture scope. Generation and application validation: NOT RUN.
+Status: Owner-approved supplied fixture basis. Read-only structural inspection completed. Application validation: NOT RUN.
 
 Use the [product specification](product-spec.md), [contracts](data-contracts.md), and [shared glossary](glossary.md).
-Owner confirmation dated 2026-10-03 preserves the fixture decisions. It does not approve every technical parsing proposal.
+Owner confirmation dated 2026-10-03 preserves the fixture decisions. The later planning answers approve the input contracts.
 
 ## 1. Dataset scope
 
@@ -24,16 +24,19 @@ Managers can edit permitted fields and apply financial overrides.
 
 All names, suppliers, recorders, identities, and amounts are fictional. Do not use real customer or hotel data.
 
-## 2. Templates and combined generation
+## 2. Supplied basis, templates, and future generation
 
-[Generation instructions](sample-excel-generation-instructions.md) define one invocation with both valid and invalid examples.
+The canonical supplied basis is sample/2026-10-03, with valid and invalid Assets/Invoices pairs.
+[Fixture inventory](../sample/2026-10-03/fixture-inventory.md) records workbook hashes, counts, coordinates, and expected outcomes.
+Preserve the existing S20261002- identity namespace. The folder date does not rename source identities.
+[Generation instructions](sample-excel-generation-instructions.md) remain an optional future regeneration procedure.
 
 | File in each example | Sole sheet | Row meaning |
 |---|---|---|
 | Assets.xlsx | Assets | One baseline asset with repeated property, room, and assessment information. |
 | Invoices.xlsx | Invoices | One invoice item with an existing target and full replacement snapshot. |
 
-Generate four sample files across valid/invalid folders and one external manifest.
+Reuse the four supplied workbooks. Their original generator execution is unverified. Do not regenerate them during documentation work.
 Product uploads remain independent. A folder containing both files does not require paired uploads.
 Later blank templates use the same headers without rows.
 No formulas, calculated financial columns, totals, merged cells, extra sheets, or explanation columns belong in sources.
@@ -42,7 +45,8 @@ Canonical headers and enums remain independent of UI language.
 Default future root: sample_data/spreadsheets/generated/seed-20261002.
 Use valid and invalid subfolders with generation-summary.md at the root.
 Use a fresh suffix when that root exists. Do not overwrite artifacts.
-Supplied fictional fixtures belong in sample_data. Imported local state belongs in ignored runtime.
+The dated sample folder is the approved existing-fixture exception. Future supplied fixtures belong in sample_data.
+Imported local state belongs in ignored runtime.
 
 Do not generate PDFs, attachment fields, or FX configuration files.
 
@@ -92,7 +96,7 @@ Define separate future fixtures for:
 - Invalid assessment metadata, cancellation, stale previews, and persistence failure.
 - Before-service, month-end, leap-year, useful-life cap, and replacement endpoints.
 - Unique-asset financial totals despite multiple invoices or tickets.
-- Normal restart and isolated rehearsal stores with retained browser preferences.
+- Normal restart, confirmed shared-store reset, stale drafts, and retained browser preferences.
 
 Use [acceptance scenarios](acceptance-scenarios.md) for independent starting states and required outcomes.
 Create operational fixtures through later application actions or isolated tests. Do not add import workbook types.
@@ -100,7 +104,8 @@ Use [the demo](demo.md) for rehearsal. Disclose AR-002's manual-creation gap.
 
 ## 6. Evidence status
 
-Generation, saved-file checks, and application validation remain NOT RUN.
+The supplied files exist and their structure was inspected read-only on 2026-10-03.
+Original generation provenance remains unverified. Full application validation remains NOT RUN.
 Expected calculations are fixture checks, not passing application tests.
 Record actual generation results separately from SC/AR application evidence.
 The reference date controls financial examples only. It does not change the actual operational clock.
