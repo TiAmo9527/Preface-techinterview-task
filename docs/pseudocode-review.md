@@ -1,11 +1,12 @@
 # Pseudocode approval record
 
-Version: 1.4
+Version: 1.5
 
 Date: 2026-10-03
 
 Status: Persistence/reset PR-01–PR-06 APPROVED by Alex on 2026-10-03.
-F001B FB-01–FB-03 and F001C FC-01–FC-03 foundations are also APPROVED. All later algorithms retain their separate gates.
+F001B FB-01–FB-03 and F001C FC-01–FC-03 foundations are also APPROVED.
+F002 Imports IM-01–IM-04 are APPROVED; other later algorithms retain their separate gates.
 
 Use [technical design](technical-design.md), [verification mapping](verification-plan.md), and [agent instructions](../AGENTS.md).
 The instruction to adjust documentation does not authorize application coding past this gate.
@@ -22,7 +23,7 @@ An unanswered request is pending. An approval applies only to its recorded group
 | Group | Algorithm scope | Status | Owner approval/evidence |
 |---|---|---|---|
 | Persistence/reset | [f001 PR-01–PR-06](#f001-persistencereset-submission): initialization, transactions, constraints, receipts, versions, generation, atomic reset and browser invalidation | APPROVED | Alex approved 2026-10-03: "approve pseudocode - directly work on the feature job as needed". |
-| Imports | FB-01/FB-02 shared validators/contracts only; parsing/planning/confirmation remain unapproved | FOUNDATION APPROVED | Alex selected "Approve scoped pseudocode (Recommended)" on 2026-10-03. See FB-01–FB-03 below. |
+| Imports | FB-01/FB-02 foundations and [IM-01–IM-04](#f002-imports-submission--im-01im-04): parsing, deterministic planning, atomic confirmation, browser review | APPROVED | Alex selected "Approve IM-01–IM-04 (Recommended)" on 2026-10-03. Alex separately authorized F002A–D execution and F002A–D GitHub PR/push; F002D was requested on 2026-10-04. Installed-Chrome computer-use review was explicitly skipped by Alex. |
 | Observations/reporting | Shared scope, independent observations, distinct counts, room reads | NOT SUBMITTED | None |
 | Assets/overrides | Operational edits, source/effective values, override/reset history | NOT SUBMITTED | None |
 | Maintenance | Creation card, recorder, owners, progression, immutable resolution, retries | NOT SUBMITTED | None |
@@ -600,3 +601,104 @@ Check reload/new-tab storage cloning, preferences, dirty drafts, reverse reads, 
 unknown reset outcome, stale-tab writes, keyboard/focus and all specified widths/breakpoints.
 Record Chromium and installed Windows Chrome separately. Missing consuming feature subcases
 and the F002C preview race remain NOT RUN. Approval covers only the recorded scope.
+
+## F002 Imports submission — IM-01–IM-04
+
+Submitted and approved: 2026-10-03. Alex selected **"Approve IM-01–IM-04 (Recommended)"**
+in the review question, then requested **"PLEASE IMPLEMENT THIS PLAN"** for F002A.
+Approval covers the Imports algorithms below across F002A–D. Initial execution authorization
+was **F002A only**. Alex separately requested F002B and F002C implementation on 2026-10-04.
+F002C uses IM-03 and the approved PR-05 generation-selective reset hook without consequential deviation.
+Alex requested F002D implementation on 2026-10-04 and authorized pushing F002A–D and creating a GitHub PR after passing tests.
+Alex then requested "skip chrome computer use test". Installed-Chrome computer-use verification is omitted at this request.
+IM-04 algorithm approval remains unchanged. Current evidence is in the consolidated F002 execution report.
+No consequential departure from the approved design is proposed.
+
+Governing versions: product/contracts/sample plan v0.5, technical design v1.1,
+UI v0.4, acceptance/glossary v0.2, verification v1.0, tasks v0.6, approved S-01–S-03.
+F002 recommends High reasoning effort. The active setting is not exposed;
+the comparison is unverified, as permitted by the execution skill.
+
+### IM-01: Workbook parser and blank templates — F002A
+
+```text
+Input: workbook bytes, filename, ASSETS/INVOICES workflow.
+Output: immutable normalized rows, retained source rows/cell coordinates,
+        blocker and warning diagnostics.
+Select approved exact 26/12 headers. Reject absent/unsupported/unreadable files.
+Read in memory with openpyxl data_only=False and always close the workbook.
+Require the workflow's sole sheet and exact headers in any order.
+Block missing/duplicate/unexpected headers, formulas and merged table cells.
+Never interpret cached formula values or guess an ambiguous header mapping.
+For each row, ignore fully empty rows and validate partial rows normally.
+Retain raw offending information and file/sheet/row/field/cell coordinates.
+Reuse F001B validators for text, enums, identity grammar/parents/region,
+dates/date ordering, cost and whole useful-life months.
+Validate all three observation groups independently:
+  absent/UNKNOWN without metadata -> unassessed UNKNOWN;
+  recorded assessments, including UNKNOWN -> status, date and recorder required;
+  incomplete/invalid metadata -> blockers; no inferred Healthy or history.
+Collect independent failures; only fully valid rows enter normalized rows.
+Warn for valid absent installation, zero cost and missing invoice supplier.
+Return results without database writes or saved raw workbooks.
+Create two headers-only templates from the same schema constants in
+sample_data/spreadsheets/templates. Preserve existing artifacts and supplied files.
+```
+
+Mapped checks: AC-US01-006/007/008/009/022 and AC-US02-009/014, parser surface only.
+Cross-row consistency/category/duplicate/target checks remain F002B.
+No transaction or saved-state mutation belongs to this algorithm.
+
+### IM-02: Deterministic plans — F002B
+
+```text
+Input: parser result, saved-state snapshot. Output: deterministic reviewed effects.
+Carry parser blockers forward. Validate repeated baselines, complete categories,
+room labels, all source identities, existing targets and every invoice row.
+Skip identical preserved source identities; block changed identities/upload duplicates.
+Group stored/incoming items by target; compare six-field snapshots at maximum date.
+Block conflicting controlling snapshots; order equivalent references by identity.
+Apply first controlling invoice regardless of baseline purchase date, then strictly newer dates.
+Plan inserts, evidence, updates, before/after values, versions and linked override clearing.
+Preserve edits/overrides on skips and historical-only items.
+Any blocker prevents writable effects. No database writes.
+```
+
+Mapped checks: AC-US01-001–025, planner surface; meaningful comparisons exclude
+generated IDs/commit timestamps and include before-values and override effects.
+
+### IM-03: Preview and atomic confirmation — F002C
+
+```text
+Preview parses once and plans against saved state. Locked process registry retains
+UUID, generation, workflow, filename, normalized rows, plan, 30-minute expiry;
+maximum 20 entries. No saved database records or raw workbook.
+Confirm accepts generation_id/submission_id/preview_id, never replacement rows.
+Inside caller-owned BEGIN IMMEDIATE: check generation, then receipt;
+replay identical success, reject conflicting submission reuse.
+Reject missing/expired previews. Re-read state and re-plan using the same input.
+Block invalid plans without writes. Changed reviewed effects return a replacement
+STALE_PREVIEW requiring renewed review and separate explicit confirmation.
+Equivalent effects write entities/evidence/updates/histories/versions/receipt atomically.
+Create uploads only for new entities/evidence; no-op writes retry receipt only.
+Rollback failures and return STORE_BUSY/SAVE_FAILED without success.
+After reset commits, selectively evict old-generation previews only.
+```
+
+Mapped checks: AC-US01-001–025, AC-INFRA-005/007/008, actual service/database/API surface.
+Preserve baselines, observations, tickets and original provenance on skips.
+
+### IM-04: Browser review — F002D
+
+```text
+Select one workflow/file; show prerequisites, counts, coordinates, diagnostics,
+six-field changes and override clearing. File/workflow changes invalidate preview.
+Disable confirmation for blockers/pending submission; allow warning-only confirmation.
+Cancel saves nothing. Stale preview needs renewed review and separate confirmation.
+Failures preserve review context; unchanged retries retain command identity.
+Show actual effects/refetch affected data only after success or receipt replay.
+```
+
+Mapped checks: all US-01 B methods, AC-UX-007/008/013 and IX companions,
+AC-INFRA-005/007/008 plus installed-Chrome review as assigned by F002D.
+Downstream checks remain NOT RUN until actual execution. Owner approval is not passing evidence.

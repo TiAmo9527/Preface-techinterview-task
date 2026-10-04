@@ -10,10 +10,21 @@ async function transport(path, options = {}) {
   try { response = await fetch(path, {cache: 'no-store', ...options}); }
   catch { throw new RequestError('network', {}, true); }
   let body;
-  try { body = await response.json(); }
+  try {
+    if (path === '/' && response.ok) {
+      const document = new DOMParser().parseFromString(await response.text(), 'text/html');
+      body = JSON.parse(document.querySelector('#bootstrap').textContent);
+    } else body = await response.json();
+  }
   catch { throw new RequestError('network', {}, true); }
   if (!response.ok) throw new RequestError(body.message_key || 'network', body);
   return body;
+}
+export async function upload(file, workflow) {
+  const config = await configuration();
+  if (!config) throw new RequestError('network');
+  const form = new FormData(); form.append('file', file); form.append('workflow', workflow);
+  return transport('/api/imports/preview', {method: 'POST', body: form});
 }
 export async function configuration() {
   const sequence = ++configSequence;
